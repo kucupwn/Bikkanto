@@ -8,13 +8,16 @@
   </head>
   <body>
     <h1>Bikkanto App</h1>
-    <div class="button-wrap">
-      <button id="btn-roll" class="btn">Roll</button>
-      <button id="btn-table" class="btn">Table</button>
+    <h2>Select Action:</h2>
+    <div id="button-wrap">
+      <button data-target="roll" class="group-btn">Roll</button>
+      <button data-target="table" class="group-btn">Table</button>
     </div>
-    <div class="settings-wrap">
-      <label for="exercise-count">Select exercise count</label>
-      <select name="exercise-count" id="exercise-count"></select>
+    <div id="roll" class="group hidden">
+      <div id="settings-wrap">
+        <label for="exercise-count">Select exercise count</label>
+        <select name="exercise-count" id="exercise-count"></select>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
     <script type="module" src="/src/exerciseCount.ts"></script>
