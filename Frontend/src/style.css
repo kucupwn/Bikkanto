@@ -8,3 +8,7 @@ html {
   background-color: bisque;
   border-radius: 25px;
 }
+
+.button-wrap {
+  margin: 1rem 0rem;
+}

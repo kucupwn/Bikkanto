@@ -8,9 +8,15 @@
   </head>
   <body>
     <h1>Bikkanto App</h1>
-    <div class="button-wrap"></div>
+    <div class="button-wrap">
       <button id="btn-roll" class="btn">Roll</button>
       <button id="btn-table" class="btn">Table</button>
+    </div>
+    <div class="settings-wrap">
+      <label for="exercise-count">Select exercise count</label>
+      <select name="exercise-count" id="exercise-count"></select>
+    </div>
     <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/exerciseCount.ts"></script>
   </body>
 </html>
