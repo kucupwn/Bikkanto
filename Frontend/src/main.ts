@@ -4,8 +4,10 @@ function showGroup(groupToShow: string): void {
   });
 }
 
-document.querySelectorAll<HTMLButtonElement>("[data-target]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    showGroup(btn.dataset.target!);
+document
+  .querySelectorAll<HTMLButtonElement>("[data-group-btn]")
+  .forEach((btn) => {
+    btn.addEventListener("click", () => {
+      showGroup(btn.dataset.target!);
+    });
   });
-});
