@@ -8,6 +8,6 @@ document
   .querySelectorAll<HTMLButtonElement>("[data-group-btn]")
   .forEach((btn) => {
     btn.addEventListener("click", () => {
-      showGroup(btn.dataset.target!);
+      showGroup(btn.dataset.groupBtn!);
     });
   });
