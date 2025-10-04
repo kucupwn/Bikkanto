@@ -7,7 +7,6 @@ import {
 } from "./roll.utils";
 
 const getButton = document.getElementById("btn-get");
-const settingsContainer = document.getElementById("settings-container");
 
 function getExerciseSelections(count: number) {
   const container = document.getElementById(
@@ -77,7 +76,7 @@ function fillOverviewTable(workout: WorkoutEntry[]) {
   const table = document.getElementById("overview-table") as HTMLTableElement;
   if (!table) return;
 
-  const tbody = document.querySelector("table");
+  const tbody = document.querySelector("tbody");
   if (!tbody) return;
 
   tbody.innerHTML = "";
@@ -93,12 +92,11 @@ function fillOverviewTable(workout: WorkoutEntry[]) {
 
     row.appendChild(exerciseCell);
     row.appendChild(repsCell);
-    table.appendChild(row);
+    tbody.appendChild(row);
   });
 }
 
 getButton?.addEventListener("click", () => {
-  settingsContainer?.classList.add("hidden");
   const workout = getWorkout();
   fillOverviewTable(workout);
 });
