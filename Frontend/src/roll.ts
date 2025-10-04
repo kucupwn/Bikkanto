@@ -1,5 +1,8 @@
 import { getExerciseCategories, fillExerciseCount } from "./roll.utils";
 
+const getButton = document.getElementById("btn-get");
+const settingsContainer = document.getElementById("settings-container");
+
 async function getExerciseSelections(containerId: string, count: number) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -37,6 +40,10 @@ async function getExerciseSelections(containerId: string, count: number) {
     container.appendChild(row);
   }
 }
+
+getButton?.addEventListener("click", () => {
+  settingsContainer?.classList.add("hidden");
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   fillExerciseCount("exercise-count-select", 0, 20);
