@@ -35,6 +35,11 @@ function getExerciseSelections(containerId: string, count: number) {
     const select = document.createElement("select");
     select.id = `exercise-select-${i}`;
 
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "-- Select --";
+    select.appendChild(option);
+
     row.appendChild(label);
     row.appendChild(select);
 
