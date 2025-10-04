@@ -10,8 +10,21 @@
     <h1>Bikkanto</h1>
     <div id="nav"></div>
     <div id="settings-container" class="settings-container">
-      <label for="exercise-count">Select exercise count</label>
-      <select name="exercise-count-select" id="exercise-count-select"></select>
+      <div id="count-container">
+        <label for="exercise-count">Select exercise count</label>
+        <select
+          name="exercise-count-select"
+          id="exercise-count-select"
+        ></select>
+      </div>
+      <div id="difficulty-container">
+        <label for="difficulty">Select exercise count difficulty</label>
+        <select name="exercise-difficulty" id="exercise-difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
       <div id="exercises"></div>
       <button id="btn-get">Get</button>
     </div>
