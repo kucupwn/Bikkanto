@@ -1,24 +1,4 @@
-import { getExerciseCategories } from "./roll.utils";
-
-function fillExerciseCount(
-  selectId: string,
-  start: number,
-  stop: number
-): void {
-  const exerciseCount = document.getElementById(
-    selectId
-  ) as HTMLSelectElement | null;
-  if (!exerciseCount) return;
-
-  exerciseCount.innerHTML = "";
-
-  for (let i = start; i <= stop; i++) {
-    let option = document.createElement("option");
-    option.value = String(i);
-    option.textContent = String(i);
-    exerciseCount.appendChild(option);
-  }
-}
+import { getExerciseCategories, fillExerciseCount } from "./roll.utils";
 
 async function getExerciseSelections(containerId: string, count: number) {
   const container = document.getElementById(containerId);
