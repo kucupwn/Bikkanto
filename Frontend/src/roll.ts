@@ -9,8 +9,10 @@ import {
 const getButton = document.getElementById("btn-get");
 const settingsContainer = document.getElementById("settings-container");
 
-async function getExerciseSelections(containerId: string, count: number) {
-  const container = document.getElementById(containerId);
+function getExerciseSelections(count: number) {
+  const container = document.getElementById(
+    "exercise-categories"
+  ) as HTMLDivElement;
   if (!container) return;
 
   const categories = getExerciseCategories();
@@ -47,6 +49,18 @@ async function getExerciseSelections(containerId: string, count: number) {
   }
 }
 
+function handleExerciseSelection() {
+  const select = document.getElementById(
+    "exercise-count-select"
+  ) as HTMLSelectElement;
+  if (select) {
+    select.addEventListener("change", () => {
+      const count = Number(select.value);
+      getExerciseSelections(count);
+    });
+  }
+}
+
 function getWorkout(): WorkoutEntry[] {
   const difficulty = (
     document.getElementById("exercise-difficulty") as HTMLSelectElement
@@ -59,7 +73,29 @@ function getWorkout(): WorkoutEntry[] {
   return workout;
 }
 
-function fillOverviewTable(workout: WorkoutEntry[]) {}
+function fillOverviewTable(workout: WorkoutEntry[]) {
+  const table = document.getElementById("overview-table") as HTMLTableElement;
+  if (!table) return;
+
+  const tbody = document.querySelector("table");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  workout.forEach((entry) => {
+    const row = document.createElement("tr");
+
+    const exerciseCell = document.createElement("td");
+    exerciseCell.textContent = entry.exercise;
+
+    const repsCell = document.createElement("td");
+    repsCell.textContent = entry.reps.toString();
+
+    row.appendChild(exerciseCell);
+    row.appendChild(repsCell);
+    table.appendChild(row);
+  });
+}
 
 getButton?.addEventListener("click", () => {
   settingsContainer?.classList.add("hidden");
@@ -67,16 +103,5 @@ getButton?.addEventListener("click", () => {
   fillOverviewTable(workout);
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  fillExerciseCount("exercise-count-select", 0, 20);
-
-  const select = document.getElementById(
-    "exercise-count-select"
-  ) as HTMLSelectElement;
-  if (select) {
-    select.addEventListener("change", () => {
-      const count = Number(select.value);
-      getExerciseSelections("exercise-categories", count);
-    });
-  }
-});
+fillExerciseCount(0, 20);
+handleExerciseSelection();

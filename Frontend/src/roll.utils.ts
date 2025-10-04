@@ -15,13 +15,9 @@ async function getAllExercises(): Promise<Exercises[]> {
   }
 }
 
-export function fillExerciseCount(
-  selectId: string,
-  start: number,
-  stop: number
-): void {
+export function fillExerciseCount(start: number, stop: number): void {
   const exerciseCount = document.getElementById(
-    selectId
+    "exercise-count-select"
   ) as HTMLSelectElement | null;
   if (!exerciseCount) return;
 
