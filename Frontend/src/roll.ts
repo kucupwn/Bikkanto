@@ -1,4 +1,9 @@
-import { getExerciseCategories, fillExerciseCount } from "./roll.utils";
+import {
+  getExerciseCategories,
+  fillExerciseCount,
+  getRandomExercise,
+  getSelectedCategories,
+} from "./roll.utils";
 
 const getButton = document.getElementById("btn-get");
 const settingsContainer = document.getElementById("settings-container");
@@ -41,8 +46,23 @@ async function getExerciseSelections(containerId: string, count: number) {
   }
 }
 
+function getWorkout() {
+  const difficulty = (
+    document.getElementById("exercise-difficulty") as HTMLSelectElement
+  ).value;
+  const selections = getSelectedCategories();
+  const workout = selections?.map((category) => {
+    return getRandomExercise(category, difficulty);
+  });
+
+  return workout;
+}
+
+function fillOverviewTable() {}
+
 getButton?.addEventListener("click", () => {
   settingsContainer?.classList.add("hidden");
+  getWorkout();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -54,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (select) {
     select.addEventListener("change", () => {
       const count = Number(select.value);
-      getExerciseSelections("exercises", count);
+      getExerciseSelections("exercise-categories", count);
     });
   }
 });

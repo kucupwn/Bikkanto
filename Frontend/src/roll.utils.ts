@@ -50,10 +50,28 @@ export function getExerciseCategories(): string[] {
   return categories;
 }
 
-function getRandomExercise(
+export function getSelectedCategories(): string[] | undefined {
+  const container = document.getElementById("exercise-categories");
+  if (!container) return;
+
+  const selects = container.querySelectorAll("select");
+
+  const selections: string[] = [];
+
+  selects.forEach((ex) => {
+    const value = (ex as HTMLSelectElement).value;
+    if (value) {
+      selections.push(value);
+    }
+  });
+
+  return selections;
+}
+
+export function getRandomExercise(
   category: string,
-  difficulty: "easy" | "medium" | "hard"
-) {
+  difficulty: string
+): { [exercise: string]: number } | null {
   const filtered = allExercises.filter((ex) => ex.category === category);
 
   if (filtered.length === 0) return null;
@@ -73,7 +91,3 @@ function getRandomExercise(
     [exercise.exercise_name]: reps,
   };
 }
-
-function getWorkout() {}
-
-function fillOverviewTable() {}
