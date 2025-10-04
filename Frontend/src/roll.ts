@@ -19,5 +19,5 @@ function fillExerciseCount(
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  fillExerciseCount("exercise-count", 1, 20);
+  fillExerciseCount("exercise-count-select", 1, 20);
 });
