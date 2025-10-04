@@ -19,14 +19,9 @@ async function getAllExercises(): Promise<Exercises[]> {
     return data;
   } catch (err) {
     console.log("Error loading data: ", err);
+
     return [];
   }
-}
-
-export function getExerciseCategories(): string[] {
-  const categories = Array.from(new Set(allExercises.map((ex) => ex.category)));
-
-  return categories;
 }
 
 export function fillExerciseCount(
@@ -48,3 +43,37 @@ export function fillExerciseCount(
     exerciseCount.appendChild(option);
   }
 }
+
+export function getExerciseCategories(): string[] {
+  const categories = Array.from(new Set(allExercises.map((ex) => ex.category)));
+
+  return categories;
+}
+
+function getRandomExercise(
+  category: string,
+  difficulty: "easy" | "medium" | "hard"
+) {
+  const filtered = allExercises.filter((ex) => ex.category === category);
+
+  if (filtered.length === 0) return null;
+
+  const idx = Math.floor(Math.random() * filtered.length);
+  const exercise = filtered[idx];
+
+  const minKey = `${difficulty}_min` as keyof Exercises;
+  const maxKey = `${difficulty}_max` as keyof Exercises;
+
+  const minRep = exercise[minKey] as number;
+  const maxRep = exercise[maxKey] as number;
+
+  const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
+
+  return {
+    [exercise.exercise_name]: reps,
+  };
+}
+
+function getWorkout() {}
+
+function fillOverviewTable() {}
