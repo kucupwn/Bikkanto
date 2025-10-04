@@ -9,18 +9,24 @@ interface Exercises {
   hard_max: number;
 }
 
-export async function getExerciseCategories(): Promise<string[]> {
+const allExercises: Exercises[] = await getAllExercises();
+
+async function getAllExercises(): Promise<Exercises[]> {
   try {
     const res = await fetch("http://127.0.0.1:8000/exercises");
     const data: Exercises[] = await res.json();
 
-    const categories = Array.from(new Set(data.map((ex) => ex.category)));
-
-    return categories;
+    return data;
   } catch (err) {
     console.log("Error loading data: ", err);
     return [];
   }
+}
+
+export function getExerciseCategories(): string[] {
+  const categories = Array.from(new Set(allExercises.map((ex) => ex.category)));
+
+  return categories;
 }
 
 export function fillExerciseCount(

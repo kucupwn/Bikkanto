@@ -18,7 +18,7 @@
         ></select>
       </div>
       <div id="difficulty-container">
-        <label for="difficulty">Select exercise count difficulty</label>
+        <label for="exercise-difficulty">Select exercise difficulty</label>
         <select name="exercise-difficulty" id="exercise-difficulty">
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
@@ -27,6 +27,14 @@
       </div>
       <div id="exercises"></div>
       <button id="btn-get">Get</button>
+    </div>
+    <div id="overview-container">
+      <table id="exercise-table">
+        <tr id="header">
+          <th id="exercise-header">Exercise</th>
+          <th id="count-header">Count</th>
+        </tr>
+      </table>
     </div>
     <script type="module" src="/src/main.ts"></script>
     <script type="module" src="/src/roll.ts"></script>

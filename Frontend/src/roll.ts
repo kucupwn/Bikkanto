@@ -7,7 +7,7 @@ async function getExerciseSelections(containerId: string, count: number) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const categories = await getExerciseCategories();
+  const categories = getExerciseCategories();
 
   container.innerHTML = "";
 
@@ -30,7 +30,7 @@ async function getExerciseSelections(containerId: string, count: number) {
     categories.forEach((cat) => {
       const option = document.createElement("option");
       option.value = cat;
-      option.textContent = cat;
+      option.textContent = cat.toUpperCase();
       select.appendChild(option);
     });
 
