@@ -16,18 +16,18 @@ async function getAllExercises(): Promise<Exercises[]> {
 }
 
 export function fillExerciseCount(start: number, stop: number): void {
-  const exerciseCount = document.getElementById(
+  const exerciseCountSelect = document.getElementById(
     "exercise-count-select"
   ) as HTMLSelectElement | null;
-  if (!exerciseCount) return;
+  if (!exerciseCountSelect) return;
 
-  exerciseCount.innerHTML = "";
+  exerciseCountSelect.innerHTML = "";
 
   for (let i = start; i <= stop; i++) {
     let option = document.createElement("option");
     option.value = String(i);
     option.textContent = String(i);
-    exerciseCount.appendChild(option);
+    exerciseCountSelect.appendChild(option);
   }
 }
 
@@ -41,18 +41,18 @@ export function getSelectedCategories(): string[] {
   const container = document.getElementById("exercise-categories");
   if (!container) return [];
 
-  const selects = container.querySelectorAll("select");
+  const selectElements = container.querySelectorAll("select");
 
-  const selections: string[] = [];
+  const categorySelections: string[] = [];
 
-  selects.forEach((ex) => {
+  selectElements.forEach((ex) => {
     const value = (ex as HTMLSelectElement).value;
     if (value) {
-      selections.push(value);
+      categorySelections.push(value);
     }
   });
 
-  return selections;
+  return categorySelections;
 }
 
 export function getRandomExercise(

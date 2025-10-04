@@ -34,10 +34,10 @@ function getExerciseSelections(count: number) {
     option.textContent = "-- Select --";
     select.appendChild(option);
 
-    categories.forEach((cat) => {
+    categories.forEach((category) => {
       const option = document.createElement("option");
-      option.value = cat;
-      option.textContent = cat.toUpperCase();
+      option.value = category;
+      option.textContent = category.toUpperCase();
       select.appendChild(option);
     });
 
@@ -64,8 +64,8 @@ function getWorkout(): WorkoutEntry[] {
   const difficulty = (
     document.getElementById("exercise-difficulty") as HTMLSelectElement
   ).value;
-  const selections = getSelectedCategories();
-  const workout = selections?.map((category) => {
+  const selectedCategories = getSelectedCategories();
+  const workout = selectedCategories?.map((category) => {
     return getRandomExercise(category, difficulty);
   });
 
