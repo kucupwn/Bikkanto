@@ -1,3 +1,4 @@
+import type { WorkoutEntry } from "./types";
 import {
   getExerciseCategories,
   fillExerciseCount,
@@ -46,7 +47,7 @@ async function getExerciseSelections(containerId: string, count: number) {
   }
 }
 
-function getWorkout() {
+function getWorkout(): WorkoutEntry[] {
   const difficulty = (
     document.getElementById("exercise-difficulty") as HTMLSelectElement
   ).value;
@@ -58,11 +59,12 @@ function getWorkout() {
   return workout;
 }
 
-function fillOverviewTable() {}
+function fillOverviewTable(workout: WorkoutEntry[]) {}
 
 getButton?.addEventListener("click", () => {
   settingsContainer?.classList.add("hidden");
-  getWorkout();
+  const workout = getWorkout();
+  fillOverviewTable(workout);
 });
 
 document.addEventListener("DOMContentLoaded", () => {

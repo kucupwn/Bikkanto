@@ -1,13 +1,4 @@
-interface Exercises {
-  exercise_name: string;
-  category: string;
-  easy_min: number;
-  easy_max: number;
-  medium_min: number;
-  medium_max: number;
-  hard_min: number;
-  hard_max: number;
-}
+import type { Exercises, WorkoutEntry } from "./types";
 
 const allExercises: Exercises[] = await getAllExercises();
 
@@ -50,9 +41,9 @@ export function getExerciseCategories(): string[] {
   return categories;
 }
 
-export function getSelectedCategories(): string[] | undefined {
+export function getSelectedCategories(): string[] {
   const container = document.getElementById("exercise-categories");
-  if (!container) return;
+  if (!container) return [];
 
   const selects = container.querySelectorAll("select");
 
@@ -71,10 +62,12 @@ export function getSelectedCategories(): string[] | undefined {
 export function getRandomExercise(
   category: string,
   difficulty: string
-): { [exercise: string]: number } | null {
+): WorkoutEntry {
   const filtered = allExercises.filter((ex) => ex.category === category);
 
-  if (filtered.length === 0) return null;
+  if (filtered.length === 0) {
+    return { exercise: "No exercise found", reps: 0 };
+  }
 
   const idx = Math.floor(Math.random() * filtered.length);
   const exercise = filtered[idx];
@@ -88,6 +81,7 @@ export function getRandomExercise(
   const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
 
   return {
-    [exercise.exercise_name]: reps,
+    exercise: exercise.exercise_name,
+    reps,
   };
 }
