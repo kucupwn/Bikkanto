@@ -1,18 +1,3 @@
 html {
   font-size: 20px;
 }
-
-.hidden {
-  display: none;
-}
-
-.group-btn {
-  padding: 0.2rem 1rem;
-  font-size: 1rem;
-  background-color: bisque;
-  border-radius: 25px;
-}
-
-#button-wrap {
-  margin: 1rem 0rem;
-}

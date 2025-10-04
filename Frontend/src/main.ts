@@ -1,13 +1,10 @@
-function showGroup(groupToShow: string): void {
-  document.querySelectorAll<HTMLDivElement>(".group").forEach((group) => {
-    group.classList.toggle("hidden", group.id !== groupToShow);
-  });
-}
+const nav = document.getElementById("nav") as HTMLDivElement;
 
-document
-  .querySelectorAll<HTMLButtonElement>("[data-group-btn]")
-  .forEach((btn) => {
-    btn.addEventListener("click", () => {
-      showGroup(btn.dataset.groupBtn!);
-    });
-  });
+if (nav) {
+  nav.innerHTML = `
+  <div id="select-wrap">
+    <a class="view-select" href="index.html">Home</a>
+    <a class="view-select" href="roll.html">Roll</a>
+    <a class="view-select" href="history.html">History</a>
+  </div>`;
+}
