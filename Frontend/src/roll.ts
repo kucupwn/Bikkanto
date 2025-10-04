@@ -1,3 +1,5 @@
+import { getExerciseCategories } from "./roll.utils";
+
 function fillExerciseCount(
   selectId: string,
   start: number,
@@ -18,9 +20,11 @@ function fillExerciseCount(
   }
 }
 
-function getExerciseSelections(containerId: string, count: number) {
+async function getExerciseSelections(containerId: string, count: number) {
   const container = document.getElementById(containerId);
   if (!container) return;
+
+  const categories = await getExerciseCategories();
 
   container.innerHTML = "";
 
@@ -39,6 +43,13 @@ function getExerciseSelections(containerId: string, count: number) {
     option.value = "";
     option.textContent = "-- Select --";
     select.appendChild(option);
+
+    categories.forEach((cat) => {
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat;
+      select.appendChild(option);
+    });
 
     row.appendChild(label);
     row.appendChild(select);
