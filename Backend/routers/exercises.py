@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
 from pydantic import BaseModel, Field
-from .database import SessionLocal
-from .models import Exercises
+from ..database import SessionLocal
+from ..models import Exercises
 
 router = APIRouter(prefix="/exercises", tags=["exercises"])
 
