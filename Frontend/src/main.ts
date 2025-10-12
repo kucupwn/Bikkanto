@@ -1,3 +1,5 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const nav = document.getElementById("nav") as HTMLDivElement;
 
 if (nav) {
