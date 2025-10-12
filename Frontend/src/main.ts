@@ -8,5 +8,6 @@ if (nav) {
     <a class="view-select" href="index.html">Home</a>
     <a class="view-select" href="roll.html">Roll</a>
     <a class="view-select" href="history.html">History</a>
+    <a class="view-select" href="exercises.html">Exercises</a>
   </div>`;
 }
