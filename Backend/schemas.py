@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class ExercisesBase(BaseModel):
@@ -30,5 +31,12 @@ class ExerciseCreate(ExercisesBase):
     hard_max: int = Field(gt=0)
 
 
-class ExercisesUpdate(ExercisesBase):
-    pass
+class ExercisesUpdate(BaseModel):
+    exercise_name: Optional[str] = Field(None, min_length=1)
+    category: Optional[str] = Field(None, min_length=1)
+    easy_min: Optional[int] = Field(None, gt=0)
+    easy_max: Optional[int] = Field(None, gt=0)
+    medium_min: Optional[int] = Field(None, gt=0)
+    medium_max: Optional[int] = Field(None, gt=0)
+    hard_min: Optional[int] = Field(None, gt=0)
+    hard_max: Optional[int] = Field(None, gt=0)
