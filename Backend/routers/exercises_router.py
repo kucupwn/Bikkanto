@@ -29,6 +29,14 @@ async def read_all(db: db_dependency):
     "/exercise", response_model=ExercisesRead, status_code=status.HTTP_201_CREATED
 )
 async def create_exercise(db: db_dependency, exercise_create: ExerciseCreate):
+    existing = (
+        db.query(Exercises)
+        .filter_by(exercise_name=exercise_create.exercise_name)
+        .first()
+    )
+    if existing:
+        raise HTTPException(status_code=400, detail="Exercise already exists.")
+
     exercise_model = Exercises(**exercise_create.model_dump())
     db.add(exercise_model)
     db.commit()
