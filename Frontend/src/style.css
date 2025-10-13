@@ -5,3 +5,14 @@ html {
 .hidden {
   display: none;
 }
+
+#exercises-table-container {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+#table-container {
+  width: 1000px;
+}

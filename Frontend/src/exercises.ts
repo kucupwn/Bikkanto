@@ -25,7 +25,7 @@ export async function loadExercises() {
       columns,
       colHeaders: [...exercisesColumnOrder],
       rowHeaders: true,
-      width: "80%",
+      width: "100%",
       height: 600,
       licenseKey: "non-commercial-and-evaluation",
       filters: true,
