@@ -10,27 +10,13 @@ from jose import jwt, JWTError
 from ..database import SessionLocal
 from ..models import Users
 from ..core.config import settings
+from ..schemas.users_schema import Token, UserCreate
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
-
-
-class CreateUserRequest(BaseModel):
-    username: str
-    email: str
-    first_name: str
-    last_name: str
-    password: str
-    role: str
-    phone_number: str
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 
 def get_db():
@@ -87,7 +73,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
+async def create_user(db: db_dependency, create_user_request: UserCreate):
     create_user_model = Users(
         email=create_user_request.email,
         username=create_user_request.username,
