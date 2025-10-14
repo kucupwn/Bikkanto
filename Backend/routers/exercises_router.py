@@ -2,30 +2,22 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
-from ..database import SessionLocal
+from ..database import get_db
 from ..models import Exercises
-from ..schemas import ExercisesRead, ExerciseCreate, ExercisesUpdate
+from ..schemas.exercises_schema import ExerciseRead, ExerciseCreate, ExerciseUpdate
 
 router = APIRouter(prefix="/exercises", tags=["exercises"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-@router.get("/", response_model=list[ExercisesRead], status_code=status.HTTP_200_OK)
+@router.get("/", response_model=list[ExerciseRead], status_code=status.HTTP_200_OK)
 async def read_all(db: db_dependency):
     return db.query(Exercises).all()
 
 
-@router.post("/", response_model=ExercisesRead, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=ExerciseRead, status_code=status.HTTP_201_CREATED)
 async def create_exercise(db: db_dependency, exercise_create: ExerciseCreate):
     existing = (
         db.query(Exercises)
@@ -44,10 +36,10 @@ async def create_exercise(db: db_dependency, exercise_create: ExerciseCreate):
 
 
 @router.patch(
-    "/{exercise_id}", response_model=ExercisesRead, status_code=status.HTTP_200_OK
+    "/{exercise_id}", response_model=ExerciseRead, status_code=status.HTTP_200_OK
 )
 async def update_exercise(
-    db: db_dependency, exercise_update: ExercisesUpdate, exercise_id: int = Path(gt=0)
+    db: db_dependency, exercise_update: ExerciseUpdate, exercise_id: int = Path(gt=0)
 ):
     exercise_model = db.query(Exercises).filter(Exercises.id == exercise_id).first()
 
