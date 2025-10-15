@@ -10,7 +10,7 @@ from jose import jwt, JWTError
 from ..database import SessionLocal
 from ..models import Users
 from ..core.config import settings
-from ..schemas.users_schema import Token, UserCreate, UserRead
+from ..schemas.users_schema import Token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -70,21 +70,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user"
         )
-
-
-@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-async def create_user(db: db_dependency, create_user_request: UserCreate):
-    user_data = create_user_request.model_dump(exclude={"password"})
-    create_user_model = Users(
-        **user_data,
-        hashed_password=bcrypt_context.hash(create_user_request.password),
-        is_active=True
-    )
-    db.add(create_user_model)
-    db.commit()
-    db.refresh(create_user_model)
-
-    return UserRead.model_validate(create_user_model)
 
 
 @router.post("/token", response_model=Token)
