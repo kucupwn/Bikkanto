@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from passlib.context import CryptContext
 from jose import jwt, JWTError
-from ..database import SessionLocal
+from ..database import get_db
 from ..models import Users
 from ..core.config import settings
 from ..schemas.users_schema import Token
@@ -17,15 +17,6 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
