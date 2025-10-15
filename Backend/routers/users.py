@@ -28,11 +28,23 @@ async def get_user(user: user_dependency, db: db_dependency):
 
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-async def create_user(create_user_request: UserCreate, db: db_dependency):
-    user_data = create_user_request.model_dump(exclude={"password"})
+async def create_user(user_create: UserCreate, db: db_dependency):
+    existing_user = (
+        db.query(Users)
+        .filter(
+            (Users.username == user_create.username)
+            | (Users.email == user_create.email)
+        )
+        .first()
+    )
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username or email already exists")
+
+    user_data = user_create.model_dump(exclude={"password"})
     create_user_model = Users(
         **user_data,
-        hashed_password=bcrypt_context.hash(create_user_request.password),
+        hashed_password=bcrypt_context.hash(user_create.password),
         is_active=True
     )
     db.add(create_user_model)
