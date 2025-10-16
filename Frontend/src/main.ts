@@ -1,13 +1,20 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const nav = document.getElementById("nav") as HTMLDivElement;
+async function loadPartial(selector: string, path: string) {
+  const el = document.querySelector(selector);
+  if (!el) return;
 
-if (nav) {
-  nav.innerHTML = `
-  <div id="select-wrap">
-    <a class="view-select" href="index.html">Home</a>
-    <a class="view-select" href="roll.html">Roll</a>
-    <a class="view-select" href="history.html">History</a>
-    <a class="view-select" href="exercises.html">Exercises</a>
-  </div>`;
+  const res = await fetch(path);
+
+  if (!res.ok) {
+    console.log(`Failed to load ${path}:`, res.statusText);
+    return;
+  }
+
+  el.innerHTML = await res.text();
 }
+
+window.addEventListener("load", async () => {
+  await loadPartial("header", "/partials/header.html");
+  document.documentElement.style.visibility = "visible";
+});
