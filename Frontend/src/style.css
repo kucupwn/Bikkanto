@@ -3,6 +3,10 @@ html {
   visibility: hidden;
 }
 
+h1 {
+  justify-self: center;
+}
+
 .hidden {
   display: none;
 }
@@ -20,4 +24,10 @@ html {
 
 #overview-table {
   width: 600px;
+}
+
+#exercises-table-button-wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin: 1rem;
 }
