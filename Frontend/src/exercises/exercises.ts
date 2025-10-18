@@ -34,7 +34,7 @@ export class ExercisesTable {
       const data = await this.fetchExercises();
       this.renderTable(data);
     } catch (error) {
-      console.warn("Error initializing exercises table:", error);
+      console.error("Error initializing exercises table:", error);
     }
   }
 
@@ -60,6 +60,15 @@ export class ExercisesTable {
     });
 
     this.hotInstance.useTheme("ht-theme-main-dark");
+  }
+
+  public async refresh(): Promise<void> {
+    try {
+      const data = await this.fetchExercises();
+      this.hotInstance?.loadData(data);
+    } catch (error) {
+      console.error("Error refreshing exercises:", error);
+    }
   }
 }
 
