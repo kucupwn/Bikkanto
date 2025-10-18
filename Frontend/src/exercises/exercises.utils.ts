@@ -8,3 +8,14 @@ export const exercisesColumnOrder = [
   "hard_min",
   "hard_max",
 ];
+
+export const numericColumns = [
+  "easy_min",
+  "easy_max",
+  "medium_min",
+  "medium_max",
+  "hard_min",
+  "hard_max",
+];
+
+export const requiredColumns = ["exercise_name", "category"];
