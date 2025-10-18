@@ -1,4 +1,4 @@
-import type { Exercises, WorkoutEntry } from "./types";
+import type { Exercises, WorkoutEntry } from "../types";
 
 const allExercises: Exercises[] = await getAllExercises();
 

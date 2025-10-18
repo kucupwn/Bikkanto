@@ -4,7 +4,7 @@ import "handsontable/styles/handsontable.css";
 import "handsontable/styles/ht-theme-main.css";
 registerAllModules();
 
-import type { Exercises } from "./types";
+import type { Exercises } from "../types";
 import { exercisesColumnOrder } from "./exercises.utils";
 
 export async function loadExercises() {
