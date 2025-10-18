@@ -15,22 +15,6 @@ async function getAllExercises(): Promise<Exercises[]> {
   }
 }
 
-export function fillExerciseCount(start: number, stop: number): void {
-  const exerciseCountSelect = document.getElementById(
-    "exercise-count-select"
-  ) as HTMLSelectElement | null;
-  if (!exerciseCountSelect) return;
-
-  exerciseCountSelect.innerHTML = "";
-
-  for (let i = start; i <= stop; i++) {
-    let option = document.createElement("option");
-    option.value = String(i);
-    option.textContent = String(i);
-    exerciseCountSelect.appendChild(option);
-  }
-}
-
 export function getExerciseCategories(): string[] {
   const categories = Array.from(new Set(allExercises.map((ex) => ex.category)));
 

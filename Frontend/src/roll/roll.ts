@@ -1,7 +1,6 @@
 import type { WorkoutEntry } from "../types";
 import {
   getExerciseCategories,
-  fillExerciseCount,
   getRandomExercise,
   getSelectedCategories,
 } from "./roll.utils";
@@ -101,5 +100,4 @@ getButton?.addEventListener("click", () => {
   fillOverviewTable(workout);
 });
 
-fillExerciseCount(0, 20);
 handleExerciseSelection();

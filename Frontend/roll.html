@@ -8,13 +8,11 @@
   </head>
   <body>
     <header></header>
-    <div id="settings-container" class="settings-container">
+    <div id="settings-container">
       <div id="count-container">
         <label for="exercise-count">Select exercise count</label>
-        <select
-          name="exercise-count-select"
-          id="exercise-count-select"
-        ></select>
+        <input name="exercise-count-select" id="exercise-count-select" />
+        <button type="submit" id="add-count">Add</button>
       </div>
       <div id="difficulty-container">
         <label for="exercise-difficulty">Select exercise difficulty</label>
@@ -39,6 +37,6 @@
       </table>
     </div>
     <script type="module" src="/src/main.ts"></script>
-    <script type="module" src="/src/roll.ts"></script>
+    <script type="module" src="/src/roll/roll.ts"></script>
   </body>
 </html>
