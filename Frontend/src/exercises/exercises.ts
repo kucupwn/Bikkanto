@@ -7,23 +7,47 @@ registerAllModules();
 import type { Exercises } from "../types";
 import { exercisesColumnOrder } from "./exercises.utils";
 
-export async function loadExercises() {
-  try {
-    const res = await fetch("http://127.0.0.1:8000/exercises");
-    const data: Exercises[] = await res.json();
+const tableContainer = document.getElementById(
+  "exercises-table"
+) as HTMLDivElement | null;
 
-    const container = document.getElementById("exercises-table");
-    if (!container) return;
+export class ExercisesTable {
+  private container: HTMLDivElement;
+  private exercisesColumnOrder: string[];
+  private hotInstance: Handsontable | null = null;
+  private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
-    const columns = exercisesColumnOrder.map((key) => ({
+  constructor(container: HTMLDivElement, exercisesColumnOrder: string[]) {
+    this.container = container;
+    this.exercisesColumnOrder = exercisesColumnOrder;
+  }
+
+  private async fetchExercises(): Promise<Exercises[]> {
+    const res = await fetch(this.apiUrl);
+    if (!res.ok) throw new Error(`Failed to fetch exercises: ${res.status}`);
+
+    return res.json();
+  }
+
+  public async init(): Promise<void> {
+    try {
+      const data = await this.fetchExercises();
+      this.renderTable(data);
+    } catch (error) {
+      console.warn("Error initializing exercises table:", error);
+    }
+  }
+
+  private renderTable(data: Exercises[]): void {
+    const columns = this.exercisesColumnOrder.map((key) => ({
       data: key,
       title: key,
     }));
 
-    const hotInstance = new Handsontable(container, {
+    this.hotInstance = new Handsontable(this.container, {
       data,
       columns,
-      colHeaders: [...exercisesColumnOrder],
+      colHeaders: [...this.exercisesColumnOrder],
       rowHeaders: true,
       width: "100%",
       height: 600,
@@ -35,10 +59,16 @@ export async function loadExercises() {
       manualColumnResize: true,
     });
 
-    hotInstance.useTheme("ht-theme-main-dark");
-  } catch (err) {
-    console.error("Error loading inventory:", err);
+    this.hotInstance.useTheme("ht-theme-main-dark");
   }
 }
 
-loadExercises();
+if (tableContainer) {
+  const exercisesTable = new ExercisesTable(
+    tableContainer,
+    exercisesColumnOrder
+  );
+  exercisesTable.init();
+} else {
+  console.warn("Table container not found");
+}
