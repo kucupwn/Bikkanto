@@ -4,8 +4,13 @@ import "handsontable/styles/handsontable.css";
 import "handsontable/styles/ht-theme-main.css";
 registerAllModules();
 
-import type { Exercises } from "../types";
-import { exercisesColumnOrder } from "./exercises.utils";
+import type { Exercises } from "../types/exercises.types";
+import {
+  exercisesColumnOrder,
+  numericColumns,
+  generateAddModalInput,
+} from "./exercises.utils";
+import { Modal } from "bootstrap";
 
 const tableContainer = document.getElementById(
   "exercises-table"
@@ -13,13 +18,12 @@ const tableContainer = document.getElementById(
 
 export class ExercisesTable {
   private container: HTMLDivElement;
-  private exercisesColumnOrder: string[];
   private hotInstance: Handsontable | null = null;
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
-  constructor(container: HTMLDivElement, exercisesColumnOrder: string[]) {
+  constructor(container: HTMLDivElement) {
     this.container = container;
-    this.exercisesColumnOrder = exercisesColumnOrder;
+    this.attachEventListeners();
   }
 
   private async fetchExercises(): Promise<Exercises[]> {
@@ -39,7 +43,7 @@ export class ExercisesTable {
   }
 
   private renderTable(data: Exercises[]): void {
-    const columns = this.exercisesColumnOrder.map((key) => ({
+    const columns = exercisesColumnOrder.map((key) => ({
       data: key,
       title: key,
     }));
@@ -47,7 +51,7 @@ export class ExercisesTable {
     this.hotInstance = new Handsontable(this.container, {
       data,
       columns,
-      colHeaders: [...this.exercisesColumnOrder],
+      colHeaders: [...exercisesColumnOrder],
       rowHeaders: true,
       width: "100%",
       height: 600,
@@ -70,13 +74,62 @@ export class ExercisesTable {
       console.error("Error refreshing exercises:", error);
     }
   }
+
+  private attachEventListeners(): void {
+    const addBtn = document.getElementById(
+      "add-ex-btn"
+    ) as HTMLButtonElement | null;
+    if (addBtn) addBtn.addEventListener("click", () => this.openAddModal());
+  }
+
+  private openAddModal() {
+    const modalBody = document.getElementById("add-exercise-form-body");
+    if (!modalBody) return;
+
+    modalBody.innerHTML = generateAddModalInput();
+
+    const modalEl = document.getElementById("add-exercise-modal");
+    if (!modalEl) return;
+
+    const bootstrapModal = new Modal(modalEl);
+    bootstrapModal.show();
+
+    this.handleFormSubmit(bootstrapModal);
+  }
+
+  private getFormData(form: HTMLFormElement): Record<string, any> {
+    const formData = new FormData(form);
+    const data: Record<string, any> = {};
+
+    formData.forEach((value, key) => {
+      data[key] = numericColumns.includes(key) ? Number(value) : String(value);
+    });
+
+    return data;
+  }
+
+  private handleFormSubmit(modal: any): void {
+    const form = document.getElementById(
+      "add-exercise-form"
+    ) as HTMLFormElement;
+    if (!form) return;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      const newExercise = this.getFormData(form);
+      await this.postNewExercise(newExercise);
+
+      modal.hide();
+      form.reset();
+    };
+  }
+
+  private async postNewExercise(newExercise: Record<string, any>) {}
 }
 
 if (tableContainer) {
-  const exercisesTable = new ExercisesTable(
-    tableContainer,
-    exercisesColumnOrder
-  );
+  const exercisesTable = new ExercisesTable(tableContainer);
   exercisesTable.init();
 } else {
   console.warn("Table container not found");
