@@ -1,7 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { loadPartial } from "../partials/load.partials";
+import { header, loadPartial, setActiveNav } from "../partials/header";
 
 window.addEventListener("load", async () => {
-  await loadPartial("header", "/partials/header.html");
+  await loadPartial(header, "/partials/header.html");
   document.documentElement.style.visibility = "visible";
+  setActiveNav();
 });
