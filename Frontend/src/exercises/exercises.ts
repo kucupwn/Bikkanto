@@ -125,7 +125,26 @@ export class ExercisesTable {
     };
   }
 
-  private async postNewExercise(newExercise: Record<string, any>) {}
+  private async postNewExercise(
+    newExercise: Record<string, any>
+  ): Promise<void> {
+    try {
+      const res = await fetch(this.apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newExercise),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || "Failed to add exercise");
+      }
+
+      await this.refresh();
+    } catch (err) {
+      console.error("Error adding exercise:", err);
+    }
+  }
 }
 
 if (tableContainer) {
