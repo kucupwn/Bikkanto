@@ -1,4 +1,4 @@
-import type { WorkoutEntry } from "../types";
+import type { WorkoutEntry } from "../types/exercises.types";
 import {
   getExerciseCategories,
   getRandomExercise,
