@@ -17,3 +17,7 @@ html {
 #table-container {
   width: 1000px;
 }
+
+#overview-table {
+  width: 600px;
+}
