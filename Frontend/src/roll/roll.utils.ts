@@ -21,6 +21,41 @@ export function getExerciseCategories(): string[] {
   return categories;
 }
 
+export function createCategorySelections(
+  count: number,
+  categories: string[],
+  container: HTMLDivElement
+): void {
+  for (let i = 1; i <= count; i++) {
+    const row = document.createElement("div");
+    row.className = `exercise-row-${i}`;
+
+    const label = document.createElement("label");
+    label.textContent = `Exercise ${i}`;
+    label.htmlFor = `exercise-label-${i}`;
+
+    const select = document.createElement("select");
+    select.id = `exercise-select-${i}`;
+
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "-- Select --";
+    select.appendChild(option);
+
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category.toUpperCase();
+      select.appendChild(option);
+    });
+
+    row.appendChild(label);
+    row.appendChild(select);
+
+    container.appendChild(row);
+  }
+}
+
 export function getSelectedCategories(): string[] {
   const container = document.getElementById("exercise-categories");
   if (!container) return [];
