@@ -10,6 +10,8 @@ const getButton = document.getElementById("btn-get");
 const exerciseCountInput = document.getElementById(
   "exercise-count-input"
 ) as HTMLInputElement;
+const settingsContainer = document.getElementById("settings-container");
+const overviewContainer = document.getElementById("overview-container");
 
 function getExerciseSelections(count: number) {
   const container = document.getElementById(
@@ -68,4 +70,6 @@ exerciseCountInput.addEventListener("change", () => {
 getButton?.addEventListener("click", () => {
   const workout = getWorkout();
   fillOverviewTable(workout);
+  settingsContainer?.classList.add("hidden");
+  overviewContainer?.classList.remove("hidden");
 });
