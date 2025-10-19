@@ -28,14 +28,18 @@ export function createCategorySelections(
 ): void {
   for (let i = 1; i <= count; i++) {
     const row = document.createElement("div");
-    row.className = `exercise-row-${i}`;
+    row.classList = "exercise-row";
+    row.style = "margin: 20px";
 
     const label = document.createElement("label");
     label.textContent = `Exercise ${i}`;
     label.htmlFor = `exercise-label-${i}`;
+    label.style = "margin-right: 20px";
 
     const select = document.createElement("select");
     select.id = `exercise-select-${i}`;
+    select.classList = "form-select";
+    select.style = "width: auto";
 
     const option = document.createElement("option");
     option.value = "";
