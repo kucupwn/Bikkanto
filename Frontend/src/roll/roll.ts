@@ -14,6 +14,33 @@ const exerciseCountInput = document.getElementById(
 const settingsContainer = document.getElementById("settings-container");
 const overviewContainer = document.getElementById("overview-container");
 
+export class Roll {
+  private settingsContainer: HTMLDivElement;
+  private overviewContainer: HTMLDivElement;
+  private readonly apiUrl = "http://127.0.0.1:8000/exercises";
+
+  constructor(
+    settingsContainer: HTMLDivElement,
+    overviewContainer: HTMLDivElement
+  ) {
+    this.settingsContainer = settingsContainer;
+    this.overviewContainer = overviewContainer;
+    this.attachEventListeners();
+  }
+
+  private attachEventListeners() {
+    const addBtn = document.getElementById(
+      "add-count"
+    ) as HTMLButtonElement | null;
+    if (addBtn) addBtn.addEventListener("click", () => "");
+
+    const getBtn = document.getElementById(
+      "btn-get"
+    ) as HTMLButtonElement | null;
+    if (getBtn) getBtn.addEventListener("click", () => "");
+  }
+}
+
 async function getExerciseSelections(count: number) {
   const container = document.getElementById(
     "exercise-categories"
