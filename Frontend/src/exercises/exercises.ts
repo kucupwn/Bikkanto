@@ -17,12 +17,12 @@ const tableContainer = document.getElementById(
 ) as HTMLDivElement | null;
 
 export class ExercisesTable {
-  private container: HTMLDivElement;
+  private tableContainer: HTMLDivElement;
   private hotInstance: Handsontable | null = null;
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
   constructor(container: HTMLDivElement) {
-    this.container = container;
+    this.tableContainer = container;
     this.attachEventListeners();
   }
 
@@ -48,7 +48,7 @@ export class ExercisesTable {
       title: key,
     }));
 
-    this.hotInstance = new Handsontable(this.container, {
+    this.hotInstance = new Handsontable(this.tableContainer, {
       data,
       columns,
       colHeaders: [...exercisesColumnOrder],
