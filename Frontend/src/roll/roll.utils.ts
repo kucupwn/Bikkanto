@@ -1,19 +1,7 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
+import { fetchAllExercises } from "../exercises/exercises.utils";
 
-const allExercises: Exercises[] = await getAllExercises();
-
-async function getAllExercises(): Promise<Exercises[]> {
-  try {
-    const res = await fetch("http://127.0.0.1:8000/exercises");
-    const data: Exercises[] = await res.json();
-
-    return data;
-  } catch (err) {
-    console.log("Error loading data: ", err);
-
-    return [];
-  }
-}
+const allExercises: Exercises[] = await fetchAllExercises();
 
 export function createCategorySelections(
   count: number,

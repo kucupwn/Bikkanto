@@ -1,3 +1,5 @@
+import type { Exercises } from "../types/exercises.types";
+
 export const exercisesColumnOrder = [
   "exercise_name",
   "category",
@@ -19,6 +21,19 @@ export const numericColumns = [
 ];
 
 const requiredColumns = ["exercise_name", "category"];
+
+export async function fetchAllExercises(): Promise<Exercises[]> {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/exercises");
+    const data: Exercises[] = await res.json();
+
+    return data;
+  } catch (err) {
+    console.log("Error loading data: ", err);
+
+    return [];
+  }
+}
 
 export async function fetchCategories(): Promise<string[]> {
   try {
