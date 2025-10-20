@@ -4,12 +4,22 @@ from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
 from ..database import get_db
 from ..models import Exercises
-from ..schemas.exercises_schema import ExerciseRead, ExerciseCreate, ExerciseUpdate
+from ..schemas.exercises_schema import (
+    ExerciseRead,
+    ExerciseCreate,
+    ExerciseUpdate,
+    Category,
+)
 
 router = APIRouter(prefix="/exercises", tags=["exercises"])
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
+
+
+@router.get("/categories")
+def get_categories():
+    return [c.value for c in Category]
 
 
 @router.get("/", response_model=list[ExerciseRead], status_code=status.HTTP_200_OK)
