@@ -20,7 +20,7 @@ export const numericColumns = [
 
 const requiredColumns = ["exercise_name", "category"];
 
-async function fetchCategories(): Promise<string[]> {
+export async function fetchCategories(): Promise<string[]> {
   try {
     const res = await fetch("http://127.0.0.1:8000/exercises/categories");
     if (!res.ok) throw new Error("Failed to fetch categories");

@@ -1,10 +1,11 @@
 import type { WorkoutEntry } from "../types/exercises.types";
 import {
-  getExerciseCategories,
   createCategorySelections,
   getRandomExercise,
   getSelectedCategories,
 } from "./roll.utils";
+
+import { fetchCategories } from "../exercises/exercises.utils";
 
 const getButton = document.getElementById("btn-get");
 const exerciseCountInput = document.getElementById(
@@ -13,13 +14,13 @@ const exerciseCountInput = document.getElementById(
 const settingsContainer = document.getElementById("settings-container");
 const overviewContainer = document.getElementById("overview-container");
 
-function getExerciseSelections(count: number) {
+async function getExerciseSelections(count: number) {
   const container = document.getElementById(
     "exercise-categories"
   ) as HTMLDivElement;
   if (!container) return;
 
-  const categories = getExerciseCategories();
+  const categories = await fetchCategories();
 
   container.innerHTML = "";
 

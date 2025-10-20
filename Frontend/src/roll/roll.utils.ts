@@ -15,12 +15,6 @@ async function getAllExercises(): Promise<Exercises[]> {
   }
 }
 
-export function getExerciseCategories(): string[] {
-  const categories = Array.from(new Set(allExercises.map((ex) => ex.category)));
-
-  return categories;
-}
-
 export function createCategorySelections(
   count: number,
   categories: string[],
