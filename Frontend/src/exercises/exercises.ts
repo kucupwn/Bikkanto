@@ -82,11 +82,11 @@ export class ExercisesTable {
     if (addBtn) addBtn.addEventListener("click", () => this.openAddModal());
   }
 
-  private openAddModal() {
+  private async openAddModal() {
     const modalBody = document.getElementById("add-exercise-form-body");
     if (!modalBody) return;
 
-    modalBody.innerHTML = generateAddModalInput();
+    modalBody.innerHTML = await generateAddModalInput();
 
     const modalEl = document.getElementById("add-exercise-modal");
     if (!modalEl) return;
