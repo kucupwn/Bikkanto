@@ -15,6 +15,11 @@ h1 {
   display: flex;
   justify-self: center;
   align-items: center;
+  margin: 20px;
+}
+
+.exercise-label {
+  margin-right: 20px;
 }
 
 #exercises-table-container {

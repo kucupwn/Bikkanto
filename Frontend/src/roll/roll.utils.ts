@@ -29,12 +29,10 @@ export function createCategorySelections(
   for (let i = 1; i <= count; i++) {
     const row = document.createElement("div");
     row.classList = "exercise-row";
-    row.style = "margin: 20px";
 
     const label = document.createElement("label");
     label.textContent = `Exercise ${i}`;
-    label.htmlFor = `exercise-label-${i}`;
-    label.style = "margin-right: 20px";
+    label.classList = "exercise-label";
 
     const select = document.createElement("select");
     select.id = `exercise-select-${i}`;
