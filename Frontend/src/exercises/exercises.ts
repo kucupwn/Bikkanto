@@ -9,6 +9,7 @@ import {
   exercisesColumnOrder,
   numericColumns,
   generateAddModalInput,
+  fetchAllExercises,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
 
@@ -26,16 +27,9 @@ export class ExercisesTable {
     this.attachEventListeners();
   }
 
-  private async fetchExercises(): Promise<Exercises[]> {
-    const res = await fetch(this.apiUrl);
-    if (!res.ok) throw new Error(`Failed to fetch exercises: ${res.status}`);
-
-    return res.json();
-  }
-
   public async init(): Promise<void> {
     try {
-      const data = await this.fetchExercises();
+      const data = await fetchAllExercises();
       this.renderTable(data);
     } catch (error) {
       console.error("Error initializing exercises table:", error);
@@ -68,7 +62,7 @@ export class ExercisesTable {
 
   public async refresh(): Promise<void> {
     try {
-      const data = await this.fetchExercises();
+      const data = await fetchAllExercises();
       this.hotInstance?.loadData(data);
     } catch (error) {
       console.error("Error refreshing exercises:", error);
