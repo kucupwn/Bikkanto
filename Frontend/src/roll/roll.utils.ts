@@ -1,7 +1,4 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
-import { fetchAllExercises } from "../exercises/exercises.utils";
-
-const allExercises: Exercises[] = await fetchAllExercises();
 
 export function createCategorySelections(
   count: number,
@@ -59,10 +56,11 @@ export function getSelectedCategories(): string[] {
 }
 
 export function getRandomExercise(
+  exercises: Exercises[],
   category: string,
   difficulty: string
 ): WorkoutEntry {
-  const filtered = allExercises.filter((ex) => ex.category === category);
+  const filtered = exercises.filter((ex) => ex.category === category);
 
   if (filtered.length === 0) {
     return { exercise: "No exercise found", reps: 0 };

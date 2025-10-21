@@ -1,11 +1,14 @@
-import type { WorkoutEntry } from "../types/exercises.types";
+import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 import {
   createCategorySelections,
   getRandomExercise,
   getSelectedCategories,
 } from "./roll.utils";
 
-import { fetchCategories } from "../exercises/exercises.utils";
+import {
+  fetchCategories,
+  fetchAllExercises,
+} from "../exercises/exercises.utils";
 
 const getButton = document.getElementById("btn-get");
 const exerciseCountInput = document.getElementById(
@@ -15,17 +18,15 @@ const settingsContainer = document.getElementById("settings-container");
 const overviewContainer = document.getElementById("overview-container");
 
 export class Roll {
-  private settingsContainer: HTMLDivElement;
-  private overviewContainer: HTMLDivElement;
-  private readonly apiUrl = "http://127.0.0.1:8000/exercises";
+  private allExercises: Exercises[] = [];
 
-  constructor(
-    settingsContainer: HTMLDivElement,
-    overviewContainer: HTMLDivElement
-  ) {
-    this.settingsContainer = settingsContainer;
-    this.overviewContainer = overviewContainer;
+  constructor() {
     this.attachEventListeners();
+    this.fetchExercises();
+  }
+
+  private async fetchExercises() {
+    this.allExercises = await fetchAllExercises();
   }
 
   private attachEventListeners() {
@@ -39,65 +40,67 @@ export class Roll {
     ) as HTMLButtonElement | null;
     if (getBtn) getBtn.addEventListener("click", () => "");
   }
+
+  public async getExerciseSelections(count: number) {
+    const container = document.getElementById(
+      "exercise-categories-container"
+    ) as HTMLDivElement;
+    if (!container) return;
+
+    const categories = await fetchCategories();
+
+    container.innerHTML = "";
+
+    createCategorySelections(count, categories, container);
+  }
+
+  public getWorkout(): WorkoutEntry[] {
+    const difficulty = (
+      document.getElementById("exercise-difficulty") as HTMLSelectElement
+    ).value;
+    const selectedCategories = getSelectedCategories();
+    const workout = selectedCategories?.map((category) => {
+      return getRandomExercise(this.allExercises, category, difficulty);
+    });
+
+    return workout;
+  }
+
+  public fillOverviewTable(workout: WorkoutEntry[]) {
+    const table = document.getElementById("overview-table") as HTMLTableElement;
+    if (!table) return;
+
+    const tbody = document.querySelector("tbody");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    workout.forEach((entry) => {
+      const row = document.createElement("tr");
+
+      const exerciseCell = document.createElement("td");
+      exerciseCell.textContent = entry.exercise;
+
+      const repsCell = document.createElement("td");
+      repsCell.textContent = entry.reps.toString();
+
+      row.appendChild(exerciseCell);
+      row.appendChild(repsCell);
+      tbody.appendChild(row);
+    });
+  }
 }
 
-async function getExerciseSelections(count: number) {
-  const container = document.getElementById(
-    "exercise-categories"
-  ) as HTMLDivElement;
-  if (!container) return;
-
-  const categories = await fetchCategories();
-
-  container.innerHTML = "";
-
-  createCategorySelections(count, categories, container);
-}
-
-function getWorkout(): WorkoutEntry[] {
-  const difficulty = (
-    document.getElementById("exercise-difficulty") as HTMLSelectElement
-  ).value;
-  const selectedCategories = getSelectedCategories();
-  const workout = selectedCategories?.map((category) => {
-    return getRandomExercise(category, difficulty);
-  });
-
-  return workout;
-}
-
-function fillOverviewTable(workout: WorkoutEntry[]) {
-  const table = document.getElementById("overview-table") as HTMLTableElement;
-  if (!table) return;
-
-  const tbody = document.querySelector("tbody");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  workout.forEach((entry) => {
-    const row = document.createElement("tr");
-
-    const exerciseCell = document.createElement("td");
-    exerciseCell.textContent = entry.exercise;
-
-    const repsCell = document.createElement("td");
-    repsCell.textContent = entry.reps.toString();
-
-    row.appendChild(exerciseCell);
-    row.appendChild(repsCell);
-    tbody.appendChild(row);
-  });
-}
+const roll = new Roll();
 
 exerciseCountInput.addEventListener("change", () => {
   const exerciseCount = Number(exerciseCountInput.value);
-  getExerciseSelections(exerciseCount);
+  roll.getExerciseSelections(exerciseCount);
 });
 
 getButton?.addEventListener("click", () => {
-  const workout = getWorkout();
-  fillOverviewTable(workout);
+  const workout = roll.getWorkout();
+  roll.fillOverviewTable(workout);
   settingsContainer?.classList.add("hidden");
   overviewContainer?.classList.remove("hidden");
 });
