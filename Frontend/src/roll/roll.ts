@@ -10,7 +10,7 @@ import {
   fetchAllExercises,
 } from "../exercises/exercises.utils";
 
-const getButton = document.getElementById("btn-get");
+const getButton = document.getElementById("btn-get") as HTMLButtonElement;
 const exerciseCountInput = document.getElementById(
   "exercise-count-input"
 ) as HTMLInputElement;
@@ -22,11 +22,14 @@ export class Roll {
 
   constructor() {
     this.attachEventListeners();
-    this.fetchExercises();
   }
 
-  private async fetchExercises() {
-    this.allExercises = await fetchAllExercises();
+  public async init() {
+    try {
+      this.allExercises = await fetchAllExercises();
+    } catch (err) {
+      console.log("Error fetching exercises:", err);
+    }
   }
 
   private attachEventListeners() {
@@ -92,6 +95,7 @@ export class Roll {
 }
 
 const roll = new Roll();
+await roll.init();
 
 exerciseCountInput.addEventListener("change", () => {
   const exerciseCount = Number(exerciseCountInput.value);
@@ -101,6 +105,7 @@ exerciseCountInput.addEventListener("change", () => {
 getButton?.addEventListener("click", () => {
   const workout = roll.getWorkout();
   roll.fillOverviewTable(workout);
+
   settingsContainer?.classList.add("hidden");
   overviewContainer?.classList.remove("hidden");
 });

@@ -38,7 +38,7 @@ export function createCategorySelections(
 }
 
 export function getSelectedCategories(): string[] {
-  const container = document.getElementById("exercise-categories");
+  const container = document.getElementById("exercise-categories-container");
   if (!container) return [];
 
   const selectElements = container.querySelectorAll("select");
