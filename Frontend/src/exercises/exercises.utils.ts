@@ -96,8 +96,20 @@ export async function generateModalInput(operation: string): Promise<string> {
       </div>
     `;
   } else if (operation === "Modify") {
+    const allExercises = await fetchAllExercises();
+    const options = allExercises
+      .map(
+        (opt) =>
+          `<option value="${opt.exercise_name}">${opt.exercise_name.toUpperCase()}</option>`
+      )
+      .join("");
+
     return `
       <div class="row row-cols-2 g-3">
+          <label for="exercises" class="form-label">Exercises</label>
+          <select class="form-select" id="exercises" name="exercises">
+            ${options}
+          </select>
         ${numericColumns
           .map((col) => {
             return `
