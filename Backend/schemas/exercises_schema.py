@@ -7,8 +7,10 @@ class Category(str, Enum):
     PULL_UP = "pull up"
     ABS = "abs"
     LOWER_BACK = "lower back"
+    HANDSTAND = "handstand"
     PLANCHE = "planche"
     FRONT_LEVER = "front lever"
+    LEG = "leg"
     REHAB = "rehab"
     OTHER = "other"
 
