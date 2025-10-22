@@ -68,13 +68,17 @@ export async function generateModalInput(operation: string): Promise<string> {
 
             if (col === "category") {
               const options = validCategories
-                .map((opt) => `<option value="${opt}">${opt}</option>`)
+                .map(
+                  (opt) =>
+                    `<option value="${opt}">${opt.toUpperCase()}</option>`
+                )
                 .join("");
 
               return `
               <div class="col">
                 <label for="${col}" class="form-label">${col}</label>
                 <select class="form-select" id="${col}" name="${col}" ${isRequired}>
+                  <option>-- Select --</option>
                   ${options}
                 </select>
               </div>
@@ -108,6 +112,7 @@ export async function generateModalInput(operation: string): Promise<string> {
       <div class="row row-cols-2 g-3">
           <label for="exercises" class="form-label">Exercises</label>
           <select class="form-select" id="exercises" name="exercises">
+            <option>-- Select --</option>
             ${options}
           </select>
         ${numericColumns
