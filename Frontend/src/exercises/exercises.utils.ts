@@ -49,6 +49,13 @@ export async function fetchCategories(): Promise<string[]> {
   }
 }
 
+export function addModalHeaderTitle(operation: string) {
+  const title = document.getElementById("exercise-modal-label");
+  if (!title) return;
+
+  title.textContent = `${operation} exercise`;
+}
+
 export async function generateModalInput(operation: string): Promise<string> {
   const validCategories = await fetchCategories();
 

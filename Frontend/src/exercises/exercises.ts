@@ -10,6 +10,7 @@ import {
   numericColumns,
   generateModalInput,
   fetchAllExercises,
+  addModalHeaderTitle,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
 
@@ -73,13 +74,20 @@ export class ExercisesTable {
     const addBtn = document.getElementById(
       "add-ex-btn"
     ) as HTMLButtonElement | null;
-    if (addBtn) addBtn.addEventListener("click", () => this.openModal("Add"));
+    if (addBtn)
+      addBtn.addEventListener("click", () => {
+        this.openModal("Add");
+        addModalHeaderTitle("Add");
+      });
 
     const modifyBtn = document.getElementById(
       "modify-ex-btn"
     ) as HTMLButtonElement;
     if (modifyBtn)
-      modifyBtn.addEventListener("click", () => this.openModal("Modify"));
+      modifyBtn.addEventListener("click", () => {
+        this.openModal("Modify");
+        addModalHeaderTitle("Modify");
+      });
   }
 
   private async openModal(operation: string) {
