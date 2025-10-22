@@ -49,10 +49,11 @@ export async function fetchCategories(): Promise<string[]> {
   }
 }
 
-export async function generateAddModalInput() {
+export async function generateModalInput(operation: string): Promise<string> {
   const validCategories = await fetchCategories();
 
-  return `
+  if (operation === "Add") {
+    return `
       <div class="row row-cols-2 g-3">
         ${exercisesColumnOrder
           .map((col) => {
@@ -84,8 +85,25 @@ export async function generateAddModalInput() {
                 `;
             }
           })
-
           .join("")}
       </div>
     `;
+  } else if (operation === "Modify") {
+    return `
+      <div class="row row-cols-2 g-3">
+        ${numericColumns
+          .map((col) => {
+            return `
+              <div class="col">
+                <label for="${col}" class="form-label">${col}</label>
+                <input type="number" class="form-control" id="${col}" name="${col}" >
+              </div>
+            `;
+          })
+          .join("")}
+      </div>
+    `;
+  }
+
+  return "";
 }

@@ -8,7 +8,7 @@ import type { Exercises } from "../types/exercises.types";
 import {
   exercisesColumnOrder,
   numericColumns,
-  generateAddModalInput,
+  generateModalInput,
   fetchAllExercises,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
@@ -73,16 +73,22 @@ export class ExercisesTable {
     const addBtn = document.getElementById(
       "add-ex-btn"
     ) as HTMLButtonElement | null;
-    if (addBtn) addBtn.addEventListener("click", () => this.openAddModal());
+    if (addBtn) addBtn.addEventListener("click", () => this.openModal("Add"));
+
+    const modifyBtn = document.getElementById(
+      "modify-ex-btn"
+    ) as HTMLButtonElement;
+    if (modifyBtn)
+      modifyBtn.addEventListener("click", () => this.openModal("Modify"));
   }
 
-  private async openAddModal() {
-    const modalBody = document.getElementById("add-exercise-form-body");
+  private async openModal(operation: string) {
+    const modalBody = document.getElementById("exercise-form-body");
     if (!modalBody) return;
 
-    modalBody.innerHTML = await generateAddModalInput();
+    modalBody.innerHTML = (await generateModalInput(operation)) ?? "";
 
-    const modalEl = document.getElementById("add-exercise-modal");
+    const modalEl = document.getElementById("exercise-modal");
     if (!modalEl) return;
 
     const bootstrapModal = new Modal(modalEl);
@@ -103,9 +109,7 @@ export class ExercisesTable {
   }
 
   private handleFormSubmit(modal: any): void {
-    const form = document.getElementById(
-      "add-exercise-form"
-    ) as HTMLFormElement;
+    const form = document.getElementById("exercise-form") as HTMLFormElement;
     if (!form) return;
 
     form.onsubmit = async (e) => {
