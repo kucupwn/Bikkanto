@@ -8,7 +8,8 @@ import type { Exercises } from "../types/exercises.types";
 import {
   exercisesColumnOrder,
   numericColumns,
-  generateModalInput,
+  generateAddModalInput,
+  generateModifyModalInput,
   fetchAllExercises,
   addModalHeaderTitle,
 } from "./exercises.utils";
@@ -21,6 +22,7 @@ const tableContainer = document.getElementById(
 export class ExercisesTable {
   private tableContainer: HTMLDivElement;
   private hotInstance: Handsontable | null = null;
+  private allExercises: Exercises[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
   constructor(container: HTMLDivElement) {
@@ -30,8 +32,8 @@ export class ExercisesTable {
 
   public async init(): Promise<void> {
     try {
-      const data = await fetchAllExercises();
-      this.renderTable(data);
+      this.allExercises = await fetchAllExercises();
+      this.renderTable(this.allExercises);
     } catch (error) {
       console.error("Error initializing exercises table:", error);
     }
@@ -63,8 +65,8 @@ export class ExercisesTable {
 
   public async refresh(): Promise<void> {
     try {
-      const data = await fetchAllExercises();
-      this.hotInstance?.loadData(data);
+      this.allExercises = await fetchAllExercises();
+      this.hotInstance?.loadData(this.allExercises);
     } catch (error) {
       console.error("Error refreshing exercises:", error);
     }
@@ -94,7 +96,11 @@ export class ExercisesTable {
     const modalBody = document.getElementById("exercise-form-body");
     if (!modalBody) return;
 
-    modalBody.innerHTML = (await generateModalInput(operation)) ?? "";
+    if (operation === "Add") {
+      modalBody.innerHTML = await generateAddModalInput();
+    } else if (operation === "Modify") {
+      modalBody.innerHTML = await generateModifyModalInput();
+    }
 
     const modalEl = document.getElementById("exercise-modal");
     if (!modalEl) return;
@@ -102,7 +108,7 @@ export class ExercisesTable {
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
 
-    this.handleFormSubmit(bootstrapModal);
+    this.handleFormSubmit(bootstrapModal, operation);
   }
 
   private getFormData(form: HTMLFormElement): Record<string, any> {
@@ -110,25 +116,69 @@ export class ExercisesTable {
     const data: Record<string, any> = {};
 
     formData.forEach((value, key) => {
-      data[key] = numericColumns.includes(key) ? Number(value) : String(value);
+      if (key === "select-exercise") {
+        const selectedId = Number(value);
+        const selectedExercise = this.allExercises.find(
+          (ex) => ex.id === selectedId
+        );
+        data["exercise_id"] = selectedId;
+        data["exercise_name"] = selectedExercise?.exercise_name ?? "";
+      } else {
+        data[key] = numericColumns.includes(key)
+          ? Number(value)
+          : String(value);
+      }
     });
 
     return data;
   }
 
-  private handleFormSubmit(modal: any): void {
+  private handleFormSubmit(modal: any, operation: string): void {
     const form = document.getElementById("exercise-form") as HTMLFormElement;
     if (!form) return;
 
     form.onsubmit = async (e) => {
       e.preventDefault();
 
-      const newExercise = this.getFormData(form);
-      await this.postNewExercise(newExercise);
+      const formData = this.getFormData(form);
+
+      if (operation === "Add") {
+        await this.postNewExercise(formData);
+      } else if (operation === "Modify") {
+        const { exercise_id, ...updateData } = formData;
+        if (!exercise_id) {
+          alert("Please select an exercise to modify.");
+          return;
+        }
+        await this.updateExercise(exercise_id, updateData);
+      }
 
       modal.hide();
       form.reset();
     };
+  }
+
+  private async updateExercise(
+    exerciseId: number,
+    update: Record<string, any>
+  ): Promise<void> {
+    try {
+      const res = await fetch(`${this.apiUrl}/${exerciseId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(update),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error response:", err);
+        throw new Error(JSON.stringify(err));
+      }
+
+      await this.refresh();
+    } catch (err) {
+      console.error("Error updating exercise: ", err);
+    }
   }
 
   private async postNewExercise(
@@ -148,7 +198,7 @@ export class ExercisesTable {
 
       await this.refresh();
     } catch (err) {
-      console.error("Error adding exercise:", err);
+      console.error("Error adding exercise: ", err);
     }
   }
 }

@@ -34,20 +34,20 @@ class ExerciseRead(ExerciseBase):
 class ExerciseCreate(ExerciseBase):
     exercise_name: str = Field(..., min_length=1)
     category: Category = Field(...)
-    easy_min: int | None = Field(None, gt=0)
-    easy_max: int | None = Field(None, gt=0)
-    medium_min: int | None = Field(None, gt=0)
-    medium_max: int | None = Field(None, gt=0)
-    hard_min: int | None = Field(None, gt=0)
-    hard_max: int | None = Field(None, gt=0)
+    easy_min: int | None
+    easy_max: int | None
+    medium_min: int | None
+    medium_max: int | None
+    hard_min: int | None
+    hard_max: int | None
 
 
 class ExerciseUpdate(BaseModel):
-    exercise_name: str | None = Field(None, min_length=1)
-    category: Category | None = Field(None, min_length=1)
-    easy_min: int | None = Field(None, gt=0)
-    easy_max: int | None = Field(None, gt=0)
-    medium_min: int | None = Field(None, gt=0)
-    medium_max: int | None = Field(None, gt=0)
-    hard_min: int | None = Field(None, gt=0)
-    hard_max: int | None = Field(None, gt=0)
+    exercise_name: str = Field(min_length=1)
+    category: Category
+    easy_min: int = Field(gt=0)
+    easy_max: int = Field(gt=0)
+    medium_min: int = Field(gt=0)
+    medium_max: int = Field(gt=0)
+    hard_min: int = Field(gt=0)
+    hard_max: int = Field(gt=0)

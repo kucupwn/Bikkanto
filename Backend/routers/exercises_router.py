@@ -45,7 +45,7 @@ async def create_exercise(db: db_dependency, exercise_create: ExerciseCreate):
     return exercise_model
 
 
-@router.patch(
+@router.put(
     "/{exercise_id}", response_model=ExerciseRead, status_code=status.HTTP_200_OK
 )
 async def update_exercise(

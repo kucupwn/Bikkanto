@@ -56,78 +56,94 @@ export function addModalHeaderTitle(operation: string) {
   title.textContent = `${operation} exercise`;
 }
 
-export async function generateModalInput(operation: string): Promise<string> {
+async function getCategoryOptions() {
   const validCategories = await fetchCategories();
 
-  if (operation === "Add") {
-    return `
-      <div class="row row-cols-2 g-3">
-        ${exercisesColumnOrder
-          .map((col) => {
-            const isRequired = requiredColumns.includes(col) ? "required" : "";
+  const options = validCategories
+    .map((opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`)
+    .join("");
 
-            if (col === "category") {
-              const options = validCategories
-                .map(
-                  (opt) =>
-                    `<option value="${opt}">${opt.toUpperCase()}</option>`
-                )
-                .join("");
+  return options;
+}
 
-              return `
-              <div class="col">
-                <label for="${col}" class="form-label">${col}</label>
-                <select class="form-select" id="${col}" name="${col}" ${isRequired}>
-                  <option>-- Select --</option>
-                  ${options}
-                </select>
-              </div>
-            `;
-            } else {
-              const inputType = numericColumns.includes(col)
-                ? "number"
-                : "text";
+async function getExerciseOptions() {
+  const allExercises = await fetchAllExercises();
 
-              return `
-                  <div class="col">
-                    <label for="${col}" class="form-label">${col}</label>
-                    <input type="${inputType}" class="form-control" id="${col}" name="${col}" ${isRequired}>
-                  </div>
-                `;
-            }
-          })
-          .join("")}
-      </div>
-    `;
-  } else if (operation === "Modify") {
-    const allExercises = await fetchAllExercises();
-    const options = allExercises
-      .map(
-        (opt) =>
-          `<option value="${opt.exercise_name}">${opt.exercise_name.toUpperCase()}</option>`
-      )
-      .join("");
+  const options = allExercises
+    .map(
+      (opt) =>
+        `<option value="${opt.id}">${opt.exercise_name.toUpperCase()}</option>`
+    )
+    .join("");
 
-    return `
-      <div class="row row-cols-2 g-3">
-          <label for="exercises" class="form-label">Exercises</label>
-          <select class="form-select" id="exercises" name="exercises">
-            <option>-- Select --</option>
-            ${options}
-          </select>
-        ${numericColumns
-          .map((col) => {
+  return options;
+}
+
+export async function generateAddModalInput(): Promise<string> {
+  const categoryOptions = await getCategoryOptions();
+
+  return `
+    <div class="row row-cols-2 g-3">
+      ${exercisesColumnOrder
+        .map((col) => {
+          const isRequired = requiredColumns.includes(col) ? "required" : "";
+
+          if (col === "category") {
             return `
-              <div class="col">
-                <label for="${col}" class="form-label">${col}</label>
-                <input type="number" class="form-control" id="${col}" name="${col}" >
-              </div>
-            `;
-          })
-          .join("")}
-      </div>
-    `;
-  }
+            <div class="col">
+              <label for="${col}" class="form-label">${col}</label>
+              <select class="form-select" id="${col}" name="${col}" ${isRequired}>
+                <option>-- Select --</option>
+                ${categoryOptions}
+              </select>
+            </div>
+          `;
+          } else {
+            const inputType = numericColumns.includes(col) ? "number" : "text";
 
-  return "";
+            return `
+                <div class="col">
+                  <label for="${col}" class="form-label">${col}</label>
+                  <input type="${inputType}" class="form-control" id="${col}" name="${col}" ${isRequired}>
+                </div>
+              `;
+          }
+        })
+        .join("")}
+    </div>
+  `;
+}
+
+export async function generateModifyModalInput() {
+  const exerciseOptions = await getExerciseOptions();
+  const categoryOptions = await getCategoryOptions();
+
+  return `
+    <div class="row row-cols-2 g-3">
+      <div class="col">
+        <label for="exercises" class="form-label">Exercises</label>
+        <select class="form-select" id="select-exercise" name="select-exercise">
+          <option>-- Select --</option>
+          ${exerciseOptions}
+        </select>
+      </div>
+      <div class="col">
+        <label for="categories" class="form-label">Categories</label>
+        <select class="form-select" id="select-category" name="category">
+          <option>-- Select --</option>
+          ${categoryOptions}
+        </select>
+      </div>
+      ${numericColumns
+        .map((col) => {
+          return `
+            <div class="col">
+              <label for="${col}" class="form-label">${col}</label>
+              <input type="number" class="form-control" id="${col}" name="${col}" >
+            </div>
+          `;
+        })
+        .join("")}
+    </div>
+  `;
 }
