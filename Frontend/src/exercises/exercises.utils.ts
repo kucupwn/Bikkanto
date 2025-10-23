@@ -170,3 +170,17 @@ export async function generateModifyModalInput() {
     </div>
   `;
 }
+
+export async function generateDeleteModalInput() {
+  const exerciseOptions = await getExerciseOptions();
+
+  return `
+  <div class="col">
+    <label for="exercises" class="form-label">Exercises</label>
+    <select class="form-select" id="select-exercise" name="select-exercise">
+      <option>-- Select --</option>
+      ${exerciseOptions}
+    </select>
+  </div>
+  `;
+}

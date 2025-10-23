@@ -10,6 +10,7 @@ import {
   numericColumns,
   generateAddModalInput,
   generateModifyModalInput,
+  generateDeleteModalInput,
   fetchAllExercises,
   addModalHeaderTitle,
   fillModifyModalDefaultValues,
@@ -85,11 +86,20 @@ export class ExercisesTable {
 
     const modifyBtn = document.getElementById(
       "modify-ex-btn"
-    ) as HTMLButtonElement;
+    ) as HTMLButtonElement | null;
     if (modifyBtn)
       modifyBtn.addEventListener("click", () => {
         this.openModal("Modify");
         addModalHeaderTitle("Modify");
+      });
+
+    const deleteBtn = document.getElementById(
+      "delete-ex-btn"
+    ) as HTMLButtonElement | null;
+    if (deleteBtn)
+      deleteBtn.addEventListener("click", () => {
+        this.openModal("Delete");
+        addModalHeaderTitle("Delete");
       });
   }
 
@@ -113,6 +123,8 @@ export class ExercisesTable {
           }
         });
       }
+    } else if (operation === "Delete") {
+      modalBody.innerHTML = await generateDeleteModalInput();
     }
 
     const modalEl = document.getElementById("exercise-modal");
