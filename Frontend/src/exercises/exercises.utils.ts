@@ -79,6 +79,8 @@ async function getExerciseOptions() {
   return options;
 }
 
+export function fillAddModalDefaultValues() {}
+
 export async function generateAddModalInput(): Promise<string> {
   const categoryOptions = await getCategoryOptions();
 
@@ -100,11 +102,12 @@ export async function generateAddModalInput(): Promise<string> {
           `;
           } else {
             const inputType = numericColumns.includes(col) ? "number" : "text";
+            const defaultValue = numericColumns.includes(col) ? "1" : "";
 
             return `
                 <div class="col">
                   <label for="${col}" class="form-label">${col}</label>
-                  <input type="${inputType}" class="form-control" id="${col}" name="${col}" ${isRequired}>
+                  <input type="${inputType}" class="form-control" id="${col}" name="${col}" value="${defaultValue}" ${isRequired}>
                 </div>
               `;
           }
