@@ -79,7 +79,27 @@ async function getExerciseOptions() {
   return options;
 }
 
-export function fillAddModalDefaultValues() {}
+export function fillModifyModalDefaultValues(
+  exercises: Exercises[],
+  selectedId: number
+) {
+  const selectedExercises = exercises.find((ex) => ex.id === selectedId);
+  if (!selectedExercises) return;
+
+  const categorySelect = document.getElementById(
+    "select-category"
+  ) as HTMLSelectElement | null;
+  if (categorySelect) {
+    categorySelect.value = selectedExercises.category;
+  }
+
+  numericColumns.forEach((col) => {
+    const input = document.getElementById(col) as HTMLInputElement | null;
+    if (input) {
+      input.value = String(selectedExercises[col as keyof Exercises] ?? "");
+    }
+  });
+}
 
 export async function generateAddModalInput(): Promise<string> {
   const categoryOptions = await getCategoryOptions();

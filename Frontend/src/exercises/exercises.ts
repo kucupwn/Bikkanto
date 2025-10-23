@@ -12,6 +12,7 @@ import {
   generateModifyModalInput,
   fetchAllExercises,
   addModalHeaderTitle,
+  fillModifyModalDefaultValues,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
 
@@ -100,6 +101,18 @@ export class ExercisesTable {
       modalBody.innerHTML = await generateAddModalInput();
     } else if (operation === "Modify") {
       modalBody.innerHTML = await generateModifyModalInput();
+
+      const selectEl = document.getElementById(
+        "select-exercise"
+      ) as HTMLSelectElement | null;
+      if (selectEl) {
+        selectEl.addEventListener("change", (e) => {
+          const selectedId = Number((e.target as HTMLSelectElement).value);
+          if (selectedId && !isNaN(selectedId)) {
+            fillModifyModalDefaultValues(this.allExercises, selectedId);
+          }
+        });
+      }
     }
 
     const modalEl = document.getElementById("exercise-modal");
