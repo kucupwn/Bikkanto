@@ -18,12 +18,12 @@ class Category(str, Enum):
 class ExerciseBase(BaseModel):
     exercise_name: str
     category: Category
-    easy_min: int | None = None
-    easy_max: int | None = None
-    medium_min: int | None = None
-    medium_max: int | None = None
-    hard_min: int | None = None
-    hard_max: int | None = None
+    easy_min: int
+    easy_max: int
+    medium_min: int
+    medium_max: int
+    hard_min: int
+    hard_max: int
 
 
 class ExerciseRead(ExerciseBase):
@@ -36,12 +36,12 @@ class ExerciseRead(ExerciseBase):
 class ExerciseCreate(ExerciseBase):
     exercise_name: str = Field(..., min_length=1)
     category: Category = Field(...)
-    easy_min: int | None
-    easy_max: int | None
-    medium_min: int | None
-    medium_max: int | None
-    hard_min: int | None
-    hard_max: int | None
+    easy_min: int = Field(gt=0)
+    easy_max: int = Field(gt=0)
+    medium_min: int = Field(gt=0)
+    medium_max: int = Field(gt=0)
+    hard_min: int = Field(gt=0)
+    hard_max: int = Field(gt=0)
 
 
 class ExerciseUpdate(BaseModel):
