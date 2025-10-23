@@ -170,17 +170,43 @@ export class ExercisesTable {
       if (operation === "Add") {
         await this.postNewExercise(formData);
       } else if (operation === "Modify") {
-        const { exercise_id, ...updateData } = formData;
-        if (!exercise_id) {
+        const { exercise_id: exerciseId, ...updateData } = formData;
+        if (!exerciseId) {
           alert("Please select an exercise to modify.");
           return;
         }
-        await this.updateExercise(exercise_id, updateData);
+        await this.updateExercise(exerciseId, updateData);
+      } else if (operation === "Delete") {
+        const exerciseId = formData.exercise_id;
+        if (!exerciseId) {
+          alert("Please select an exercise to modify.");
+          return;
+        }
+        await this.deleteExercise(exerciseId);
       }
 
       modal.hide();
       form.reset();
     };
+  }
+
+  private async deleteExercise(exerciseId: number): Promise<void> {
+    try {
+      const res = await fetch(`${this.apiUrl}/${exerciseId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error response:", err);
+        throw new Error(JSON.stringify(err));
+      }
+
+      await this.refresh();
+    } catch (err) {
+      console.error("Error deleting exercise: ", err);
+    }
   }
 
   private async updateExercise(
@@ -218,7 +244,8 @@ export class ExercisesTable {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.detail || "Failed to add exercise");
+        console.error("Backend error response:", err);
+        throw new Error(JSON.stringify(err));
       }
 
       await this.refresh();
