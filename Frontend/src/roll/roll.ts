@@ -14,6 +14,7 @@ const getButton = document.getElementById("btn-get") as HTMLButtonElement;
 const exerciseCountInput = document.getElementById(
   "exercise-count-input"
 ) as HTMLInputElement;
+const restartRollButton = document.getElementById("btn-restart-roll");
 const settingsContainer = document.getElementById("settings-container");
 const overviewContainer = document.getElementById("overview-container");
 
@@ -106,6 +107,11 @@ getButton?.addEventListener("click", () => {
   const workout = roll.getWorkout();
   roll.fillOverviewTable(workout);
 
-  settingsContainer?.classList.add("hidden");
-  overviewContainer?.classList.remove("hidden");
+  settingsContainer?.classList.toggle("hidden");
+  overviewContainer?.classList.toggle("hidden");
+});
+
+restartRollButton?.addEventListener("click", () => {
+  settingsContainer?.classList.toggle("hidden");
+  overviewContainer?.classList.toggle("hidden");
 });
