@@ -43,3 +43,8 @@ h1 {
   justify-self: center;
   margin: 1rem;
 }
+
+#cycles-input {
+  width: auto;
+  justify-self: center;
+}

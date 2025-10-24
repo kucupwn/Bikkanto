@@ -15,6 +15,11 @@ const exerciseCountInput = document.getElementById(
   "exercise-count-input"
 ) as HTMLInputElement;
 const restartRollButton = document.getElementById("btn-restart-roll");
+const applyRollButton = document.getElementById("btn-apply-roll");
+const overviewTableButtons = document.getElementById(
+  "roll-table-buttons-container"
+);
+const rollSubmitContainer = document.getElementById("roll-submit-container");
 const settingsContainer = document.getElementById("settings-container");
 const overviewContainer = document.getElementById("overview-container");
 
@@ -114,4 +119,9 @@ getButton?.addEventListener("click", () => {
 restartRollButton?.addEventListener("click", () => {
   settingsContainer?.classList.toggle("hidden");
   overviewContainer?.classList.toggle("hidden");
+});
+
+applyRollButton?.addEventListener("click", () => {
+  overviewTableButtons?.classList.toggle("hidden");
+  rollSubmitContainer?.classList.toggle("hidden");
 });
