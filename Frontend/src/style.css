@@ -30,11 +30,13 @@ h1 {
 }
 
 #table-container {
+  width: auto;
   width: 1000px;
 }
 
 #overview-table {
-  width: 600px;
+  width: auto;
+  max-width: 600px;
 }
 
 #exercises-table-button-wrapper {
