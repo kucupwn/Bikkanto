@@ -10,12 +10,6 @@ import {
   fetchAllExercises,
 } from "../exercises/exercises.utils";
 
-const getButton = document.getElementById("btn-get") as HTMLButtonElement;
-const exerciseCountInput = document.getElementById(
-  "exercise-count-input"
-) as HTMLInputElement;
-const restartRollButton = document.getElementById("btn-restart-roll");
-const applyRollButton = document.getElementById("btn-apply-roll");
 const overviewTableButtons = document.getElementById(
   "roll-table-buttons-container"
 );
@@ -39,15 +33,42 @@ export class Roll {
   }
 
   private attachEventListeners() {
-    const addBtn = document.getElementById(
-      "add-count"
-    ) as HTMLButtonElement | null;
-    if (addBtn) addBtn.addEventListener("click", () => "");
+    const exerciseCountInput = document.getElementById(
+      "exercise-count-input"
+    ) as HTMLInputElement;
+    if (exerciseCountInput)
+      exerciseCountInput.addEventListener("change", () => {
+        const exerciseCount = Number(exerciseCountInput.value);
+        this.getExerciseSelections(exerciseCount);
+      });
 
-    const getBtn = document.getElementById(
-      "btn-get"
-    ) as HTMLButtonElement | null;
-    if (getBtn) getBtn.addEventListener("click", () => "");
+    const getButton = document.getElementById("btn-get") as HTMLButtonElement;
+    if (getButton)
+      getButton.addEventListener("click", () => {
+        const workout = roll.getWorkout();
+        roll.fillOverviewTable(workout);
+
+        settingsContainer?.classList.toggle("hidden");
+        overviewContainer?.classList.toggle("hidden");
+      });
+
+    const restartRollButton = document.getElementById(
+      "btn-restart-roll"
+    ) as HTMLButtonElement;
+    if (restartRollButton)
+      restartRollButton.addEventListener("click", () => {
+        settingsContainer?.classList.toggle("hidden");
+        overviewContainer?.classList.toggle("hidden");
+      });
+
+    const applyRollButton = document.getElementById(
+      "btn-apply-roll"
+    ) as HTMLButtonElement;
+    if (applyRollButton)
+      applyRollButton.addEventListener("click", () => {
+        overviewTableButtons?.classList.toggle("hidden");
+        rollSubmitContainer?.classList.toggle("hidden");
+      });
   }
 
   public async getExerciseSelections(count: number) {
@@ -102,26 +123,3 @@ export class Roll {
 
 const roll = new Roll();
 await roll.init();
-
-exerciseCountInput.addEventListener("change", () => {
-  const exerciseCount = Number(exerciseCountInput.value);
-  roll.getExerciseSelections(exerciseCount);
-});
-
-getButton?.addEventListener("click", () => {
-  const workout = roll.getWorkout();
-  roll.fillOverviewTable(workout);
-
-  settingsContainer?.classList.toggle("hidden");
-  overviewContainer?.classList.toggle("hidden");
-});
-
-restartRollButton?.addEventListener("click", () => {
-  settingsContainer?.classList.toggle("hidden");
-  overviewContainer?.classList.toggle("hidden");
-});
-
-applyRollButton?.addEventListener("click", () => {
-  overviewTableButtons?.classList.toggle("hidden");
-  rollSubmitContainer?.classList.toggle("hidden");
-});
