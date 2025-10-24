@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { header, loadPartial, setActiveNav } from "../partials/header";
 
 window.addEventListener("load", async () => {
