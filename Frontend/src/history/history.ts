@@ -24,8 +24,8 @@ export class HistoryTable {
 }
 
 if (tableContainer) {
-  const exercisesTable = new HistoryTable(tableContainer);
-  exercisesTable.init();
+  const historyTable = new HistoryTable(tableContainer);
+  await historyTable.init();
 } else {
   console.warn("Table container not found");
 }
