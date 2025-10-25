@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, Date
 from .database import Base
 
 
@@ -14,6 +14,17 @@ class Exercises(Base):
     medium_max = Column(Integer)
     hard_min = Column(Integer)
     hard_max = Column(Integer)
+
+
+class History(Base):
+    __tablename__ = "history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date_complete = Column(Date)
+    cycles = Column(Integer)
+    exercise = Column(String)
+    repetitions = Column(Integer)
+    user = Column(String)
 
 
 class Users(Base):
