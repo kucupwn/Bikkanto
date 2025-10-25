@@ -1,0 +1,31 @@
+import Handsontable from "handsontable/base";
+import { registerAllModules } from "handsontable/registry";
+import "handsontable/styles/handsontable.css";
+import "handsontable/styles/ht-theme-main.css";
+registerAllModules();
+
+import type { History } from "../types/history.types";
+
+const tableContainer = document.getElementById(
+  "history-table"
+) as HTMLDivElement | null;
+
+export class HistoryTable {
+  private tableContainer: HTMLDivElement;
+  private hotInstance: Handsontable | null = null;
+  private allHistory: History[] = [];
+  private readonly apiUrl = "http://127.0.0.1:8000/history";
+
+  constructor(container: HTMLDivElement) {
+    this.tableContainer = container;
+  }
+
+  public async init(): Promise<void> {}
+}
+
+if (tableContainer) {
+  const exercisesTable = new HistoryTable(tableContainer);
+  exercisesTable.init();
+} else {
+  console.warn("Table container not found");
+}

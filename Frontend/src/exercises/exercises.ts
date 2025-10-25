@@ -257,7 +257,7 @@ export class ExercisesTable {
 
 if (tableContainer) {
   const exercisesTable = new ExercisesTable(tableContainer);
-  exercisesTable.init();
+  await exercisesTable.init();
 } else {
   console.warn("Table container not found");
 }
