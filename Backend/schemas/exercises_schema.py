@@ -35,7 +35,7 @@ class ExerciseRead(ExerciseBase):
 
 class ExerciseCreate(ExerciseBase):
     exercise_name: str = Field(..., min_length=1)
-    category: Category = Field(...)
+    category: Category
     easy_min: int = Field(gt=0)
     easy_max: int = Field(gt=0)
     medium_min: int = Field(gt=0)
