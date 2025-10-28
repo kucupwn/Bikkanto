@@ -5,6 +5,7 @@ import "handsontable/styles/ht-theme-main.css";
 registerAllModules();
 
 import type { History } from "../types/history.types";
+import { fetchAllHistory } from "./history.utils";
 
 const tableContainer = document.getElementById(
   "history-table"
@@ -20,7 +21,9 @@ export class HistoryTable {
     this.tableContainer = container;
   }
 
-  public async init(): Promise<void> {}
+  public async init(): Promise<void> {
+    this.allHistory = await fetchAllHistory(this.apiUrl);
+  }
 }
 
 if (tableContainer) {
