@@ -34,7 +34,7 @@ export class ExercisesTable {
 
   public async init(): Promise<void> {
     try {
-      this.allExercises = await fetchAllExercises();
+      this.allExercises = await fetchAllExercises(this.apiUrl);
       this.renderTable(this.allExercises);
     } catch (error) {
       console.error("Error initializing exercises table:", error);
@@ -67,7 +67,7 @@ export class ExercisesTable {
 
   public async refresh(): Promise<void> {
     try {
-      this.allExercises = await fetchAllExercises();
+      this.allExercises = await fetchAllExercises(this.apiUrl);
       this.hotInstance?.loadData(this.allExercises);
     } catch (error) {
       console.error("Error refreshing exercises:", error);
@@ -110,7 +110,7 @@ export class ExercisesTable {
     if (operation === "Add") {
       modalBody.innerHTML = await generateAddModalInput();
     } else if (operation === "Modify") {
-      modalBody.innerHTML = await generateModifyModalInput();
+      modalBody.innerHTML = await generateModifyModalInput(this.allExercises);
 
       const selectEl = document.getElementById(
         "select-exercise"
@@ -124,7 +124,7 @@ export class ExercisesTable {
         });
       }
     } else if (operation === "Delete") {
-      modalBody.innerHTML = await generateDeleteModalInput();
+      modalBody.innerHTML = generateDeleteModalInput(this.allExercises);
     }
 
     const modalEl = document.getElementById("exercise-modal");

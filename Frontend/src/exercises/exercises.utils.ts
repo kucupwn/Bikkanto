@@ -22,9 +22,9 @@ export const numericColumns = [
 
 const requiredColumns = ["exercise_name", "category"];
 
-export async function fetchAllExercises(): Promise<Exercises[]> {
+export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   try {
-    const res = await fetch("http://127.0.0.1:8000/exercises");
+    const res = await fetch(apiUrl);
     const data: Exercises[] = await res.json();
 
     return data;
@@ -66,9 +66,7 @@ async function getCategoryOptions() {
   return options;
 }
 
-async function getExerciseOptions() {
-  const allExercises = await fetchAllExercises();
-
+function getExerciseOptions(allExercises: Exercises[]) {
   const options = allExercises
     .map(
       (opt) =>
@@ -137,8 +135,8 @@ export async function generateAddModalInput(): Promise<string> {
   `;
 }
 
-export async function generateModifyModalInput() {
-  const exerciseOptions = await getExerciseOptions();
+export async function generateModifyModalInput(exercises: Exercises[]) {
+  const exerciseOptions = getExerciseOptions(exercises);
   const categoryOptions = await getCategoryOptions();
 
   return `
@@ -171,8 +169,8 @@ export async function generateModifyModalInput() {
   `;
 }
 
-export async function generateDeleteModalInput() {
-  const exerciseOptions = await getExerciseOptions();
+export function generateDeleteModalInput(exercises: Exercises[]) {
+  const exerciseOptions = getExerciseOptions(exercises);
 
   return `
   <div class="col">
