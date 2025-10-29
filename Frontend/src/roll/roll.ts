@@ -19,6 +19,7 @@ const overviewContainer = document.getElementById("overview-container");
 
 export class Roll {
   private allExercises: Exercises[] = [];
+  private allCategories: string[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
   constructor() {
@@ -28,6 +29,7 @@ export class Roll {
   public async init() {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
+      this.allCategories = await fetchCategories(`${this.apiUrl}/categories`);
     } catch (err) {
       console.log("Error fetching exercises:", err);
     }
@@ -77,12 +79,9 @@ export class Roll {
       "exercise-categories-container"
     ) as HTMLDivElement;
     if (!container) return;
-
-    const categories = await fetchCategories();
-
     container.innerHTML = "";
 
-    createCategorySelections(count, categories, container);
+    createCategorySelections(count, this.allCategories, container);
   }
 
   public getWorkout(): WorkoutEntry[] {
