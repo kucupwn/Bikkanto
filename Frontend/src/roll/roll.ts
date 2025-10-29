@@ -19,6 +19,7 @@ const overviewContainer = document.getElementById("overview-container");
 
 export class Roll {
   private allExercises: Exercises[] = [];
+  private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
   constructor() {
     this.attachEventListeners();
@@ -26,7 +27,7 @@ export class Roll {
 
   public async init() {
     try {
-      this.allExercises = await fetchAllExercises();
+      this.allExercises = await fetchAllExercises(this.apiUrl);
     } catch (err) {
       console.log("Error fetching exercises:", err);
     }
