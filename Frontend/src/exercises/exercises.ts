@@ -12,6 +12,7 @@ import {
   generateModifyModalInput,
   generateDeleteModalInput,
   fetchAllExercises,
+  fetchCategories,
   addModalHeaderTitle,
   fillModifyModalDefaultValues,
 } from "./exercises.utils";
@@ -25,6 +26,7 @@ export class ExercisesTable {
   private tableContainer: HTMLDivElement;
   private hotInstance: Handsontable | null = null;
   private allExercises: Exercises[] = [];
+  private allCategories: string[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
 
   constructor(container: HTMLDivElement) {
@@ -35,6 +37,7 @@ export class ExercisesTable {
   public async init(): Promise<void> {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
+      this.allCategories = await fetchCategories(`${this.apiUrl}/categories`);
       this.renderTable(this.allExercises);
     } catch (error) {
       console.error("Error initializing exercises table:", error);
@@ -103,14 +106,17 @@ export class ExercisesTable {
       });
   }
 
-  private async openModal(operation: string) {
+  private openModal(operation: string) {
     const modalBody = document.getElementById("exercise-form-body");
     if (!modalBody) return;
 
     if (operation === "Add") {
-      modalBody.innerHTML = await generateAddModalInput();
+      modalBody.innerHTML = generateAddModalInput(this.allCategories);
     } else if (operation === "Modify") {
-      modalBody.innerHTML = await generateModifyModalInput(this.allExercises);
+      modalBody.innerHTML = generateModifyModalInput(
+        this.allExercises,
+        this.allCategories
+      );
 
       const selectEl = document.getElementById(
         "select-exercise"

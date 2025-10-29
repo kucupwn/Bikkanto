@@ -35,9 +35,9 @@ export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   }
 }
 
-export async function fetchCategories(): Promise<string[]> {
+export async function fetchCategories(apiUrl: string): Promise<string[]> {
   try {
-    const res = await fetch("http://127.0.0.1:8000/exercises/categories");
+    const res = await fetch(apiUrl);
     if (!res.ok) throw new Error("Failed to fetch categories");
 
     const data = await res.json();
@@ -56,10 +56,8 @@ export function addModalHeaderTitle(operation: string) {
   title.textContent = `${operation} exercise`;
 }
 
-async function getCategoryOptions() {
-  const validCategories = await fetchCategories();
-
-  const options = validCategories
+function getCategoryOptions(categories: string[]) {
+  const options = categories
     .map((opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`)
     .join("");
 
@@ -99,8 +97,8 @@ export function fillModifyModalDefaultValues(
   });
 }
 
-export async function generateAddModalInput(): Promise<string> {
-  const categoryOptions = await getCategoryOptions();
+export function generateAddModalInput(allCategories: string[]): string {
+  const categoryOptions = getCategoryOptions(allCategories);
 
   return `
     <div class="row row-cols-2 g-3">
@@ -135,9 +133,12 @@ export async function generateAddModalInput(): Promise<string> {
   `;
 }
 
-export async function generateModifyModalInput(exercises: Exercises[]) {
+export function generateModifyModalInput(
+  exercises: Exercises[],
+  allCategories: string[]
+) {
   const exerciseOptions = getExerciseOptions(exercises);
-  const categoryOptions = await getCategoryOptions();
+  const categoryOptions = getCategoryOptions(allCategories);
 
   return `
     <div class="row row-cols-2 g-3">
