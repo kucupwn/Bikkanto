@@ -1,10 +1,6 @@
 import Handsontable from "handsontable/base";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/styles/handsontable.css";
-import "handsontable/styles/ht-theme-main.css";
-registerAllModules();
-
 import type { Exercises } from "../types/exercises.types";
+import { getHandsontable } from "../table/handsontable";
 import {
   exercisesColumnOrder,
   numericColumns,
@@ -50,22 +46,12 @@ export class ExercisesTable {
       title: key,
     }));
 
-    this.hotInstance = new Handsontable(this.tableContainer, {
+    this.hotInstance = getHandsontable(
+      this.tableContainer,
       data,
       columns,
-      colHeaders: [...exercisesColumnOrder],
-      rowHeaders: true,
-      width: "100%",
-      height: 600,
-      licenseKey: "non-commercial-and-evaluation",
-      filters: true,
-      dropdownMenu: true,
-      stretchH: "all",
-      readOnly: true,
-      manualColumnResize: true,
-    });
-
-    this.hotInstance.useTheme("ht-theme-main-dark");
+      exercisesColumnOrder
+    );
   }
 
   public async refresh(): Promise<void> {
