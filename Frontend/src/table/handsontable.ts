@@ -23,9 +23,8 @@ export function getHandsontable<T extends Handsontable.RowObject>(
     stretchH: "all",
     readOnly: true,
     manualColumnResize: true,
+    themeName: "ht-theme-main-dark-auto",
   });
-
-  hotInstance.useTheme("ht-theme-main-dark");
 
   return hotInstance;
 }
