@@ -2,7 +2,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
-from ..database import get_db
+from ..database.db_helper import get_db
 from ..models import Exercises
 from ..schemas.exercises_schema import (
     ExerciseRead,

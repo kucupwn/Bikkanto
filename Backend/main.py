@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .models import Base
-from .database import engine
+from .database.db_helper import create_tables
 from .routers import exercises_router, auth, users_router, history_router
 from .core.config import settings
 
 app = FastAPI()
 
-Base.metadata.create_all(bind=engine)
+create_tables()
 
 app.include_router(auth.router)
 app.include_router(exercises_router.router)

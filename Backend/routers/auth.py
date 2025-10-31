@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from passlib.context import CryptContext
 from jose import jwt, JWTError
-from ..database import get_db
+from ..database.db_helper import get_db
 from ..models import Users
 from ..core.config import settings
 from ..schemas.users_schema import Token
