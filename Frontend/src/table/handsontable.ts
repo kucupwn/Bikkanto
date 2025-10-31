@@ -2,12 +2,11 @@ import Handsontable from "handsontable/base";
 import { registerAllModules } from "handsontable/registry";
 import "handsontable/styles/handsontable.css";
 import "handsontable/styles/ht-theme-main.css";
-import type { Exercises } from "../types/exercises.types";
 registerAllModules();
 
-export function getHandsontable(
+export function getHandsontable<T extends Handsontable.RowObject>(
   tableContainer: HTMLDivElement,
-  data: Exercises[] | History[],
+  data: T[],
   columns: Handsontable.ColumnSettings[],
   columnOrder: string[]
 ) {
