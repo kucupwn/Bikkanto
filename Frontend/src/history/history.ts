@@ -5,7 +5,8 @@ import "handsontable/styles/ht-theme-main.css";
 registerAllModules();
 
 import type { History } from "../types/history.types";
-import { fetchAllHistory } from "./history.utils";
+import { fetchAllHistory, historyColumnOrder } from "./history.utils";
+import { getHandsontable } from "../table/handsontable";
 
 const tableContainer = document.getElementById(
   "history-table"
@@ -22,7 +23,35 @@ export class HistoryTable {
   }
 
   public async init(): Promise<void> {
-    this.allHistory = await fetchAllHistory(this.apiUrl);
+    try {
+      this.allHistory = await fetchAllHistory(this.apiUrl);
+      this.renderTable(this.allHistory);
+    } catch (error) {
+      console.error("Error initializing exercises table:", error);
+    }
+  }
+
+  public async refresh(): Promise<void> {
+    try {
+      this.allHistory = await fetchAllHistory(this.apiUrl);
+      this.hotInstance?.loadData(this.allHistory);
+    } catch (error) {
+      console.error("Error refreshing history:", error);
+    }
+  }
+
+  private renderTable(data: History[]): void {
+    const columns = historyColumnOrder.map((key) => ({
+      data: key,
+      title: key,
+    }));
+
+    this.hotInstance = getHandsontable<History>(
+      this.tableContainer,
+      data,
+      columns,
+      historyColumnOrder
+    );
   }
 }
 
