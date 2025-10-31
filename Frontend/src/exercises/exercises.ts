@@ -46,7 +46,7 @@ export class ExercisesTable {
       title: key,
     }));
 
-    this.hotInstance = getHandsontable(
+    this.hotInstance = getHandsontable<Exercises>(
       this.tableContainer,
       data,
       columns,
