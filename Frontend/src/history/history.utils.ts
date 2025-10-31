@@ -1,5 +1,13 @@
 import type { History } from "../types/history.types";
 
+export const historyColumnOrder = [
+  "date_complete",
+  "cycles",
+  "exercise",
+  "repetitions",
+  "user",
+];
+
 export async function fetchAllHistory(apiUrl: string): Promise<History[]> {
   try {
     const res = await fetch(apiUrl);
