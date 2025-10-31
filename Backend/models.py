@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date
-from .database.database import Base
+from .database import Base
 
 
 class Exercises(Base):

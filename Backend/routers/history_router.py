@@ -2,7 +2,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter
 from starlette import status
-from ..database.db_helper import get_db
+from ..database import get_db
 from ..models import History
 from ..schemas.history_schema import HistoryRead, HistoryCreate
 

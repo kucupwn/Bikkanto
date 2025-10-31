@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database.db_helper import create_tables
+from .database import create_tables
 from .routers import exercises_router, auth, users_router, history_router
 from .core.config import settings
 
