@@ -24,6 +24,7 @@ export function getHandsontable<T extends Handsontable.RowObject>(
     readOnly: true,
     manualColumnResize: true,
     themeName: "ht-theme-main-dark-auto",
+    className: "htCenter",
   });
 
   return hotInstance;
