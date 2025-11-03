@@ -16,17 +16,7 @@ async def read_all(db: db_dependency):
     return db.query(History).all()
 
 
-@router.post("/", response_model=HistoryRead, status_code=status.HTTP_201_CREATED)
-async def create_history_entry(db: db_dependency, history_create: HistoryCreate):
-    history_model = History(**history_create.model_dump())
-    db.add(history_model)
-    db.commit()
-    db.refresh(history_model)
-
-    return history_model
-
-
-@router.post("/batch", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_history_batch(db: db_dependency, entries: List[HistoryCreate]):
     history_models = [History(**entry.model_dump()) for entry in entries]
     db.add_all(history_models)
