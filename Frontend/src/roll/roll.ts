@@ -79,7 +79,10 @@ export class Roll {
     const finishRollButton = document.getElementById(
       "btn-finish-roll"
     ) as HTMLButtonElement;
-    if (finishRollButton) finishRollButton.addEventListener("click", () => {});
+    if (finishRollButton)
+      finishRollButton.addEventListener("click", () => {
+        this.saveWorkoutHistory();
+      });
   }
 
   public async getExerciseSelections(count: number) {
@@ -128,8 +131,42 @@ export class Roll {
     });
   }
 
-  private async postNewHistory(
-    historyEntry: Record<string, any>
+  private async saveWorkoutHistory() {
+    const table = document.getElementById("overview-table") as HTMLTableElement;
+    if (!table) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const cyclesInput = document.getElementById(
+      "cycles-input"
+    ) as HTMLInputElement;
+    const cycles = Number(cyclesInput.value);
+
+    if (!cycles || cycles < 1) {
+      alert("Please enter valid cycles");
+      return;
+    }
+
+    const user = "user";
+
+    const historyEntries = Array.from(rows).map((row) => {
+      const cells = row.querySelectorAll("td");
+      return {
+        date_complete: today,
+        cycles,
+        exercise: cells[0].textContent || "",
+        repetitions: Number(cells[1].textContent) || 0,
+        user,
+      };
+    });
+
+    await this.postBatchHistory(historyEntries);
+  }
+
+  private async postBatchHistory(
+    historyEntry: Record<string, any>[]
   ): Promise<void> {
     try {
       const res = await fetch(this.apiUrlHistory, {
