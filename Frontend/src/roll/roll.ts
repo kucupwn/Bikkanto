@@ -127,6 +127,26 @@ export class Roll {
       tbody.appendChild(row);
     });
   }
+
+  private async postNewHistory(
+    historyEntry: Record<string, any>
+  ): Promise<void> {
+    try {
+      const res = await fetch(this.apiUrlHistory, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(historyEntry),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error resoponse: ", err);
+        throw new Error(JSON.stringify(err));
+      }
+    } catch (err) {
+      console.error("Error adding history entry: ", err);
+    }
+  }
 }
 
 const roll = new Roll();
