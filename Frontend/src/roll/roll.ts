@@ -163,6 +163,9 @@ export class Roll {
     });
 
     await this.postBatchHistory(historyEntries);
+
+    alert("Good job! Workout saved.");
+    window.location.reload();
   }
 
   private async postBatchHistory(
