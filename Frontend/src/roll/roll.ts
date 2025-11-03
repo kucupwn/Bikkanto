@@ -20,7 +20,8 @@ const overviewContainer = document.getElementById("overview-container");
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
-  private readonly apiUrl = "http://127.0.0.1:8000/exercises";
+  private readonly apiUrlExercises = "http://127.0.0.1:8000/exercises";
+  private readonly apiUrlHistory = "http://127.0.0.1:8000/history";
 
   constructor() {
     this.attachEventListeners();
@@ -28,8 +29,10 @@ export class Roll {
 
   public async init() {
     try {
-      this.allExercises = await fetchAllExercises(this.apiUrl);
-      this.allCategories = await fetchCategories(`${this.apiUrl}/categories`);
+      this.allExercises = await fetchAllExercises(this.apiUrlExercises);
+      this.allCategories = await fetchCategories(
+        `${this.apiUrlExercises}/categories`
+      );
     } catch (err) {
       console.log("Error fetching exercises:", err);
     }
@@ -72,6 +75,11 @@ export class Roll {
         overviewTableButtons?.classList.toggle("hidden");
         rollSubmitContainer?.classList.toggle("hidden");
       });
+
+    const finishRollButton = document.getElementById(
+      "btn-finish-roll"
+    ) as HTMLButtonElement;
+    if (finishRollButton) finishRollButton.addEventListener("click", () => {});
   }
 
   public async getExerciseSelections(count: number) {
