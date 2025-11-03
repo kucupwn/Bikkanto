@@ -80,8 +80,10 @@ export class Roll {
       "btn-finish-roll"
     ) as HTMLButtonElement;
     if (finishRollButton)
-      finishRollButton.addEventListener("click", () => {
-        this.saveWorkoutHistory();
+      finishRollButton.addEventListener("click", async () => {
+        finishRollButton.disabled = true;
+        await this.saveWorkoutHistory();
+        finishRollButton.disabled = false;
       });
   }
 
