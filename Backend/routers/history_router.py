@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter
 from starlette import status
@@ -24,3 +24,15 @@ async def create_history_entry(db: db_dependency, history_create: HistoryCreate)
     db.refresh(history_model)
 
     return history_model
+
+
+@router.post("/batch", status_code=status.HTTP_201_CREATED)
+async def create_history_batch(db: db_dependency, entries: List[HistoryCreate]):
+    history_models = [History(**entry.model_dump()) for entry in entries]
+    db.add_all(history_models)
+    db.commit()
+
+    for model in history_models:
+        db.refresh(model)
+
+    return history_models
