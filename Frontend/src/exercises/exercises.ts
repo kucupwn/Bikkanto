@@ -3,8 +3,7 @@ import type { Exercises } from "../types/exercises.types";
 import { getHandsontable } from "../table/handsontable";
 import {
   exercisesColumnOrder,
-  exerciseColumnLabels,
-  numericColumns,
+  exercisesColumnLabels,
   generateAddModalInput,
   generateModifyModalInput,
   generateDeleteModalInput,
@@ -12,6 +11,7 @@ import {
   fetchCategories,
   addModalHeaderTitle,
   fillModifyModalDefaultValues,
+  numericColumnsSet,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
 
@@ -44,7 +44,7 @@ export class ExercisesTable {
   private renderTable(data: Exercises[]): void {
     const columns = exercisesColumnOrder.map((key) => ({
       data: key,
-      title: exerciseColumnLabels[key],
+      title: exercisesColumnLabels[key],
     }));
 
     this.hotInstance = getHandsontable<Exercises>(
@@ -142,9 +142,7 @@ export class ExercisesTable {
         data["exercise_id"] = selectedId;
         data["exercise_name"] = selectedExercise?.exercise_name ?? "";
       } else {
-        data[key] = numericColumns.includes(key)
-          ? Number(value)
-          : String(value);
+        data[key] = numericColumnsSet.has(key) ? Number(value) : String(value);
       }
     });
 

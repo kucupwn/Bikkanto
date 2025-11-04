@@ -1,8 +1,6 @@
 import type { Exercises } from "../types/exercises.types";
 
-export const exercisesColumnOrder = [
-  "exercise_name",
-  "category",
+export const numericColumns = [
   "easy_min",
   "easy_max",
   "medium_min",
@@ -11,9 +9,13 @@ export const exercisesColumnOrder = [
   "hard_max",
 ] as const;
 
-export const exerciseColumnLabels = {
-  exercise_name: "Exercise",
-  category: "Category",
+export const exercisesColumnOrder = [
+  "exercise_name",
+  "category",
+  ...numericColumns,
+] as const;
+
+export const numericColumnLabels = {
   easy_min: "Easy-min",
   easy_max: "Easy-max",
   medium_min: "Medium-min",
@@ -22,16 +24,14 @@ export const exerciseColumnLabels = {
   hard_max: "Hard-max",
 };
 
-export const numericColumns = [
-  "easy_min",
-  "easy_max",
-  "medium_min",
-  "medium_max",
-  "hard_min",
-  "hard_max",
-];
+export const exercisesColumnLabels = {
+  exercise_name: "Exercise",
+  category: "Category",
+  ...numericColumnLabels,
+};
 
 const requiredColumns = ["exercise_name", "category"];
+export const numericColumnsSet = new Set<string>(numericColumns);
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   try {
@@ -120,7 +120,7 @@ export function generateAddModalInput(allCategories: string[]): string {
           if (col === "category") {
             return `
             <div class="col">
-              <label for="${col}" class="form-label">${col}</label>
+              <label for="${col}" class="form-label">${exercisesColumnLabels[col]}</label>
               <select class="form-select" id="${col}" name="${col}" ${isRequired}>
                 <option>-- Select --</option>
                 ${categoryOptions}
@@ -128,12 +128,12 @@ export function generateAddModalInput(allCategories: string[]): string {
             </div>
           `;
           } else {
-            const inputType = numericColumns.includes(col) ? "number" : "text";
-            const defaultValue = numericColumns.includes(col) ? "1" : "";
+            const inputType = numericColumnsSet.has(col) ? "number" : "text";
+            const defaultValue = numericColumnsSet.has(col) ? "1" : "";
 
             return `
                 <div class="col">
-                  <label for="${col}" class="form-label">${col}</label>
+                  <label for="${col}" class="form-label">${exercisesColumnLabels[col]}</label>
                   <input type="${inputType}" class="form-control" id="${col}" name="${col}" value="${defaultValue}" ${isRequired}>
                 </div>
               `;
@@ -171,7 +171,7 @@ export function generateModifyModalInput(
         .map((col) => {
           return `
             <div class="col">
-              <label for="${col}" class="form-label">${col}</label>
+              <label for="${col}" class="form-label">${numericColumnLabels[col]}</label>
               <input type="number" class="form-control" id="${col}" name="${col}" >
             </div>
           `;
