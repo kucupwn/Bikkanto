@@ -24,6 +24,7 @@ class History(Base):
     cycles = Column(Integer)
     exercise = Column(String)
     repetitions = Column(Integer)
+    sum_repetitions = Column(Integer)
     user = Column(String)
 
 

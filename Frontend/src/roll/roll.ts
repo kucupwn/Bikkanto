@@ -160,6 +160,7 @@ export class Roll {
         cycles,
         exercise: cells[0].textContent || "",
         repetitions: Number(cells[1].textContent) || 0,
+        sum_repetitions: (Number(cells[1].textContent) || 0) * cycles,
         user,
       };
     });

@@ -5,6 +5,7 @@ export const historyColumnOrder = [
   "cycles",
   "exercise",
   "repetitions",
+  "sum_repetitions",
   "user",
 ];
 
