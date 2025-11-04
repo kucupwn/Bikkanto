@@ -4,5 +4,6 @@ export interface History {
   cycles: number;
   exercise: string;
   repetitions: number;
+  sum_repetitions: number;
   user: string;
 }
