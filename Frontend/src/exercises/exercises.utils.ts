@@ -9,7 +9,18 @@ export const exercisesColumnOrder = [
   "medium_max",
   "hard_min",
   "hard_max",
-];
+] as const;
+
+export const exerciseColumnLabels = {
+  exercise_name: "Exercise",
+  category: "Category",
+  easy_min: "Easy-min",
+  easy_max: "Easy-max",
+  medium_min: "Medium-min",
+  medium_max: "Medium-max",
+  hard_min: "Hard-min",
+  hard_max: "Hard-max",
+};
 
 export const numericColumns = [
   "easy_min",

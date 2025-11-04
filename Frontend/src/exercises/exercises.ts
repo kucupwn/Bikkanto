@@ -3,6 +3,7 @@ import type { Exercises } from "../types/exercises.types";
 import { getHandsontable } from "../table/handsontable";
 import {
   exercisesColumnOrder,
+  exerciseColumnLabels,
   numericColumns,
   generateAddModalInput,
   generateModifyModalInput,
@@ -43,14 +44,14 @@ export class ExercisesTable {
   private renderTable(data: Exercises[]): void {
     const columns = exercisesColumnOrder.map((key) => ({
       data: key,
-      title: key,
+      title: exerciseColumnLabels[key],
     }));
 
     this.hotInstance = getHandsontable<Exercises>(
       this.tableContainer,
       data,
       columns,
-      exercisesColumnOrder
+      [...exercisesColumnOrder]
     );
   }
 
