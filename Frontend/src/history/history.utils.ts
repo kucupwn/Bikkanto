@@ -7,7 +7,16 @@ export const historyColumnOrder = [
   "repetitions",
   "sum_repetitions",
   "user",
-];
+] as const;
+
+export const historyColumnLabels = {
+  date_complete: "Date",
+  cycles: "Cycles",
+  exercise: "Exercise",
+  repetitions: "Repetitions",
+  sum_repetitions: "Total Reps",
+  user: "User",
+};
 
 export async function fetchAllHistory(apiUrl: string): Promise<History[]> {
   try {

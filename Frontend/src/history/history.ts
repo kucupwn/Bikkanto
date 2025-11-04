@@ -5,7 +5,11 @@ import "handsontable/styles/ht-theme-main.css";
 registerAllModules();
 
 import type { History } from "../types/history.types";
-import { fetchAllHistory, historyColumnOrder } from "./history.utils";
+import {
+  fetchAllHistory,
+  historyColumnOrder,
+  historyColumnLabels,
+} from "./history.utils";
 import { getHandsontable } from "../table/handsontable";
 
 const tableContainer = document.getElementById(
@@ -43,14 +47,14 @@ export class HistoryTable {
   private renderTable(data: History[]): void {
     const columns = historyColumnOrder.map((key) => ({
       data: key,
-      title: key,
+      title: historyColumnLabels[key],
     }));
 
     this.hotInstance = getHandsontable<History>(
       this.tableContainer,
       data,
       columns,
-      historyColumnOrder
+      [...historyColumnOrder]
     );
   }
 }
