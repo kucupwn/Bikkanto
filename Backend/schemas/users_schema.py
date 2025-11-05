@@ -1,16 +1,15 @@
 from pydantic import BaseModel, Field
-from typing import Literal
 
 
 class UserBase(BaseModel):
     username: str
-    email: str
-    first_name: str
-    last_name: str
 
 
 class UserRead(UserBase):
     id: int
+    email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
 
     class Config:
         from_attributes = True
@@ -18,17 +17,17 @@ class UserRead(UserBase):
 
 class UserCreate(UserBase):
     username: str = Field(..., min_length=1)
-    email: str | None = Field(None)
-    first_name: str | None = Field(None)
-    last_name: str | None = Field(None)
+    email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     password: str = Field(..., min_length=5)
 
 
 class UserUpdate(UserBase):
-    email: str | None = Field(None)
-    first_name: str | None = Field(None)
-    last_name: str | None = Field(None)
-    password: str | None = Field(None)
+    email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    password: str | None = None
 
 
 class Token(BaseModel):
