@@ -4,7 +4,6 @@ from typing import Literal
 
 class UserBase(BaseModel):
     username: str
-    role: str
     email: str
     first_name: str
     last_name: str
@@ -19,21 +18,17 @@ class UserRead(UserBase):
 
 class UserCreate(UserBase):
     username: str = Field(..., min_length=1)
-    role: Literal["user", "admin"] = Field(...)
     email: str | None = Field(None)
-    first_name: str | None = Field(None, min_length=1)
-    last_name: str | None = Field(None, min_length=1)
+    first_name: str | None = Field(None)
+    last_name: str | None = Field(None)
     password: str = Field(..., min_length=5)
 
 
 class UserUpdate(UserBase):
-    username: str | None = Field(None, min_length=1)
-    role: Literal["user", "admin"] | None = Field(None)
     email: str | None = Field(None)
-    first_name: str | None = Field(None, min_length=1)
-    last_name: str | None = Field(None, min_length=1)
-    password: str | None = Field(None, min_length=5)
-    is_active: bool | None = Field(None)
+    first_name: str | None = Field(None)
+    last_name: str | None = Field(None)
+    password: str | None = Field(None)
 
 
 class Token(BaseModel):
