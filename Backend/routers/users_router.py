@@ -33,16 +33,18 @@ async def get_user(user: user_dependency, db: db_dependency):
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def create_user(user_create: UserCreate, db: db_dependency):
     existing_user = (
-        db.query(Users)
-        .filter(
-            (Users.username == user_create.username)
-            | (Users.email == user_create.email)
-        )
-        .first()
+        db.query(Users).filter(Users.username == user_create.username).first()
     )
 
     if existing_user:
         raise HTTPException(status_code=400, detail="Username or email already exists")
+
+    if user_create.email:
+        existing_email = (
+            db.query(Users).filter(Users.email == user_create.email).first()
+        )
+        if existing_email:
+            raise HTTPException(status_code=400, detail="Email already exists")
 
     user_data = user_create.model_dump(exclude={"password"})
     create_user_model = Users(
