@@ -24,6 +24,9 @@ async def get_user(user: user_dependency, db: db_dependency):
 
     user_model = db.query(Users).filter(Users.id == user.get("id")).first()
 
+    if user_model is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
     return UserRead.model_validate(user_model)
 
 
