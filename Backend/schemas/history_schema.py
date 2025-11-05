@@ -7,7 +7,7 @@ class HistoryBase(BaseModel):
     cycles: int
     exercise: str
     repetitions: int
-    sum_repetitions: int = Field(..., gt=0)
+    sum_repetitions: int
     user: str
 
 
