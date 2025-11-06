@@ -23,7 +23,7 @@ class UserCreate(UserBase):
     password: str = Field(..., min_length=5)
 
 
-class UserUpdate(UserBase):
+class UserUpdate(BaseModel):
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
