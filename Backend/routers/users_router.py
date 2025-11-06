@@ -1,6 +1,6 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
 from passlib.context import CryptContext
 from ..database import get_db
@@ -57,3 +57,34 @@ async def create_user(user_create: UserCreate, db: db_dependency):
     db.refresh(create_user_model)
 
     return UserRead.model_validate(create_user_model)
+
+
+@router.patch("/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
+async def update_user(
+    user_update: UserUpdate, db: db_dependency, user_id: int = Path(gt=0)
+):
+    user_model = db.query(Users).filter(Users.id == user_id).first()
+
+    if user_model is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    update_data = user_update.model_dump(exclude_unset=True)
+
+    if "password" in update_data:
+        user_model.hashed_password = bcrypt_context.hash(update_data["password"])
+        del update_data["password"]
+
+    if "email" in update_data:
+        existing_email = (
+            db.query(Users).filter(Users.email == update_data["email"]).first()
+        )
+        if existing_email and existing_email.id != user_model.id:
+            raise HTTPException(status_code=400, detail="Email already exists")
+
+    for key, value in update_data.items():
+        setattr(user_model, key, value)
+
+    db.commit()
+    db.refresh(user_model)
+
+    return UserRead.model_validate(user_model)
