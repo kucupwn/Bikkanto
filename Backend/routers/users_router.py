@@ -50,7 +50,6 @@ async def create_user(user_create: UserCreate, db: db_dependency):
     create_user_model = Users(
         **user_data,
         hashed_password=bcrypt_context.hash(user_create.password),
-        is_active=True
     )
     db.add(create_user_model)
     db.commit()

@@ -1,4 +1,10 @@
 from pydantic import BaseModel, Field
+from enum import Enum
+
+
+class UserRole(str, Enum):
+    user = "user"
+    admin = "admin"
 
 
 class UserBase(BaseModel):
@@ -10,6 +16,7 @@ class UserRead(UserBase):
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
+    role: UserRole = UserRole.user
 
     class Config:
         from_attributes = True
@@ -20,6 +27,7 @@ class UserCreate(UserBase):
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
+    role: UserRole = UserRole.user
     password: str = Field(..., min_length=5)
 
 
