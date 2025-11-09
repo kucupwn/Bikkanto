@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Date
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from .database import Base
 
 
@@ -25,7 +25,7 @@ class History(Base):
     exercise = Column(String)
     repetitions = Column(Integer)
     sum_repetitions = Column(Integer)
-    user = Column(String)
+    user = Column(String, ForeignKey("users.username"))
 
 
 class Users(Base):
