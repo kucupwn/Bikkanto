@@ -55,3 +55,7 @@ h1 {
 #login-container {
   max-width: 400px;
 }
+
+#register-container {
+  max-width: 600px;
+}
