@@ -1,6 +1,8 @@
+import type { AuthUser } from "../types/user.types";
+
 const loginForm = document.getElementById("login-form") as HTMLFormElement;
 
-class Users {
+export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
 
   public async login(username: string, password: string): Promise<void> {
@@ -8,7 +10,7 @@ class Users {
     formData.append("username", username);
     formData.append("password", password);
 
-    this.getToken(formData);
+    await this.getToken(formData);
 
     window.location.href = "/index.html";
   }
@@ -16,7 +18,7 @@ class Users {
   private async getToken(formData: URLSearchParams): Promise<void> {
     const res = await fetch(`${this.apiUrl}/auth/token`, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-urlencoded" },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: formData,
     });
 
@@ -27,6 +29,19 @@ class Users {
 
     const data = await res.json();
     localStorage.setItem("token", data.access_token);
+  }
+
+  public getCurrentUser(): AuthUser | null {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    return {
+      id: payload.id,
+      username: payload.sub,
+      role: payload.role,
+    };
   }
 }
 
