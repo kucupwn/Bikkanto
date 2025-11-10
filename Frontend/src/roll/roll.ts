@@ -10,6 +10,8 @@ import {
   fetchAllExercises,
 } from "../exercises/exercises.utils";
 
+import { users } from "../users/users";
+
 const overviewTableButtons = document.getElementById(
   "roll-table-buttons-container"
 );
@@ -151,7 +153,13 @@ export class Roll {
       return;
     }
 
-    const user = "user";
+    const userDetails = users.getCurrentUser();
+    if (!userDetails) {
+      alert("Login to save workout!");
+      return;
+    }
+
+    const user = userDetails.username;
 
     const historyEntries = Array.from(rows).map((row) => {
       const cells = row.querySelectorAll("td");
