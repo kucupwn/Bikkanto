@@ -1,6 +1,6 @@
-export const header = document.querySelector("header") as HTMLHeadingElement;
+const header = document.querySelector("header") as HTMLHeadingElement;
 
-export async function loadPartial(header: HTMLHeadingElement, path: string) {
+export async function loadPartial(path: string) {
   const el = header;
   if (!el) return;
 
