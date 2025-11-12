@@ -12,7 +12,7 @@ header {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .exercise-row {
