@@ -15,6 +15,11 @@ export class Users {
     window.location.href = "/index.html";
   }
 
+  public logout(): void {
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+  }
+
   private async getToken(formData: URLSearchParams): Promise<void> {
     const res = await fetch(`${this.apiUrl}/auth/token`, {
       method: "POST",
