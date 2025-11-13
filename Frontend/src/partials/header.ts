@@ -1,8 +1,10 @@
 const header = document.querySelector("header") as HTMLHeadingElement;
 
-export async function loadPartial(path: string) {
+export async function loadPartial() {
   const el = header;
   if (!el) return;
+
+  const path = "src/partials/header.html";
 
   const res = await fetch(path);
 
