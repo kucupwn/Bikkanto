@@ -11,6 +11,7 @@ import {
 } from "../exercises/exercises.utils";
 
 import { users } from "../users/users";
+import { protectPage } from "../ui/protected";
 
 const overviewTableButtons = document.getElementById(
   "roll-table-buttons-container"
@@ -202,3 +203,5 @@ export class Roll {
 
 const roll = new Roll();
 await roll.init();
+
+protectPage();
