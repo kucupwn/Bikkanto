@@ -30,7 +30,7 @@ export class Users {
 
   public logout(): void {
     localStorage.removeItem("token");
-    window.location.href = "index.html";
+    window.location.href = "/index.html";
   }
 
   private async getToken(formData: URLSearchParams): Promise<void> {
