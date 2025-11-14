@@ -1,9 +1,22 @@
 import type { AuthUser } from "../types/user.types";
 
-const loginForm = document.getElementById("login-form") as HTMLFormElement;
-
 export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
+
+  constructor() {
+    this.attachEventListeners();
+  }
+
+  private attachEventListeners(): void {
+    const loginForm = document.getElementById("login-form") as HTMLFormElement;
+    if (loginForm)
+      loginForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = (loginForm.username as HTMLInputElement).value;
+        const password = (loginForm.password as HTMLInputElement).value;
+        await this.login(username, password);
+      });
+  }
 
   public async login(username: string, password: string): Promise<void> {
     const formData = new URLSearchParams();
@@ -51,10 +64,3 @@ export class Users {
 }
 
 export const users = new Users();
-
-loginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const username = (loginForm.username as HTMLInputElement).value;
-  const password = (loginForm.password as HTMLInputElement).value;
-  await users.login(username, password);
-});
