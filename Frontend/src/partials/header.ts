@@ -1,4 +1,5 @@
 import type { AuthUser } from "../types/user.types";
+import { users } from "../users/users";
 
 export class Header {
   private header = document.querySelector("header") as HTMLHeadingElement;
@@ -15,6 +16,23 @@ export class Header {
     this.logoutButton = document.getElementById(
       "logout-btn"
     ) as HTMLAnchorElement;
+
+    this.attachEventListeners();
+  }
+
+  private attachEventListeners(): void {
+    if (this.loginButton)
+      this.loginButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "login.html";
+      });
+
+    if (this.logoutButton)
+      this.logoutButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        users.logout();
+        window.location.href = "index.html";
+      });
   }
 
   private async loadPartial() {
