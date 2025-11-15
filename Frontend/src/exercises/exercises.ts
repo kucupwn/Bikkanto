@@ -14,7 +14,6 @@ import {
   numericColumnsSet,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
-import { protectPage } from "../ui/protected";
 
 const tableContainer = document.getElementById(
   "exercises-table"
@@ -247,11 +246,9 @@ export class ExercisesTable {
   }
 }
 
-if (!protectPage()) {
-  if (tableContainer) {
-    const exercisesTable = new ExercisesTable(tableContainer);
-    await exercisesTable.init();
-  } else {
-    console.warn("Table container not found");
-  }
+if (tableContainer) {
+  const exercisesTable = new ExercisesTable(tableContainer);
+  await exercisesTable.init();
+} else {
+  console.warn("Table container not found");
 }

@@ -11,7 +11,6 @@ import {
   historyColumnLabels,
 } from "./history.utils";
 import { getHandsontable } from "../table/handsontable";
-import { protectPage } from "../ui/protected";
 
 const tableContainer = document.getElementById(
   "history-table"
@@ -60,11 +59,9 @@ export class HistoryTable {
   }
 }
 
-if (!protectPage()) {
-  if (tableContainer) {
-    const historyTable = new HistoryTable(tableContainer);
-    await historyTable.init();
-  } else {
-    console.warn("Table container not found");
-  }
+if (tableContainer) {
+  const historyTable = new HistoryTable(tableContainer);
+  await historyTable.init();
+} else {
+  console.warn("Table container not found");
 }
