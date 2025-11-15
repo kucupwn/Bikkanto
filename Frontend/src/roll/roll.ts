@@ -54,8 +54,8 @@ export class Roll {
     const getButton = document.getElementById("btn-get") as HTMLButtonElement;
     if (getButton)
       getButton.addEventListener("click", () => {
-        const workout = roll.getWorkout();
-        roll.fillOverviewTable(workout);
+        const workout = this.getWorkout();
+        this.fillOverviewTable(workout);
 
         settingsContainer?.classList.toggle("hidden");
         overviewContainer?.classList.toggle("hidden");
@@ -201,7 +201,7 @@ export class Roll {
   }
 }
 
-const roll = new Roll();
-await roll.init();
-
-protectPage();
+if (!protectPage()) {
+  const roll = new Roll();
+  await roll.init();
+}

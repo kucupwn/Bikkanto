@@ -60,10 +60,11 @@ export class HistoryTable {
   }
 }
 
-if (tableContainer) {
-  const historyTable = new HistoryTable(tableContainer);
-  await historyTable.init();
-  protectPage();
-} else {
-  console.warn("Table container not found");
+if (!protectPage()) {
+  if (tableContainer) {
+    const historyTable = new HistoryTable(tableContainer);
+    await historyTable.init();
+  } else {
+    console.warn("Table container not found");
+  }
 }

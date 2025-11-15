@@ -247,10 +247,11 @@ export class ExercisesTable {
   }
 }
 
-if (tableContainer) {
-  const exercisesTable = new ExercisesTable(tableContainer);
-  await exercisesTable.init();
-  protectPage();
-} else {
-  console.warn("Table container not found");
+if (!protectPage()) {
+  if (tableContainer) {
+    const exercisesTable = new ExercisesTable(tableContainer);
+    await exercisesTable.init();
+  } else {
+    console.warn("Table container not found");
+  }
 }
