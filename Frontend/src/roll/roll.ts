@@ -29,7 +29,7 @@ export class Roll {
     this.attachEventListeners();
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrlExercises);
       this.allCategories = await fetchCategories(
@@ -40,7 +40,7 @@ export class Roll {
     }
   }
 
-  private attachEventListeners() {
+  private attachEventListeners(): void {
     const exerciseCountInput = document.getElementById(
       "exercise-count-input"
     ) as HTMLInputElement;
@@ -89,7 +89,7 @@ export class Roll {
       });
   }
 
-  public async getExerciseSelections(count: number) {
+  public async getExerciseSelections(count: number): Promise<void> {
     const container = document.getElementById(
       "exercise-categories-container"
     ) as HTMLDivElement;
@@ -111,7 +111,7 @@ export class Roll {
     return workout;
   }
 
-  public fillOverviewTable(workout: WorkoutEntry[]) {
+  public fillOverviewTable(workout: WorkoutEntry[]): void {
     const table = document.getElementById("overview-table") as HTMLTableElement;
     if (!table) return;
 
@@ -135,7 +135,7 @@ export class Roll {
     });
   }
 
-  private async saveWorkoutHistory() {
+  private async saveWorkoutHistory(): Promise<void> {
     const table = document.getElementById("overview-table") as HTMLTableElement;
     if (!table) return;
 
