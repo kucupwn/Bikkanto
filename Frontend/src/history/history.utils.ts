@@ -20,7 +20,14 @@ export const historyColumnLabels = {
 
 export async function fetchAllHistory(apiUrl: string): Promise<History[]> {
   try {
-    const res = await fetch(apiUrl);
+    const token = localStorage.getItem("token");
+    const res = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data: History[] = await res.json();
 
     return data;
