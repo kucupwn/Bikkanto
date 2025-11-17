@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
@@ -17,17 +17,20 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.get("/", response_model=UserRead, status_code=status.HTTP_200_OK)
+@router.get("/", response_model=List[UserRead], status_code=status.HTTP_200_OK)
 async def get_user(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    user_model = db.query(Users).filter(Users.id == user.get("id")).first()
+    if user.get("role") == "admin":
+        users_model = db.query(Users).all()
+    else:
+        users_model = db.query(Users).filter(Users.id == user.get("id")).first()
+        if users_model is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        users_model = [users_model]
 
-    if user_model is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return UserRead.model_validate(user_model)
+    return [UserRead.model_validate(user) for user in users_model]
 
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
