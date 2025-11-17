@@ -71,7 +71,7 @@ export class Users {
     };
   }
 
-  private async addNewUser(formData: HTMLFormElement): Promise<void> {
+  private getFormData(formData: HTMLFormElement) {
     const fd = new FormData(formData);
     const data: Record<string, any> = {};
 
@@ -83,6 +83,12 @@ export class Users {
     }
 
     delete data.password2;
+
+    return data;
+  }
+
+  private async addNewUser(formData: HTMLFormElement): Promise<void> {
+    const data = this.getFormData(formData);
 
     try {
       const res = await fetch(`${this.apiUrl}/users/register`, {
