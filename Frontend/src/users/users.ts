@@ -16,6 +16,15 @@ export class Users {
         const password = (loginForm.password as HTMLInputElement).value;
         await this.login(username, password);
       });
+
+    const registerForm = document.getElementById(
+      "register-form"
+    ) as HTMLFormElement;
+    if (registerForm)
+      registerForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await this.addNewUser(registerForm);
+      });
   }
 
   public async login(username: string, password: string): Promise<void> {
@@ -60,6 +69,38 @@ export class Users {
       username: payload.sub,
       role: payload.role,
     };
+  }
+
+  private async addNewUser(formData: HTMLFormElement): Promise<void> {
+    const fd = new FormData(formData);
+    const data: Record<string, any> = {};
+
+    fd.forEach((value, key) => (data[key] = value));
+
+    if (data.password !== data.password2) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    delete data.password2;
+
+    try {
+      const res = await fetch(`${this.apiUrl}/users/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/JSON" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error response:", err);
+        throw new Error(JSON.stringify(err));
+      }
+
+      window.location.href = "/index.html";
+    } catch (err) {
+      console.warn("Error creating user: ", err);
+    }
   }
 }
 

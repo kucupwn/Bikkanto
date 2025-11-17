@@ -30,7 +30,7 @@ async def get_user(user: user_dependency, db: db_dependency):
     return UserRead.model_validate(user_model)
 
 
-@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def create_user(user_create: UserCreate, db: db_dependency):
     existing_user = (
         db.query(Users).filter(Users.username == user_create.username).first()
