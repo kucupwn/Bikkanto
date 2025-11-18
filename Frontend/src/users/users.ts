@@ -5,6 +5,11 @@ export class Users {
 
   constructor() {
     this.attachEventListeners();
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      this.startAutoLogout(token);
+    }
   }
 
   private attachEventListeners(): void {
@@ -55,7 +60,10 @@ export class Users {
     }
 
     const data = await res.json();
-    localStorage.setItem("token", data.access_token);
+    const token = data.access_token;
+    localStorage.setItem("token", token);
+
+    this.startAutoLogout(token);
   }
 
   public getCurrentUser(): AuthUser | null {
@@ -107,6 +115,23 @@ export class Users {
     } catch (err) {
       console.warn("Error creating user: ", err);
     }
+  }
+
+  private startAutoLogout(token: string): void {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    const expiry = payload.exp * 1000;
+    const now = Date.now();
+    const timeLeft = expiry - now;
+
+    if (timeLeft <= 0) {
+      this.logout();
+      return;
+    }
+
+    setTimeout(() => {
+      this.logout();
+    }, timeLeft);
   }
 }
 
