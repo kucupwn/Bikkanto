@@ -37,7 +37,7 @@ def create_access_token(
 ):
     encode = {"sub": username, "id": user_id, "role": role}
     expires = datetime.now(timezone.utc) + expires_delta
-    encode.update({"exp": expires})
+    encode.update({"exp": int(expires.timestamp())})
 
     return jwt.encode(encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
