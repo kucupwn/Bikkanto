@@ -22,6 +22,9 @@ const overviewContainer = document.getElementById("overview-container");
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
+  private overviewTable: HTMLTableElement = document.getElementById(
+    "overview-table"
+  ) as HTMLTableElement;
   private readonly apiUrlExercises = "http://127.0.0.1:8000/exercises";
   private readonly apiUrlHistory = "http://127.0.0.1:8000/history";
 
@@ -112,9 +115,6 @@ export class Roll {
   }
 
   public fillOverviewTable(workout: WorkoutEntry[]): void {
-    const table = document.getElementById("overview-table") as HTMLTableElement;
-    if (!table) return;
-
     const tbody = document.querySelector("tbody");
     if (!tbody) return;
 
@@ -136,10 +136,7 @@ export class Roll {
   }
 
   private async saveWorkoutHistory(): Promise<void> {
-    const table = document.getElementById("overview-table") as HTMLTableElement;
-    if (!table) return;
-
-    const rows = table.querySelectorAll("tbody tr");
+    const rows = this.overviewTable.querySelectorAll("tbody tr");
 
     const today = new Date().toISOString().split("T")[0];
 
