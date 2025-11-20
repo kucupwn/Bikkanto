@@ -30,6 +30,7 @@ export class Roll {
 
   constructor() {
     this.attachEventListeners();
+    this.handleUnsubmittedRoll();
   }
 
   public async init(): Promise<void> {
@@ -58,6 +59,7 @@ export class Roll {
       getButton.addEventListener("click", () => {
         const workout = this.getWorkout();
         this.fillOverviewTable(workout);
+        localStorage.removeItem("pendingTable");
 
         settingsContainer?.classList.toggle("hidden");
         overviewContainer?.classList.toggle("hidden");
@@ -79,6 +81,7 @@ export class Roll {
       applyRollButton.addEventListener("click", () => {
         overviewTableButtons?.classList.toggle("hidden");
         rollSubmitContainer?.classList.toggle("hidden");
+        localStorage.setItem("pendingTable", this.overviewTable.innerHTML);
       });
 
     const finishRollButton = document.getElementById(
@@ -88,8 +91,20 @@ export class Roll {
       finishRollButton.addEventListener("click", async () => {
         finishRollButton.disabled = true;
         await this.saveWorkoutHistory();
+        localStorage.removeItem("pendingTable");
         finishRollButton.disabled = false;
       });
+  }
+
+  private handleUnsubmittedRoll(): void {
+    if (localStorage.getItem("pendingTable")) {
+      const pendingRollDiv = document.getElementById(
+        "pending-roll-container"
+      ) as HTMLDivElement;
+
+      pendingRollDiv.classList.remove("hidden");
+      settingsContainer?.classList.add("hidden");
+    }
   }
 
   public async getExerciseSelections(count: number): Promise<void> {
