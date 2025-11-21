@@ -87,7 +87,6 @@ export class Roll {
     ) as HTMLButtonElement;
     if (finishRollButton)
       finishRollButton.addEventListener("click", async () => {
-        console.log("im clicked");
         finishRollButton.disabled = true;
         await this.saveWorkoutHistory();
         localStorage.removeItem("pendingTable");
@@ -218,7 +217,7 @@ export class Roll {
     await this.postBatchHistory(historyEntries);
 
     alert("Good job! Workout saved.");
-    window.location.reload();
+    window.location.href = "/history.html";
   }
 
   private async postBatchHistory(
