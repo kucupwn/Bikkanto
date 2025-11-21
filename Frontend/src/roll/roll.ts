@@ -94,16 +94,28 @@ export class Roll {
         localStorage.removeItem("pendingTable");
         finishRollButton.disabled = false;
       });
+
+    const discardButton = document.getElementById(
+      "discard-roll"
+    ) as HTMLButtonElement;
+    if (discardButton)
+      discardButton.addEventListener("click", () => {
+        localStorage.removeItem("pendingTable");
+        this.handleUnsubmittedRoll();
+      });
   }
 
   private handleUnsubmittedRoll(): void {
-    if (localStorage.getItem("pendingTable")) {
-      const pendingRollDiv = document.getElementById(
-        "pending-roll-container"
-      ) as HTMLDivElement;
+    const pendingRollDiv = document.getElementById(
+      "pending-roll-container"
+    ) as HTMLDivElement;
 
+    if (localStorage.getItem("pendingTable")) {
       pendingRollDiv.classList.remove("hidden");
       settingsContainer?.classList.add("hidden");
+    } else {
+      pendingRollDiv.classList.add("hidden");
+      settingsContainer?.classList.remove("hidden");
     }
   }
 
