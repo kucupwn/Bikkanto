@@ -18,13 +18,11 @@ const overviewTableButtons = document.getElementById(
 const rollSubmitContainer = document.getElementById("roll-submit-container");
 const settingsContainer = document.getElementById("settings-container");
 const overviewContainer = document.getElementById("overview-container");
+const pendingRollContainer = document.getElementById("pending-roll-container");
 
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
-  private overviewTable: HTMLTableElement = document.getElementById(
-    "overview-table"
-  ) as HTMLTableElement;
   private readonly apiUrlExercises = "http://127.0.0.1:8000/exercises";
   private readonly apiUrlHistory = "http://127.0.0.1:8000/history";
 
@@ -81,7 +79,7 @@ export class Roll {
       applyRollButton.addEventListener("click", () => {
         overviewTableButtons?.classList.toggle("hidden");
         rollSubmitContainer?.classList.toggle("hidden");
-        localStorage.setItem("pendingTable", this.overviewTable.innerHTML);
+        localStorage.setItem("pendingTable", overviewContainer!.innerHTML);
       });
 
     const finishRollButton = document.getElementById(
@@ -89,6 +87,7 @@ export class Roll {
     ) as HTMLButtonElement;
     if (finishRollButton)
       finishRollButton.addEventListener("click", async () => {
+        console.log("im clicked");
         finishRollButton.disabled = true;
         await this.saveWorkoutHistory();
         localStorage.removeItem("pendingTable");
@@ -103,18 +102,35 @@ export class Roll {
         localStorage.removeItem("pendingTable");
         this.handleUnsubmittedRoll();
       });
+
+    const loadButton = document.getElementById(
+      "load-roll"
+    ) as HTMLButtonElement;
+    if (loadButton)
+      loadButton.addEventListener("click", () => {
+        this.loadUnsubmittedTable();
+      });
+  }
+
+  private loadUnsubmittedTable(): void {
+    const table = localStorage.getItem("pendingTable");
+
+    if (table) {
+      overviewContainer?.classList.remove("hidden");
+      overviewContainer!.innerHTML = table;
+      rollSubmitContainer?.classList.remove("hidden");
+      pendingRollContainer?.classList.add("hidden");
+
+      this.attachEventListeners();
+    }
   }
 
   private handleUnsubmittedRoll(): void {
-    const pendingRollDiv = document.getElementById(
-      "pending-roll-container"
-    ) as HTMLDivElement;
-
     if (localStorage.getItem("pendingTable")) {
-      pendingRollDiv.classList.remove("hidden");
+      pendingRollContainer?.classList.remove("hidden");
       settingsContainer?.classList.add("hidden");
     } else {
-      pendingRollDiv.classList.add("hidden");
+      pendingRollContainer?.classList.add("hidden");
       settingsContainer?.classList.remove("hidden");
     }
   }
@@ -163,7 +179,9 @@ export class Roll {
   }
 
   private async saveWorkoutHistory(): Promise<void> {
-    const rows = this.overviewTable.querySelectorAll("tbody tr");
+    const table = document.getElementById("overview-table") as HTMLTableElement;
+
+    const rows = table.querySelectorAll("tbody tr");
 
     const today = new Date().toISOString().split("T")[0];
 
