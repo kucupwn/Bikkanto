@@ -63,7 +63,11 @@ export function getRandomExercise(
   const filtered = exercises.filter((ex) => ex.category === category);
 
   if (filtered.length === 0) {
-    return { exercise: "No exercise found", reps: 0 };
+    return {
+      category: "No exercise found",
+      exercise: "No exercise found",
+      reps: 0,
+    };
   }
 
   const idx = Math.floor(Math.random() * filtered.length);
@@ -78,6 +82,7 @@ export function getRandomExercise(
   const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
 
   return {
+    category: exercise.category,
     exercise: exercise.exercise_name,
     reps,
   };

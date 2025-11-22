@@ -165,12 +165,16 @@ export class Roll {
     workout.forEach((entry) => {
       const row = document.createElement("tr");
 
+      const categoryCell = document.createElement("td");
+      categoryCell.textContent = entry.category;
+
       const exerciseCell = document.createElement("td");
       exerciseCell.textContent = entry.exercise;
 
       const repsCell = document.createElement("td");
       repsCell.textContent = entry.reps.toString();
 
+      row.appendChild(categoryCell);
       row.appendChild(exerciseCell);
       row.appendChild(repsCell);
       tbody.appendChild(row);
@@ -207,9 +211,10 @@ export class Roll {
       return {
         date_complete: today,
         cycles,
-        exercise: cells[0].textContent || "",
-        repetitions: Number(cells[1].textContent) || 0,
-        sum_repetitions: (Number(cells[1].textContent) || 0) * cycles,
+        category: cells[0].textContent || "",
+        exercise: cells[1].textContent || "",
+        repetitions: Number(cells[2].textContent) || 0,
+        sum_repetitions: (Number(cells[2].textContent) || 0) * cycles,
         user,
       };
     });

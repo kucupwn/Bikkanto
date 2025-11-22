@@ -11,6 +11,7 @@ export interface Exercises {
 }
 
 export interface WorkoutEntry {
+  category: string;
   exercise: string;
   reps: number;
 }

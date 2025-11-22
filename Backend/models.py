@@ -22,6 +22,7 @@ class History(Base):
     id = Column(Integer, primary_key=True, index=True)
     date_complete = Column(Date)
     cycles = Column(Integer)
+    category = Column(String)
     exercise = Column(String)
     repetitions = Column(Integer)
     sum_repetitions = Column(Integer)
