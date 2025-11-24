@@ -26,6 +26,23 @@ header {
   margin-right: 20px;
 }
 
+.user-settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 300px;
+  gap: 10px;
+}
+
+.settings-row p {
+  margin: 0;
+}
+
 #title-text {
   text-decoration: none;
   color: black;
@@ -79,4 +96,9 @@ header {
   justify-content: center;
   justify-self: center;
   margin: 2rem;
+}
+
+#settings-container {
+  justify-self: center;
+  max-width: 500px;
 }
