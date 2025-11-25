@@ -1,4 +1,4 @@
-import type { AuthUser } from "../types/user.types";
+import type { AuthUser, User } from "../types/user.types";
 
 export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
@@ -79,6 +79,34 @@ export class Users {
     };
   }
 
+  private async getCurrentUserAllDetails(
+    currentUser: AuthUser
+  ): Promise<User | null> {
+    if (!currentUser) {
+      return null;
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`${this.apiUrl}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data: User = await res.json();
+
+      return data;
+    } catch (err) {
+      console.warn("Error loading data: ", err);
+
+      return null;
+    }
+  }
+
   private getFormData(formData: HTMLFormElement) {
     const fd = new FormData(formData);
     const data: Record<string, any> = {};
@@ -133,6 +161,8 @@ export class Users {
       this.logout();
     }, timeLeft);
   }
+
+  public fillSettingsPage(): void {}
 }
 
 export const users = new Users();
