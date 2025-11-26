@@ -16,7 +16,7 @@ const overviewTableButtons = document.getElementById(
   "roll-table-buttons-container"
 );
 const rollSubmitContainer = document.getElementById("roll-submit-container");
-const settingsContainer = document.getElementById("settings-container");
+const settingsContainer = document.getElementById("roll-settings-container");
 const overviewContainer = document.getElementById("overview-container");
 const pendingRollContainer = document.getElementById("pending-roll-container");
 
