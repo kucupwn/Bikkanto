@@ -109,8 +109,30 @@ export class Users {
   }
 
   private async submitEditedUserData(
-    formData: Record<string, string>
-  ): Promise<void> {}
+    data: Record<string, string>
+  ): Promise<void> {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${this.apiUrl}/users`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error response:", err);
+        throw new Error(JSON.stringify(err));
+      }
+
+      window.location.reload();
+    } catch (err) {
+      console.error("Could not update user data:", err);
+    }
+  }
 
   public async login(username: string, password: string): Promise<void> {
     const formData = new URLSearchParams();
