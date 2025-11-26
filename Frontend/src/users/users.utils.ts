@@ -14,6 +14,10 @@ export function setCurrentProfileTextContent(
   }
 }
 
+export function getEditInput(editKey: string, currentValue: string) {
+  return `<input id="profile-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
+}
+
 export function getNewUserFormData(formData: HTMLFormElement) {
   const fd = new FormData(formData);
   const data: Record<string, any> = {};

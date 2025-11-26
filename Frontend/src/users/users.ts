@@ -3,6 +3,7 @@ import {
   setModalHeaderTitle,
   setCurrentProfileTextContent,
   getNewUserFormData,
+  getEditInput,
 } from "./users.utils";
 import { Modal } from "bootstrap";
 
@@ -218,13 +219,15 @@ export class Users {
     const currentValue = sourceParagraphId
       ? (document.getElementById(sourceParagraphId)?.textContent ?? "")
       : "";
-    body.innerHTML = `<input id="profile-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
+    body.innerHTML = getEditInput(editKey, currentValue);
 
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
 
     this.handleEditFormSubmit(bootstrapModal);
   }
+
+  // private openPasswordChangeModal(): void {}
 
   private handleEditFormSubmit(modal: any): void {
     const form = document.getElementById("profile-form") as HTMLFormElement;
