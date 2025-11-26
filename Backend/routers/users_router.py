@@ -71,17 +71,16 @@ async def create_user(user_create: UserCreate, db: db_dependency):
     return UserRead.model_validate(create_user_model)
 
 
-@router.patch("/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
+@router.patch("/", response_model=UserRead, status_code=status.HTTP_200_OK)
 async def update_user(
     user_update: UserUpdate,
     user: user_dependency,
     db: db_dependency,
-    user_id: int = Path(gt=0),
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    user_model = db.query(Users).filter(Users.id == user_id).first()
+    user_model = db.query(Users).filter(Users.id == user.get("id")).first()
 
     if user_model is None:
         raise HTTPException(status_code=404, detail="User not found")
