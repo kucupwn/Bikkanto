@@ -181,6 +181,7 @@ export class Users {
 
   private async addNewUser(formData: HTMLFormElement): Promise<void> {
     const data = getNewUserFormData(formData);
+    if (!data) return;
 
     try {
       const res = await fetch(`${this.apiUrl}/users/register`, {
