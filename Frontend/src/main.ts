@@ -20,7 +20,7 @@ window.addEventListener("load", async () => {
   }
 
   if (window.location.pathname === "/settings.html") {
-    users.fillSettingsPage(currentUser);
+    users.fillSettingsPageWithCurrentData(currentUser);
   }
 
   document.documentElement.style.visibility = "visible";

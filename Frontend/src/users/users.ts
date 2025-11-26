@@ -1,4 +1,9 @@
 import type { AuthUser, User } from "../types/user.types";
+import {
+  setModalHeaderTitle,
+  setCurrentSettingsTextContent,
+  getNewUserFormData,
+} from "./users.utils";
 import { Modal } from "bootstrap";
 
 export class Users {
@@ -57,19 +62,12 @@ export class Users {
       });
   }
 
-  private addModalHeaderTitle(editData: string) {
-    const title = document.getElementById("settings-modal-label");
-    if (!title) return;
-
-    title.textContent = `Change ${editData}`;
-  }
-
   private openEditModal(
     editKey: string,
     headerLabel: string,
     sourceParagraphId: string
   ): void {
-    this.addModalHeaderTitle(headerLabel);
+    setModalHeaderTitle(headerLabel);
 
     const modalEl = document.getElementById("settings-modal");
     if (!modalEl) return;
@@ -181,52 +179,8 @@ export class Users {
     };
   }
 
-  private async getCurrentUserAllDetails(
-    currentUser: AuthUser
-  ): Promise<User | null> {
-    if (!currentUser) {
-      return null;
-    }
-
-    const token = localStorage.getItem("token");
-
-    try {
-      const res = await fetch(`${this.apiUrl}/users`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data: User = await res.json();
-
-      return data;
-    } catch (err) {
-      console.warn("Error loading data: ", err);
-
-      return null;
-    }
-  }
-
-  private getFormData(formData: HTMLFormElement) {
-    const fd = new FormData(formData);
-    const data: Record<string, any> = {};
-
-    fd.forEach((value, key) => (data[key] = value));
-
-    if (data.password !== data.password2) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    delete data.password2;
-
-    return data;
-  }
-
   private async addNewUser(formData: HTMLFormElement): Promise<void> {
-    const data = this.getFormData(formData);
+    const data = getNewUserFormData(formData);
 
     try {
       const res = await fetch(`${this.apiUrl}/users/register`, {
@@ -264,24 +218,45 @@ export class Users {
     }, timeLeft);
   }
 
-  private setSettingsTextContent(
-    element: HTMLElement | null,
-    value: string | undefined
-  ): void {
-    if (element) {
-      element.textContent = value || "";
-    }
-  }
-
-  public async fillSettingsPage(currentUser: AuthUser): Promise<void> {
+  public async fillSettingsPageWithCurrentData(
+    currentUser: AuthUser
+  ): Promise<void> {
     const userData = await this.getCurrentUserAllDetails(currentUser);
     const firstName = document.getElementById("firstname-paragraph");
     const lastName = document.getElementById("lastname-paragraph");
     const email = document.getElementById("email-paragraph");
 
-    this.setSettingsTextContent(firstName, userData?.first_name);
-    this.setSettingsTextContent(lastName, userData?.last_name);
-    this.setSettingsTextContent(email, userData?.email);
+    setCurrentSettingsTextContent(firstName, userData?.first_name);
+    setCurrentSettingsTextContent(lastName, userData?.last_name);
+    setCurrentSettingsTextContent(email, userData?.email);
+  }
+
+  private async getCurrentUserAllDetails(
+    currentUser: AuthUser
+  ): Promise<User | null> {
+    if (!currentUser) {
+      return null;
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`${this.apiUrl}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data: User = await res.json();
+
+      return data;
+    } catch (err) {
+      console.warn("Error loading data: ", err);
+
+      return null;
+    }
   }
 }
 
