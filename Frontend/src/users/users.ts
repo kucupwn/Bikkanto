@@ -3,7 +3,6 @@ import { Modal } from "bootstrap";
 
 export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
-  private currentEditKey: string | null = null;
 
   constructor() {
     this.attachEventListeners();
@@ -70,7 +69,6 @@ export class Users {
     headerLabel: string,
     sourceParagraphId: string
   ): void {
-    this.currentEditKey = editKey;
     this.addModalHeaderTitle(headerLabel);
 
     const modalEl = document.getElementById("settings-modal");
@@ -94,18 +92,25 @@ export class Users {
     const form = document.getElementById("settings-form") as HTMLFormElement;
     if (!form) return;
 
-    // form.onsubmit = async (e) => {
-    //   e.preventDefault();
-    //   const formData = new FormData(form);
-    //   const data = {};
-    //   await this.submitEditedUserData(data);
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data: Record<string, string> = {};
 
-    //   modal.hide();
-    //   form.reset();
-    // };
+      formData.forEach((value, key) => {
+        data[key] = String(value);
+      });
+
+      await this.submitEditedUserData(data);
+
+      modal.hide();
+      form.reset();
+    };
   }
 
-  private async submitEditedUserData(formData: string): Promise<void> {}
+  private async submitEditedUserData(
+    formData: Record<string, string>
+  ): Promise<void> {}
 
   public async login(username: string, password: string): Promise<void> {
     const formData = new URLSearchParams();
