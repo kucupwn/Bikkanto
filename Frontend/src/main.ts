@@ -19,8 +19,8 @@ window.addEventListener("load", async () => {
     setHomeUi(currentUser?.username || null);
   }
 
-  if (window.location.pathname === "/settings.html") {
-    users.fillSettingsPageWithCurrentData(currentUser);
+  if (window.location.pathname === "/profile.html") {
+    users.fillProfilePageWithCurrentData(currentUser);
   }
 
   document.documentElement.style.visibility = "visible";

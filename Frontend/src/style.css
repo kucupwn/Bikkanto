@@ -26,12 +26,12 @@ header {
   margin-right: 20px;
 }
 
-.user-settings {
+.user-profile {
   display: flex;
   flex-direction: column;
 }
 
-.settings-row {
+.profile-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,7 +39,7 @@ header {
   gap: 10px;
 }
 
-.settings-row p {
+.profile-row p {
   margin: 0;
 }
 
@@ -98,7 +98,7 @@ header {
   margin: 2rem;
 }
 
-#settings-container {
+#profile-container {
   justify-self: center;
   max-width: 500px;
 }

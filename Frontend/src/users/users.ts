@@ -1,7 +1,7 @@
 import type { AuthUser, User } from "../types/user.types";
 import {
   setModalHeaderTitle,
-  setCurrentSettingsTextContent,
+  setCurrentProfileTextContent,
   getNewUserFormData,
 } from "./users.utils";
 import { Modal } from "bootstrap";
@@ -189,7 +189,7 @@ export class Users {
   // USER DATA EDITING
   // --------------------------------------------------------------
 
-  public async fillSettingsPageWithCurrentData(
+  public async fillProfilePageWithCurrentData(
     currentUser: AuthUser
   ): Promise<void> {
     const userData = await this.getCurrentUserAllDetails(currentUser);
@@ -197,9 +197,9 @@ export class Users {
     const lastName = document.getElementById("lastname-paragraph");
     const email = document.getElementById("email-paragraph");
 
-    setCurrentSettingsTextContent(firstName, userData?.first_name);
-    setCurrentSettingsTextContent(lastName, userData?.last_name);
-    setCurrentSettingsTextContent(email, userData?.email);
+    setCurrentProfileTextContent(firstName, userData?.first_name);
+    setCurrentProfileTextContent(lastName, userData?.last_name);
+    setCurrentProfileTextContent(email, userData?.email);
   }
 
   private openEditModal(
@@ -209,16 +209,16 @@ export class Users {
   ): void {
     setModalHeaderTitle(headerLabel);
 
-    const modalEl = document.getElementById("settings-modal");
+    const modalEl = document.getElementById("profile-modal");
     if (!modalEl) return;
 
-    const body = document.getElementById("settings-form-body");
+    const body = document.getElementById("profile-form-body");
     if (!body) return;
 
     const currentValue = sourceParagraphId
       ? (document.getElementById(sourceParagraphId)?.textContent ?? "")
       : "";
-    body.innerHTML = `<input id="settings-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
+    body.innerHTML = `<input id="profile-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
 
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
@@ -227,7 +227,7 @@ export class Users {
   }
 
   private handleEditFormSubmit(modal: any): void {
-    const form = document.getElementById("settings-form") as HTMLFormElement;
+    const form = document.getElementById("profile-form") as HTMLFormElement;
     if (!form) return;
 
     form.onsubmit = async (e) => {

@@ -1,11 +1,11 @@
 export function setModalHeaderTitle(editData: string) {
-  const title = document.getElementById("settings-modal-label");
+  const title = document.getElementById("profile-modal-label");
   if (!title) return;
 
   title.textContent = `Change ${editData}`;
 }
 
-export function setCurrentSettingsTextContent(
+export function setCurrentProfileTextContent(
   element: HTMLElement | null,
   value: string | undefined
 ): void {

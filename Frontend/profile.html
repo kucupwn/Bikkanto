@@ -8,10 +8,10 @@
   </head>
   <body>
     <header></header>
-    <div id="settings-container">
-      <div class="user-settings">
+    <div id="profile-container">
+      <div class="user-profile">
         <label for="firstname">First name:</label>
-        <div class="settings-row">
+        <div class="profile-row">
           <p id="firstname-paragraph">the first name</p>
           <button id="firstname-edit" class="btn btn-outline-primary py-0">
             Edit
@@ -19,9 +19,9 @@
         </div>
         <hr />
       </div>
-      <div class="user-settings">
+      <div class="user-profile">
         <label for="lastname">Last name:</label>
-        <div class="settings-row">
+        <div class="profile-row">
           <p id="lastname-paragraph">the last name</p>
           <button id="lastname-edit" class="btn btn-outline-primary py-0">
             Edit
@@ -29,9 +29,9 @@
         </div>
         <hr />
       </div>
-      <div class="user-settings">
+      <div class="user-profile">
         <label for="email">Email:</label>
-        <div class="settings-row">
+        <div class="profile-row">
           <p id="email-paragraph">the email</p>
           <button id="email-edit" class="btn btn-outline-primary py-0">
             Edit
@@ -39,7 +39,7 @@
         </div>
         <hr />
       </div>
-      <div class="user-settings">
+      <div class="user-profile">
         <label for="firstname">Password</label>
         <button id="username-edit" class="btn btn-outline-primary py-0">
           Change
@@ -51,7 +51,7 @@
     <!-- Edit modal -->
     <div
       class="modal fade"
-      id="settings-modal"
+      id="profile-modal"
       tabindex="-1"
       aria-labelledby="exercise-modal-label"
       aria-hidden="true"
@@ -59,7 +59,7 @@
       <div class="modal-dialog">
         <div class="modal-content text-dark">
           <div class="modal-header">
-            <h5 class="modal-title" id="settings-modal-label"></h5>
+            <h5 class="modal-title" id="profile-modal-label"></h5>
             <button
               type="button"
               class="btn-close"
@@ -67,8 +67,8 @@
               aria-label="Close"
             ></button>
           </div>
-          <form id="settings-form">
-            <div class="modal-body" id="settings-form-body"></div>
+          <form id="profile-form">
+            <div class="modal-body" id="profile-form-body"></div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Save</button>
               <button
