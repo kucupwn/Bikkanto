@@ -3,6 +3,7 @@ import { Modal } from "bootstrap";
 
 export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
+  private currentEditKey: string | null = null;
 
   constructor() {
     this.attachEventListeners();
@@ -37,17 +38,74 @@ export class Users {
     ) as HTMLButtonElement;
     if (firstnameEdit)
       firstnameEdit.addEventListener("click", () => {
-        this.openEditModal();
+        this.openEditModal("first_name", "first name", "firstname-paragraph");
+      });
+
+    const lastnameEdit = document.getElementById(
+      "lastname-edit"
+    ) as HTMLButtonElement;
+    if (lastnameEdit)
+      lastnameEdit.addEventListener("click", () => {
+        this.openEditModal("last_name", "last name", "lastname-paragraph");
+      });
+
+    const emailEdit = document.getElementById(
+      "email-edit"
+    ) as HTMLButtonElement;
+    if (emailEdit)
+      emailEdit.addEventListener("click", () => {
+        this.openEditModal("email", "email", "email-paragraph");
       });
   }
 
-  private openEditModal(): void {
+  private addModalHeaderTitle(editData: string) {
+    const title = document.getElementById("settings-modal-label");
+    if (!title) return;
+
+    title.textContent = `Change ${editData}`;
+  }
+
+  private openEditModal(
+    editKey: string,
+    headerLabel: string,
+    sourceParagraphId: string
+  ): void {
+    this.currentEditKey = editKey;
+    this.addModalHeaderTitle(headerLabel);
+
     const modalEl = document.getElementById("settings-modal");
     if (!modalEl) return;
 
+    const body = document.getElementById("settings-form-body");
+    if (!body) return;
+
+    const currentValue = sourceParagraphId
+      ? (document.getElementById(sourceParagraphId)?.textContent ?? "")
+      : "";
+    body.innerHTML = `<input id="settings-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
+
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
+
+    this.handleEditFormSubmit(bootstrapModal);
   }
+
+  private handleEditFormSubmit(modal: any): void {
+    const form = document.getElementById("settings-form") as HTMLFormElement;
+    if (!form) return;
+
+    // form.onsubmit = async (e) => {
+    //   e.preventDefault();
+    //   const formData = new FormData(form);
+    //   const data = {};
+    //   await this.submitEditedUserData(data);
+
+    //   modal.hide();
+    //   form.reset();
+    // };
+  }
+
+  private async submitEditedUserData(formData: string): Promise<void> {}
 
   public async login(username: string, password: string): Promise<void> {
     const formData = new URLSearchParams();
