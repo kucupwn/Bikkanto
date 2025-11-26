@@ -1,5 +1,6 @@
 import type { AuthUser, User } from "../types/user.types";
 import {
+  attachUserEventListeners,
   setModalHeaderTitle,
   setCurrentProfileTextContent,
   getNewUserFormData,
@@ -11,56 +12,17 @@ export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
 
   constructor() {
-    this.attachEventListeners();
+    attachUserEventListeners({
+      onLogin: async (username, password) => this.login(username, password),
+      onRegister: async (form) => this.addNewUser(form),
+      onOpenEdit: (editKey, label, sourceId) =>
+        this.openEditModal(editKey, label, sourceId),
+    });
 
     const token = localStorage.getItem("token");
     if (token) {
       this.startAutoLogout(token);
     }
-  }
-
-  private attachEventListeners(): void {
-    const loginForm = document.getElementById("login-form") as HTMLFormElement;
-    if (loginForm)
-      loginForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const username = (loginForm.username as HTMLInputElement).value;
-        const password = (loginForm.password as HTMLInputElement).value;
-        await this.login(username, password);
-      });
-
-    const registerForm = document.getElementById(
-      "register-form"
-    ) as HTMLFormElement;
-    if (registerForm)
-      registerForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        await this.addNewUser(registerForm);
-      });
-
-    const firstnameEdit = document.getElementById(
-      "firstname-edit"
-    ) as HTMLButtonElement;
-    if (firstnameEdit)
-      firstnameEdit.addEventListener("click", () => {
-        this.openEditModal("first_name", "first name", "firstname-paragraph");
-      });
-
-    const lastnameEdit = document.getElementById(
-      "lastname-edit"
-    ) as HTMLButtonElement;
-    if (lastnameEdit)
-      lastnameEdit.addEventListener("click", () => {
-        this.openEditModal("last_name", "last name", "lastname-paragraph");
-      });
-
-    const emailEdit = document.getElementById(
-      "email-edit"
-    ) as HTMLButtonElement;
-    if (emailEdit)
-      emailEdit.addEventListener("click", () => {
-        this.openEditModal("email", "email", "email-paragraph");
-      });
   }
 
   // --------------------------------------------------------------
