@@ -162,7 +162,25 @@ export class Users {
     }, timeLeft);
   }
 
-  public fillSettingsPage(): void {}
+  private setSettingsTextContent(
+    element: HTMLElement | null,
+    value: string | undefined
+  ): void {
+    if (element) {
+      element.textContent = value || "";
+    }
+  }
+
+  public async fillSettingsPage(currentUser: AuthUser): Promise<void> {
+    const userData = await this.getCurrentUserAllDetails(currentUser);
+    const firstName = document.getElementById("firstname-paragraph");
+    const lastName = document.getElementById("lastname-paragraph");
+    const email = document.getElementById("email-paragraph");
+
+    this.setSettingsTextContent(firstName, userData?.first_name);
+    this.setSettingsTextContent(lastName, userData?.last_name);
+    this.setSettingsTextContent(email, userData?.email);
+  }
 }
 
 export const users = new Users();

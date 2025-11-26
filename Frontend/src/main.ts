@@ -6,9 +6,10 @@ import { header } from "./partials/header";
 import { users } from "./users/users";
 import { protectPage } from "./ui/protected";
 import { setHomeUi } from "./ui/home";
+import type { AuthUser } from "./types/user.types";
 
 window.addEventListener("load", async () => {
-  const currentUser = users.getCurrentUser();
+  const currentUser = users.getCurrentUser() as AuthUser;
   protectPage(currentUser);
 
   await header.init();
@@ -16,6 +17,10 @@ window.addEventListener("load", async () => {
 
   if (window.location.pathname === "/index.html") {
     setHomeUi(currentUser?.username || null);
+  }
+
+  if (window.location.pathname === "/settings.html") {
+    users.fillSettingsPage(currentUser);
   }
 
   document.documentElement.style.visibility = "visible";
