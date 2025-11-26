@@ -1,4 +1,5 @@
 import type { AuthUser, User } from "../types/user.types";
+import { Modal } from "bootstrap";
 
 export class Users {
   private readonly apiUrl = "http://127.0.0.1:8000";
@@ -30,6 +31,22 @@ export class Users {
         e.preventDefault();
         await this.addNewUser(registerForm);
       });
+
+    const firstnameEdit = document.getElementById(
+      "firstname-edit"
+    ) as HTMLButtonElement;
+    if (firstnameEdit)
+      firstnameEdit.addEventListener("click", () => {
+        this.openEditModal();
+      });
+  }
+
+  private openEditModal(): void {
+    const modalEl = document.getElementById("settings-modal");
+    if (!modalEl) return;
+
+    const bootstrapModal = new Modal(modalEl);
+    bootstrapModal.show();
   }
 
   public async login(username: string, password: string): Promise<void> {
