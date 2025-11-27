@@ -1,42 +1,15 @@
-import type {
-  Exercises,
-  ExercisesCallbacks,
-  ExerciseOperation,
+import {
+  type Exercises,
+  type ExercisesCallbacks,
+  type ExerciseOperation,
+  NUMERIC_COLUMNS,
+  EXERCISE_COLUMNS_ORDER,
+  NUMERIC_COLUMN_LABELS,
+  EXERCISE_COLUMN_LABELS,
+  REQUIRED_COLUMNS,
+  NUMERIC_COLUMNS_SET,
 } from "../types/exercises.types";
 import { EXERCISE_OPERATIONS } from "../types/exercises.types";
-
-export const numericColumns = [
-  "easy_min",
-  "easy_max",
-  "medium_min",
-  "medium_max",
-  "hard_min",
-  "hard_max",
-] as const;
-
-export const exercisesColumnOrder = [
-  "exercise_name",
-  "category",
-  ...numericColumns,
-] as const;
-
-export const numericColumnLabels = {
-  easy_min: "Easy-min",
-  easy_max: "Easy-max",
-  medium_min: "Medium-min",
-  medium_max: "Medium-max",
-  hard_min: "Hard-min",
-  hard_max: "Hard-max",
-};
-
-export const exercisesColumnLabels = {
-  exercise_name: "Exercise",
-  category: "Category",
-  ...numericColumnLabels,
-};
-
-const requiredColumns = ["exercise_name", "category"];
-export const numericColumnsSet = new Set<string>(numericColumns);
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   try {
@@ -119,7 +92,7 @@ export function fillModifyModalDefaultValues(
     categorySelect.value = selectedExercises.category;
   }
 
-  numericColumns.forEach((col) => {
+  NUMERIC_COLUMNS.forEach((col) => {
     const input = document.getElementById(col) as HTMLInputElement | null;
     if (input) {
       input.value = String(selectedExercises[col as keyof Exercises] ?? "");
@@ -132,33 +105,31 @@ export function generateAddModalInput(allCategories: string[]): string {
 
   return `
     <div class="row row-cols-2 g-3">
-      ${exercisesColumnOrder
-        .map((col) => {
-          const isRequired = requiredColumns.includes(col) ? "required" : "";
+      ${EXERCISE_COLUMNS_ORDER.map((col) => {
+        const isRequired = REQUIRED_COLUMNS.includes(col) ? "required" : "";
 
-          if (col === "category") {
-            return `
+        if (col === "category") {
+          return `
             <div class="col">
-              <label for="${col}" class="form-label">${exercisesColumnLabels[col]}</label>
+              <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
               <select class="form-select" id="${col}" name="${col}" ${isRequired}>
                 <option>-- Select --</option>
                 ${categoryOptions}
               </select>
             </div>
           `;
-          } else {
-            const inputType = numericColumnsSet.has(col) ? "number" : "text";
-            const defaultValue = numericColumnsSet.has(col) ? "1" : "";
+        } else {
+          const inputType = NUMERIC_COLUMNS_SET.has(col) ? "number" : "text";
+          const defaultValue = NUMERIC_COLUMNS_SET.has(col) ? "1" : "";
 
-            return `
+          return `
                 <div class="col">
-                  <label for="${col}" class="form-label">${exercisesColumnLabels[col]}</label>
+                  <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
                   <input type="${inputType}" class="form-control" id="${col}" name="${col}" value="${defaultValue}" ${isRequired}>
                 </div>
               `;
-          }
-        })
-        .join("")}
+        }
+      }).join("")}
     </div>
   `;
 }
@@ -186,16 +157,14 @@ export function generateModifyModalInput(
           ${categoryOptions}
         </select>
       </div>
-      ${numericColumns
-        .map((col) => {
-          return `
+      ${NUMERIC_COLUMNS.map((col) => {
+        return `
             <div class="col">
-              <label for="${col}" class="form-label">${numericColumnLabels[col]}</label>
+              <label for="${col}" class="form-label">${NUMERIC_COLUMN_LABELS[col]}</label>
               <input type="number" class="form-control" id="${col}" name="${col}" >
             </div>
           `;
-        })
-        .join("")}
+      }).join("")}
     </div>
   `;
 }

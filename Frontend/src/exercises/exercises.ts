@@ -3,18 +3,18 @@ import {
   type ExerciseOperation,
   type Exercises,
   EXERCISE_OPERATIONS,
+  EXERCISE_COLUMNS_ORDER,
+  EXERCISE_COLUMN_LABELS,
+  NUMERIC_COLUMNS_SET,
 } from "../types/exercises.types";
 import { getHandsontable } from "../table/handsontable";
 import {
-  exercisesColumnOrder,
-  exercisesColumnLabels,
   generateAddModalInput,
   generateModifyModalInput,
   generateDeleteModalInput,
   fetchAllExercises,
   fetchCategories,
   fillModifyModalDefaultValues,
-  numericColumnsSet,
   attachExercisesEventListeners,
   setExercisesModalHeaderTitle,
 } from "./exercises.utils";
@@ -49,16 +49,16 @@ export class ExercisesTable {
   }
 
   private renderTable(data: Exercises[]): void {
-    const columns = exercisesColumnOrder.map((key) => ({
+    const columns = EXERCISE_COLUMNS_ORDER.map((key) => ({
       data: key,
-      title: exercisesColumnLabels[key],
+      title: EXERCISE_COLUMN_LABELS[key],
     }));
 
     this.hotInstance = getHandsontable<Exercises>(
       this.tableContainer,
       data,
       columns,
-      [...exercisesColumnOrder]
+      [...EXERCISE_COLUMNS_ORDER]
     );
   }
 
@@ -122,7 +122,9 @@ export class ExercisesTable {
         data["exercise_id"] = selectedId;
         data["exercise_name"] = selectedExercise?.exercise_name ?? "";
       } else {
-        data[key] = numericColumnsSet.has(key) ? Number(value) : String(value);
+        data[key] = NUMERIC_COLUMNS_SET.has(key)
+          ? Number(value)
+          : String(value);
       }
     });
 
