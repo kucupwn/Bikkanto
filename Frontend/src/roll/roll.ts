@@ -34,7 +34,7 @@ export class Roll {
       "pending-roll-container"
     );
     this.attachEventListeners();
-    this.handleUnsubmittedRoll();
+    this.toggleUnsubmittedRollDisplay();
   }
 
   public async init(): Promise<void> {
@@ -105,7 +105,7 @@ export class Roll {
     if (discardButton)
       discardButton.addEventListener("click", () => {
         localStorage.removeItem("pendingTable");
-        this.handleUnsubmittedRoll();
+        this.toggleUnsubmittedRollDisplay();
       });
 
     const loadButton = document.getElementById(
@@ -130,7 +130,7 @@ export class Roll {
     }
   }
 
-  private handleUnsubmittedRoll(): void {
+  private toggleUnsubmittedRollDisplay(): void {
     if (localStorage.getItem("pendingTable")) {
       this.pendingRollContainer?.classList.remove("hidden");
       this.settingsContainer?.classList.add("hidden");
