@@ -170,10 +170,10 @@ export class Users {
     headerLabel: string,
     sourceParagraphId: string
   ): void {
-    setModalHeaderTitle(headerLabel);
-
     const modalEl = document.getElementById("profile-modal");
     if (!modalEl) return;
+
+    setModalHeaderTitle(headerLabel);
 
     const body = document.getElementById("profile-form-body");
     if (!body) return;
