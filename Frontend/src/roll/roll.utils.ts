@@ -43,9 +43,12 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
   if (finishRollButton)
     finishRollButton.addEventListener("click", async () => {
       finishRollButton.disabled = true;
-      await callback.onSaveWorkoutHistory();
-      localStorage.removeItem("pendingTable");
-      finishRollButton.disabled = false;
+      try {
+        await callback.onSaveWorkoutHistory();
+        localStorage.removeItem("pendingTable");
+      } finally {
+        finishRollButton.disabled = false;
+      }
     });
 
   const discardButton = document.getElementById(
