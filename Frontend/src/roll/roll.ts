@@ -97,7 +97,17 @@ export class Roll {
 
     if (table) {
       this.overviewContainer?.classList.remove("hidden");
-      this.overviewContainer!.innerHTML = table;
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(table, "text/html");
+      const tbody = doc.querySelector("tbody");
+      const actualTBody = this.overviewContainer?.querySelector("tbody");
+
+      if (tbody && actualTBody) {
+        actualTBody.innerHTML = tbody.innerHTML;
+      }
+
+      this.overviewTableButtonsContainer?.classList.add("hidden");
       this.rollSubmitContainer?.classList.remove("hidden");
       this.pendingRollContainer?.classList.add("hidden");
     }
