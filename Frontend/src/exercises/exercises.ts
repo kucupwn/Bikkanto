@@ -1,5 +1,9 @@
 import Handsontable from "handsontable/base";
-import type { Exercises } from "../types/exercises.types";
+import {
+  type ExerciseOperation,
+  type Exercises,
+  EXERCISE_OPERATIONS,
+} from "../types/exercises.types";
 import { getHandsontable } from "../table/handsontable";
 import {
   exercisesColumnOrder,
@@ -30,7 +34,7 @@ export class ExercisesTable {
   constructor(container: HTMLDivElement) {
     this.tableContainer = container;
     attachExercisesEventListeners({
-      onOpenOperaion: (operation) => this.openModal(operation),
+      onOpenOperation: (operation) => this.openModal(operation),
     });
   }
 
@@ -67,15 +71,15 @@ export class ExercisesTable {
     }
   }
 
-  private openModal(operation: string) {
+  private openModal(operation: ExerciseOperation) {
     const modalBody = document.getElementById("exercise-form-body");
     if (!modalBody) return;
 
     setExercisesModalHeaderTitle(operation);
 
-    if (operation === "Add") {
+    if (operation === EXERCISE_OPERATIONS.ADD) {
       modalBody.innerHTML = generateAddModalInput(this.allCategories);
-    } else if (operation === "Modify") {
+    } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
       modalBody.innerHTML = generateModifyModalInput(
         this.allExercises,
         this.allCategories
@@ -92,7 +96,7 @@ export class ExercisesTable {
           }
         });
       }
-    } else if (operation === "Delete") {
+    } else if (operation === EXERCISE_OPERATIONS.DELETE) {
       modalBody.innerHTML = generateDeleteModalInput(this.allExercises);
     }
 
@@ -125,7 +129,7 @@ export class ExercisesTable {
     return data;
   }
 
-  private handleFormSubmit(modal: any, operation: string): void {
+  private handleFormSubmit(modal: any, operation: ExerciseOperation): void {
     const form = document.getElementById("exercise-form") as HTMLFormElement;
     if (!form) return;
 
@@ -134,16 +138,16 @@ export class ExercisesTable {
 
       const formData = this.getFormData(form);
 
-      if (operation === "Add") {
+      if (operation === EXERCISE_OPERATIONS.ADD) {
         await this.postNewExercise(formData);
-      } else if (operation === "Modify") {
+      } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
         const { exercise_id: exerciseId, ...updateData } = formData;
         if (!exerciseId) {
           alert("Please select an exercise to modify.");
           return;
         }
         await this.updateExercise(exerciseId, updateData);
-      } else if (operation === "Delete") {
+      } else if (operation === EXERCISE_OPERATIONS.DELETE) {
         const exerciseId = formData.exercise_id;
         if (!exerciseId) {
           alert("Please select an exercise to modify.");
