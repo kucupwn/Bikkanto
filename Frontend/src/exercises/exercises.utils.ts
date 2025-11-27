@@ -1,4 +1,4 @@
-import type { Exercises } from "../types/exercises.types";
+import type { Exercises, ExercisesCallbacks } from "../types/exercises.types";
 
 export const numericColumns = [
   "easy_min",
@@ -60,7 +60,21 @@ export async function fetchCategories(apiUrl: string): Promise<string[]> {
   }
 }
 
-export function addModalHeaderTitle(operation: string) {
+export function attachExercisesEventListeners(
+  callback: ExercisesCallbacks
+): void {
+  const bindOperation = (buttonId: string, operation: string) => {
+    const el = document.getElementById(buttonId) as HTMLButtonElement;
+    if (el)
+      el.addEventListener("click", () => callback.onOpenOperaion(operation));
+  };
+
+  bindOperation("add-ex-btn", "Add");
+  bindOperation("modify-ex-btn", "Modify");
+  bindOperation("delete-ex-btn", "Delete");
+}
+
+export function setExercisesModalHeaderTitle(operation: string) {
   const title = document.getElementById("exercise-modal-label");
   if (!title) return;
 

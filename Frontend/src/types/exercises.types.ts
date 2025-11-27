@@ -15,3 +15,7 @@ export interface WorkoutEntry {
   exercise: string;
   reps: number;
 }
+
+export type ExercisesCallbacks = {
+  onOpenOperaion: (operation: string) => void;
+};

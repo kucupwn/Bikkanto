@@ -9,9 +9,10 @@ import {
   generateDeleteModalInput,
   fetchAllExercises,
   fetchCategories,
-  addModalHeaderTitle,
   fillModifyModalDefaultValues,
   numericColumnsSet,
+  attachExercisesEventListeners,
+  setExercisesModalHeaderTitle,
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
 
@@ -28,7 +29,9 @@ export class ExercisesTable {
 
   constructor(container: HTMLDivElement) {
     this.tableContainer = container;
-    this.attachEventListeners();
+    attachExercisesEventListeners({
+      onOpenOperaion: (operation) => this.openModal(operation),
+    });
   }
 
   public async init(): Promise<void> {
@@ -64,38 +67,11 @@ export class ExercisesTable {
     }
   }
 
-  private attachEventListeners(): void {
-    const addBtn = document.getElementById(
-      "add-ex-btn"
-    ) as HTMLButtonElement | null;
-    if (addBtn)
-      addBtn.addEventListener("click", () => {
-        this.openModal("Add");
-        addModalHeaderTitle("Add");
-      });
-
-    const modifyBtn = document.getElementById(
-      "modify-ex-btn"
-    ) as HTMLButtonElement | null;
-    if (modifyBtn)
-      modifyBtn.addEventListener("click", () => {
-        this.openModal("Modify");
-        addModalHeaderTitle("Modify");
-      });
-
-    const deleteBtn = document.getElementById(
-      "delete-ex-btn"
-    ) as HTMLButtonElement | null;
-    if (deleteBtn)
-      deleteBtn.addEventListener("click", () => {
-        this.openModal("Delete");
-        addModalHeaderTitle("Delete");
-      });
-  }
-
   private openModal(operation: string) {
     const modalBody = document.getElementById("exercise-form-body");
     if (!modalBody) return;
+
+    setExercisesModalHeaderTitle(operation);
 
     if (operation === "Add") {
       modalBody.innerHTML = generateAddModalInput(this.allCategories);
