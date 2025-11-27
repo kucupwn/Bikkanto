@@ -3,6 +3,9 @@ import {
   createCategorySelections,
   getRandomExercise,
   getSelectedCategories,
+  attachRollEventListeners,
+  toggleRollOverviewSubmit,
+  toggleRollSettingsOverview,
 } from "./roll.utils";
 
 import {
@@ -33,7 +36,48 @@ export class Roll {
     this.pendingRollContainer = document.getElementById(
       "pending-roll-container"
     );
-    this.attachEventListeners();
+
+    attachRollEventListeners({
+      onGetExerciseSelections: (exerciseCount: number) =>
+        this.getExerciseSelections(exerciseCount),
+
+      onGetWorkout: () => this.getWorkout(),
+
+      onFillOverviewTable: (workout: WorkoutEntry[]) =>
+        this.fillOverviewTable(workout),
+
+      onToggleRollSettingsOverview: () => {
+        if (this.settingsContainer && this.overviewContainer) {
+          toggleRollSettingsOverview(
+            this.settingsContainer,
+            this.overviewContainer
+          );
+        }
+      },
+
+      onToggleRollOverviewSubmit: () => {
+        if (this.overviewTableButtonsContainer && this.rollSubmitContainer) {
+          toggleRollOverviewSubmit(
+            this.overviewTableButtonsContainer,
+            this.rollSubmitContainer
+          );
+        }
+      },
+
+      onApplyRoll: () => {
+        if (this.overviewContainer) {
+          localStorage.setItem(
+            "pendingTable",
+            this.overviewContainer.innerHTML
+          );
+        }
+      },
+
+      onSaveWorkoutHistory: async () => await this.saveWorkoutHistory(),
+      onToggleUnsubmittedRollDisplay: () => this.toggleUnsubmittedRollDisplay(),
+      onLoadUnsubmittedTable: () => this.loadUnsubmittedTable(),
+    });
+
     this.toggleUnsubmittedRollDisplay();
   }
 
@@ -48,75 +92,6 @@ export class Roll {
     }
   }
 
-  private attachEventListeners(): void {
-    const exerciseCountInput = document.getElementById(
-      "exercise-count-input"
-    ) as HTMLInputElement;
-    if (exerciseCountInput)
-      exerciseCountInput.addEventListener("change", () => {
-        const exerciseCount = Number(exerciseCountInput.value);
-        this.getExerciseSelections(exerciseCount);
-      });
-
-    const getButton = document.getElementById("btn-get") as HTMLButtonElement;
-    if (getButton)
-      getButton.addEventListener("click", () => {
-        const workout = this.getWorkout();
-        this.fillOverviewTable(workout);
-        localStorage.removeItem("pendingTable");
-
-        this.settingsContainer?.classList.toggle("hidden");
-        this.overviewContainer?.classList.toggle("hidden");
-      });
-
-    const restartRollButton = document.getElementById(
-      "btn-restart-roll"
-    ) as HTMLButtonElement;
-    if (restartRollButton)
-      restartRollButton.addEventListener("click", () => {
-        this.settingsContainer?.classList.toggle("hidden");
-        this.overviewContainer?.classList.toggle("hidden");
-      });
-
-    const applyRollButton = document.getElementById(
-      "btn-apply-roll"
-    ) as HTMLButtonElement;
-    if (applyRollButton)
-      applyRollButton.addEventListener("click", () => {
-        this.overviewTableButtonsContainer?.classList.toggle("hidden");
-        this.rollSubmitContainer?.classList.toggle("hidden");
-        localStorage.setItem("pendingTable", this.overviewContainer!.innerHTML);
-      });
-
-    const finishRollButton = document.getElementById(
-      "btn-finish-roll"
-    ) as HTMLButtonElement;
-    if (finishRollButton)
-      finishRollButton.addEventListener("click", async () => {
-        finishRollButton.disabled = true;
-        await this.saveWorkoutHistory();
-        localStorage.removeItem("pendingTable");
-        finishRollButton.disabled = false;
-      });
-
-    const discardButton = document.getElementById(
-      "discard-roll"
-    ) as HTMLButtonElement;
-    if (discardButton)
-      discardButton.addEventListener("click", () => {
-        localStorage.removeItem("pendingTable");
-        this.toggleUnsubmittedRollDisplay();
-      });
-
-    const loadButton = document.getElementById(
-      "load-roll"
-    ) as HTMLButtonElement;
-    if (loadButton)
-      loadButton.addEventListener("click", () => {
-        this.loadUnsubmittedTable();
-      });
-  }
-
   private loadUnsubmittedTable(): void {
     const table = localStorage.getItem("pendingTable");
 
@@ -125,8 +100,6 @@ export class Roll {
       this.overviewContainer!.innerHTML = table;
       this.rollSubmitContainer?.classList.remove("hidden");
       this.pendingRollContainer?.classList.add("hidden");
-
-      this.attachEventListeners();
     }
   }
 
