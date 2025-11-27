@@ -12,21 +12,27 @@ import {
 
 import { users } from "../users/users";
 
-const overviewTableButtons = document.getElementById(
-  "roll-table-buttons-container"
-);
-const rollSubmitContainer = document.getElementById("roll-submit-container");
-const settingsContainer = document.getElementById("roll-settings-container");
-const overviewContainer = document.getElementById("overview-container");
-const pendingRollContainer = document.getElementById("pending-roll-container");
-
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
   private readonly apiUrlExercises = "http://127.0.0.1:8000/exercises";
   private readonly apiUrlHistory = "http://127.0.0.1:8000/history";
+  private overviewTableButtonsContainer: HTMLElement | null;
+  private rollSubmitContainer: HTMLElement | null;
+  private settingsContainer: HTMLElement | null;
+  private overviewContainer: HTMLElement | null;
+  private pendingRollContainer: HTMLElement | null;
 
   constructor() {
+    this.overviewTableButtonsContainer = document.getElementById(
+      "roll-table-buttons-container"
+    );
+    this.rollSubmitContainer = document.getElementById("roll-submit-container");
+    this.settingsContainer = document.getElementById("roll-settings-container");
+    this.overviewContainer = document.getElementById("overview-container");
+    this.pendingRollContainer = document.getElementById(
+      "pending-roll-container"
+    );
     this.attachEventListeners();
     this.handleUnsubmittedRoll();
   }
@@ -59,8 +65,8 @@ export class Roll {
         this.fillOverviewTable(workout);
         localStorage.removeItem("pendingTable");
 
-        settingsContainer?.classList.toggle("hidden");
-        overviewContainer?.classList.toggle("hidden");
+        this.settingsContainer?.classList.toggle("hidden");
+        this.overviewContainer?.classList.toggle("hidden");
       });
 
     const restartRollButton = document.getElementById(
@@ -68,8 +74,8 @@ export class Roll {
     ) as HTMLButtonElement;
     if (restartRollButton)
       restartRollButton.addEventListener("click", () => {
-        settingsContainer?.classList.toggle("hidden");
-        overviewContainer?.classList.toggle("hidden");
+        this.settingsContainer?.classList.toggle("hidden");
+        this.overviewContainer?.classList.toggle("hidden");
       });
 
     const applyRollButton = document.getElementById(
@@ -77,9 +83,9 @@ export class Roll {
     ) as HTMLButtonElement;
     if (applyRollButton)
       applyRollButton.addEventListener("click", () => {
-        overviewTableButtons?.classList.toggle("hidden");
-        rollSubmitContainer?.classList.toggle("hidden");
-        localStorage.setItem("pendingTable", overviewContainer!.innerHTML);
+        this.overviewTableButtonsContainer?.classList.toggle("hidden");
+        this.rollSubmitContainer?.classList.toggle("hidden");
+        localStorage.setItem("pendingTable", this.overviewContainer!.innerHTML);
       });
 
     const finishRollButton = document.getElementById(
@@ -115,10 +121,10 @@ export class Roll {
     const table = localStorage.getItem("pendingTable");
 
     if (table) {
-      overviewContainer?.classList.remove("hidden");
-      overviewContainer!.innerHTML = table;
-      rollSubmitContainer?.classList.remove("hidden");
-      pendingRollContainer?.classList.add("hidden");
+      this.overviewContainer?.classList.remove("hidden");
+      this.overviewContainer!.innerHTML = table;
+      this.rollSubmitContainer?.classList.remove("hidden");
+      this.pendingRollContainer?.classList.add("hidden");
 
       this.attachEventListeners();
     }
@@ -126,11 +132,11 @@ export class Roll {
 
   private handleUnsubmittedRoll(): void {
     if (localStorage.getItem("pendingTable")) {
-      pendingRollContainer?.classList.remove("hidden");
-      settingsContainer?.classList.add("hidden");
+      this.pendingRollContainer?.classList.remove("hidden");
+      this.settingsContainer?.classList.add("hidden");
     } else {
-      pendingRollContainer?.classList.add("hidden");
-      settingsContainer?.classList.remove("hidden");
+      this.pendingRollContainer?.classList.add("hidden");
+      this.settingsContainer?.classList.remove("hidden");
     }
   }
 
