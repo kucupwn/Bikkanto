@@ -83,6 +83,19 @@ export function toggleRollOverviewSubmit(
   rollSubmitContainer?.classList.toggle("hidden");
 }
 
+export function toggleUnsubmittedRollDisplay(
+  pendingRollContainer: HTMLElement | null,
+  settingsContainer: HTMLElement | null
+): void {
+  if (localStorage.getItem("pendingTable")) {
+    pendingRollContainer?.classList.remove("hidden");
+    settingsContainer?.classList.add("hidden");
+  } else {
+    pendingRollContainer?.classList.add("hidden");
+    settingsContainer?.classList.remove("hidden");
+  }
+}
+
 export function createCategorySelections(
   count: number,
   categories: string[],

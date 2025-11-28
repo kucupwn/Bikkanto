@@ -6,6 +6,7 @@ import {
   attachRollEventListeners,
   toggleRollOverviewSubmit,
   toggleRollSettingsOverview,
+  toggleUnsubmittedRollDisplay,
 } from "./roll.utils";
 
 import {
@@ -74,11 +75,18 @@ export class Roll {
       },
 
       onSaveWorkoutHistory: async () => await this.saveWorkoutHistory(),
-      onToggleUnsubmittedRollDisplay: () => this.toggleUnsubmittedRollDisplay(),
+      onToggleUnsubmittedRollDisplay: () =>
+        toggleUnsubmittedRollDisplay(
+          this.pendingRollContainer,
+          this.settingsContainer
+        ),
       onLoadUnsubmittedTable: () => this.loadUnsubmittedTable(),
     });
 
-    this.toggleUnsubmittedRollDisplay();
+    toggleUnsubmittedRollDisplay(
+      this.pendingRollContainer,
+      this.settingsContainer
+    );
   }
 
   public async init(): Promise<void> {
@@ -110,16 +118,6 @@ export class Roll {
       this.overviewTableButtonsContainer?.classList.add("hidden");
       this.rollSubmitContainer?.classList.remove("hidden");
       this.pendingRollContainer?.classList.add("hidden");
-    }
-  }
-
-  private toggleUnsubmittedRollDisplay(): void {
-    if (localStorage.getItem("pendingTable")) {
-      this.pendingRollContainer?.classList.remove("hidden");
-      this.settingsContainer?.classList.add("hidden");
-    } else {
-      this.pendingRollContainer?.classList.add("hidden");
-      this.settingsContainer?.classList.remove("hidden");
     }
   }
 
