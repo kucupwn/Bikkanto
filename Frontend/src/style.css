@@ -43,6 +43,18 @@ header {
   margin: 0;
 }
 
+.guide-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.guide-title {
+  color: inherit;
+  font-size: 32px;
+}
+
 #title-text {
   text-decoration: none;
   color: black;
@@ -101,4 +113,9 @@ header {
 #profile-container {
   justify-self: center;
   max-width: 500px;
+}
+
+#guide-container {
+  justify-self: center;
+  max-width: 600px;
 }
