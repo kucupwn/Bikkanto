@@ -11,6 +11,10 @@ header {
   margin-bottom: 2rem;
 }
 
+a {
+  text-decoration: none !important;
+}
+
 .hidden {
   display: none !important;
 }
@@ -57,7 +61,6 @@ header {
 
 #title-text {
   font-family: "Courier New", Courier, monospace;
-  text-decoration: none;
   color: black;
   letter-spacing: 0.3rem;
   font-weight: 500;
