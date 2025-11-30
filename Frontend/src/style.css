@@ -56,11 +56,12 @@ header {
 }
 
 #title-text {
+  font-family: "Courier New", Courier, monospace;
   text-decoration: none;
   color: black;
   letter-spacing: 0.3rem;
-  font-weight: 700;
-  font-size: larger;
+  font-weight: 500;
+  font-size: 64px;
 }
 
 #table-wrapper {
