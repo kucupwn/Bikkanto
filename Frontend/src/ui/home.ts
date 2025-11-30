@@ -3,14 +3,17 @@ export function setHomeUi(username: string | null): void {
   const loginAdvice = document.getElementById(
     "login-advice-text"
   ) as HTMLParagraphElement;
+  const guide = document.getElementById("guide-container");
 
   if (!welcome || !loginAdvice) return;
 
   if (username) {
     welcome.textContent = `Welcome ${username}!`;
     loginAdvice.textContent = "";
+    guide?.classList.remove("hidden");
   } else {
     welcome.textContent = `Welcome!`;
     loginAdvice.textContent = "Please login for full experience.";
+    guide?.classList.add("hidden");
   }
 }
