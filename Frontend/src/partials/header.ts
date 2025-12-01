@@ -1,8 +1,9 @@
+import { Collapse } from "bootstrap";
 import type { AuthUser } from "../types/user.types";
 import { users } from "../users/users";
 
 export class Header {
-  private header = document.querySelector("header") as HTMLHeadingElement;
+  private header = document.querySelector("header") as HTMLElement;
   private loginButton: HTMLAnchorElement | null = null;
   private logoutButton: HTMLAnchorElement | null = null;
 
@@ -18,48 +19,43 @@ export class Header {
     ) as HTMLAnchorElement;
 
     this.attachEventListeners();
+    this.initCollapse();
   }
 
   private attachEventListeners(): void {
-    if (this.loginButton)
-      this.loginButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        window.location.href = "login.html";
-      });
+    this.loginButton?.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "login.html";
+    });
 
-    if (this.logoutButton)
-      this.logoutButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        users.logout();
-        window.location.href = "index.html";
-      });
+    this.logoutButton?.addEventListener("click", (e) => {
+      e.preventDefault();
+      users.logout();
+      window.location.href = "index.html";
+    });
   }
 
-  private async loadPartial() {
-    const path = "src/partials/header.html";
-
-    const res = await fetch(path);
-
-    if (!res.ok) {
-      console.log(`Failed to load ${path}:`, res.statusText);
-      return;
+  private initCollapse(): void {
+    const collapseEl = document.getElementById("navbarNav");
+    if (collapseEl) {
+      new Collapse(collapseEl, { toggle: false });
     }
+  }
 
+  private async loadPartial(): Promise<void> {
+    const res = await fetch("src/partials/header.html");
+    if (!res.ok) throw new Error(`Failed to load header: ${res.statusText}`);
     this.header.innerHTML = await res.text();
   }
 
-  private setActiveNav() {
+  private setActiveNav(): void {
     const navLinks = document.querySelectorAll(".nav-link");
     const currentPage = window.location.pathname.split("/").pop();
-
     navLinks.forEach((link) => {
-      const linkPage = link.getAttribute("href");
-
-      if (linkPage === currentPage) {
-        link.classList.add("active");
-      } else {
-        link.classList.remove("active");
-      }
+      link.classList.toggle(
+        "active",
+        link.getAttribute("href") === currentPage
+      );
     });
   }
 
