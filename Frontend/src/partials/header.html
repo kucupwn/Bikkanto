@@ -1,27 +1,25 @@
 <h1><a href="index.html" id="title-text">Bikkanto</a></h1>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
+    <!-- Toggler -->
     <button
       class="navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
-      data-bs-target="#navbar-nav"
-      aria-controls="navbar-nav"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Navbar links -->
-    <div class="collapse navbar-collapse" id="navbar-nav">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="roll.html">Roll</a>
-        </li>
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="roll.html">Roll</a></li>
         <li class="nav-item">
           <a class="nav-link" href="history.html">History</a>
         </li>
@@ -29,13 +27,11 @@
           <a class="nav-link" href="exercises.html">Exercises</a>
         </li>
       </ul>
-      <div class="d-flex" id="profile">
-        <a href="profile.html" class="m-2">Profile</a>
-      </div>
-      <div class="d-flex">
-        <a id="login-btn" class="btn btn-outline-primary">Login</a>
-      </div>
-      <div class="d-flex">
+
+      <!-- Right-side buttons -->
+      <div class="d-flex align-items-center">
+        <a href="profile.html" class="btn btn-outline-light me-2">Profile</a>
+        <a id="login-btn" class="btn btn-outline-primary me-2">Login</a>
         <a id="logout-btn" class="btn btn-outline-primary">Logout</a>
       </div>
     </div>
