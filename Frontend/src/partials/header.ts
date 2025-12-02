@@ -6,6 +6,7 @@ export class Header {
   private header = document.querySelector("header") as HTMLElement;
   private loginButton: HTMLAnchorElement | null = null;
   private logoutButton: HTMLAnchorElement | null = null;
+  private profileButton: HTMLAnchorElement | null = null;
 
   public async init(): Promise<void> {
     await this.loadPartial();
@@ -16,6 +17,9 @@ export class Header {
     ) as HTMLAnchorElement;
     this.logoutButton = document.getElementById(
       "logout-btn"
+    ) as HTMLAnchorElement;
+    this.profileButton = document.getElementById(
+      "profile-btn"
     ) as HTMLAnchorElement;
 
     this.attachEventListeners();
@@ -63,9 +67,11 @@ export class Header {
     if (currentUser) {
       this.loginButton?.classList.add("hidden");
       this.logoutButton?.classList.remove("hidden");
+      this.profileButton?.classList.remove("hidden");
     } else {
       this.loginButton?.classList.remove("hidden");
       this.logoutButton?.classList.add("hidden");
+      this.profileButton?.classList.add("hidden");
     }
   }
 }
