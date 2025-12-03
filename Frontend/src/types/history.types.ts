@@ -1,6 +1,6 @@
 export interface WorkoutHistory {
   id?: number;
-  date_complete: Date;
+  date_complete: string;
   cycles: number;
   category: string;
   exercise: string;
