@@ -1,6 +1,8 @@
-import type { History } from "../types/history.types";
+import type { WorkoutHistory } from "../types/history.types";
 
-export async function fetchAllHistory(apiUrl: string): Promise<History[]> {
+export async function fetchAllHistory(
+  apiUrl: string
+): Promise<WorkoutHistory[]> {
   try {
     const token = localStorage.getItem("token");
     const res = await fetch(apiUrl, {
@@ -10,7 +12,7 @@ export async function fetchAllHistory(apiUrl: string): Promise<History[]> {
         Authorization: `Bearer ${token}`,
       },
     });
-    const data: History[] = await res.json();
+    const data: WorkoutHistory[] = await res.json();
 
     return data;
   } catch (err) {

@@ -7,6 +7,7 @@ import {
   toggleRollOverviewSubmit,
   toggleRollSettingsOverview,
   toggleUnsubmittedRollDisplay,
+  getHistoryEntries,
 } from "./roll.utils";
 
 import {
@@ -193,18 +194,7 @@ export class Roll {
 
     const user = userDetails.username;
 
-    const historyEntries = Array.from(rows).map((row) => {
-      const cells = row.querySelectorAll("td");
-      return {
-        date_complete: today,
-        cycles,
-        category: cells[0].textContent || "",
-        exercise: cells[1].textContent || "",
-        repetitions: Number(cells[2].textContent) || 0,
-        sum_repetitions: (Number(cells[2].textContent) || 0) * cycles,
-        user,
-      };
-    });
+    const historyEntries = getHistoryEntries(rows, today, cycles, user);
 
     await this.postBatchHistory(historyEntries);
 

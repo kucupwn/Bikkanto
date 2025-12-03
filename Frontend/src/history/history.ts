@@ -5,7 +5,7 @@ import "handsontable/styles/ht-theme-main.css";
 registerAllModules();
 
 import {
-  type History,
+  type WorkoutHistory,
   HISTORY_COLUMN_ORDER,
   HISTORY_COLUMN_LABELS,
 } from "../types/history.types";
@@ -19,7 +19,7 @@ const tableContainer = document.getElementById(
 export class HistoryTable {
   private tableContainer: HTMLDivElement;
   private hotInstance: Handsontable | null = null;
-  private allHistory: History[] = [];
+  private allHistory: WorkoutHistory[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/history";
 
   constructor(container: HTMLDivElement) {
@@ -44,13 +44,13 @@ export class HistoryTable {
     }
   }
 
-  private renderTable(data: History[]): void {
+  private renderTable(data: WorkoutHistory[]): void {
     const columns = HISTORY_COLUMN_ORDER.map((key) => ({
       data: key,
       title: HISTORY_COLUMN_LABELS[key],
     }));
 
-    this.hotInstance = getHandsontable<History>(
+    this.hotInstance = getHandsontable<WorkoutHistory>(
       this.tableContainer,
       data,
       columns,
