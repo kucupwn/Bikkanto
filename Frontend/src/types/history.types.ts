@@ -1,7 +1,8 @@
-export interface History {
-  id: number;
+export interface WorkoutHistory {
+  id?: number;
   date_complete: Date;
   cycles: number;
+  category: string;
   exercise: string;
   repetitions: number;
   sum_repetitions: number;
