@@ -20,19 +20,16 @@ import {
 } from "./exercises.utils";
 import { Modal } from "bootstrap";
 
-const tableContainer = document.getElementById(
-  "exercises-table"
-) as HTMLDivElement | null;
-
 export class ExercisesTable {
-  private tableContainer: HTMLDivElement;
   private hotInstance: Handsontable | null = null;
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
+  private tableContainer: HTMLDivElement = document.getElementById(
+    "exercises-table"
+  ) as HTMLDivElement;
 
-  constructor(container: HTMLDivElement) {
-    this.tableContainer = container;
+  constructor() {
     attachExercisesEventListeners({
       onOpenOperation: (operation) => this.openModal(operation),
     });
@@ -228,9 +225,5 @@ export class ExercisesTable {
   }
 }
 
-if (tableContainer) {
-  const exercisesTable = new ExercisesTable(tableContainer);
-  await exercisesTable.init();
-} else {
-  console.warn("Table container not found");
-}
+const exercisesTable = new ExercisesTable();
+await exercisesTable.init();
