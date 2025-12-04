@@ -17,4 +17,5 @@ export type UserCallbacks = {
   onLogin: (username: string, password: string) => Promise<void> | void;
   onRegister: (form: HTMLFormElement) => Promise<void> | void;
   onOpenEdit: (editKey: string, label: string, sourceId: string) => void;
+  onOpenPasswordChange: () => void;
 };
