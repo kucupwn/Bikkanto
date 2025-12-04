@@ -15,8 +15,8 @@ import { getHandsontable } from "../table/handsontable";
 export class HistoryTable {
   private hotInstance: Handsontable | null = null;
   private allHistory: WorkoutHistory[] = [];
-  private readonly apiUrl = "http://127.0.0.1:8000/history";
-  private tableContainer = document.getElementById(
+  private readonly apiUrl: string = "http://127.0.0.1:8000/history";
+  private tableContainer: HTMLDivElement = document.getElementById(
     "history-table"
   ) as HTMLDivElement;
 
