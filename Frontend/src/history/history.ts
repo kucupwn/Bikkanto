@@ -12,19 +12,13 @@ import {
 import { fetchAllHistory } from "./history.utils";
 import { getHandsontable } from "../table/handsontable";
 
-const tableContainer = document.getElementById(
-  "history-table"
-) as HTMLDivElement | null;
-
 export class HistoryTable {
-  private tableContainer: HTMLDivElement;
   private hotInstance: Handsontable | null = null;
   private allHistory: WorkoutHistory[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/history";
-
-  constructor(container: HTMLDivElement) {
-    this.tableContainer = container;
-  }
+  private tableContainer = document.getElementById(
+    "history-table"
+  ) as HTMLDivElement;
 
   public async init(): Promise<void> {
     try {
@@ -57,11 +51,27 @@ export class HistoryTable {
       [...HISTORY_COLUMN_ORDER]
     );
   }
+
+  public async postBatchHistory(
+    historyEntry: Record<string, any>[]
+  ): Promise<void> {
+    try {
+      const res = await fetch(this.apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(historyEntry),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error resoponse: ", err);
+        throw new Error(JSON.stringify(err));
+      }
+    } catch (err) {
+      console.error("Error adding history entry: ", err);
+    }
+  }
 }
 
-if (tableContainer) {
-  const historyTable = new HistoryTable(tableContainer);
-  await historyTable.init();
-} else {
-  console.warn("Table container not found");
-}
+export const history = new HistoryTable();
+await history.init();

@@ -16,12 +16,12 @@ import {
 } from "../exercises/exercises.utils";
 
 import { users } from "../users/users";
+import { history } from "../history/history";
 
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
   private readonly apiUrlExercises = "http://127.0.0.1:8000/exercises";
-  private readonly apiUrlHistory = "http://127.0.0.1:8000/history";
   private overviewTableButtonsContainer: HTMLElement | null;
   private rollSubmitContainer: HTMLElement | null;
   private settingsContainer: HTMLElement | null;
@@ -196,30 +196,10 @@ export class Roll {
 
     const historyEntries = getHistoryEntries(rows, today, cycles, user);
 
-    await this.postBatchHistory(historyEntries);
+    await history.postBatchHistory(historyEntries);
 
     alert("Good job! Workout saved.");
     window.location.href = "/history.html";
-  }
-
-  private async postBatchHistory(
-    historyEntry: Record<string, any>[]
-  ): Promise<void> {
-    try {
-      const res = await fetch(this.apiUrlHistory, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(historyEntry),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error resoponse: ", err);
-        throw new Error(JSON.stringify(err));
-      }
-    } catch (err) {
-      console.error("Error adding history entry: ", err);
-    }
   }
 }
 
