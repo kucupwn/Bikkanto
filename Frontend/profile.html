@@ -41,7 +41,7 @@
       </div>
       <div class="user-profile">
         <label for="firstname">Password</label>
-        <button id="username-edit" class="btn btn-outline-primary py-0">
+        <button id="btn-password-change" class="btn btn-outline-primary py-0">
           Change
         </button>
         <hr />
@@ -53,7 +53,7 @@
       class="modal fade"
       id="profile-modal"
       tabindex="-1"
-      aria-labelledby="exercise-modal-label"
+      aria-labelledby="edit-modal-label"
       aria-hidden="true"
     >
       <div class="modal-dialog">
@@ -69,6 +69,64 @@
           </div>
           <form id="profile-form">
             <div class="modal-body" id="profile-form-body"></div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password modal -->
+    <div
+      class="modal fade"
+      id="password-modal"
+      tabindex="-1"
+      aria-labelledby="password-modal-label"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content text-dark">
+          <div class="modal-header">
+            <h5 class="modal-title">Change Password</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form id="password-form">
+            <div class="modal-body" id="password-form-body">
+              <label for="pw-current">Current password</label>
+              <input
+                id="profile-input"
+                name="pw-current"
+                type="password"
+                class="form-control mb-2"
+              />
+              <label for="pw-new">New password</label>
+              <input
+                id="profile-input"
+                name="pw-new"
+                type="password"
+                class="form-control mb-2"
+              />
+              <label for="pw-new-verify">Verify new password</label>
+              <input
+                id="profile-input"
+                name="pw-new-verify"
+                type="password"
+                class="form-control mb-2"
+              />
+            </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Save</button>
               <button
