@@ -19,6 +19,15 @@ export function attachUserEventListeners(callback: UserCallbacks): void {
       await callback.onRegister(registerForm);
     });
 
+  const passwordChange = document.getElementById(
+    "btn-password-change"
+  ) as HTMLButtonElement;
+  if (passwordChange)
+    passwordChange.addEventListener("click", (e) => {
+      e.preventDefault();
+      callback.onOpenPasswordChange();
+    });
+
   const bindEdit = (
     buttonId: string,
     editKey: string,
@@ -53,7 +62,7 @@ export function setCurrentProfileTextContent(
   }
 }
 
-export function getEditInput(editKey: string, currentValue: string) {
+export function getEditInput(editKey: string, currentValue: string): string {
   return `<input id="profile-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
 }
 

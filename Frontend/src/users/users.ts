@@ -17,6 +17,7 @@ export class Users {
       onRegister: async (form) => this.addNewUser(form),
       onOpenEdit: (editKey, label, sourceId) =>
         this.openEditModal(editKey, label, sourceId),
+      onOpenPasswordChange: () => this.openPasswordChangeModal(),
     });
 
     const token = localStorage.getItem("token");
@@ -189,7 +190,13 @@ export class Users {
     this.handleEditFormSubmit(bootstrapModal);
   }
 
-  // private openPasswordChangeModal(): void {}
+  private openPasswordChangeModal(): void {
+    const modalEl = document.getElementById("password-modal");
+    if (!modalEl) return;
+
+    const bootstrapModal = new Modal(modalEl);
+    bootstrapModal.show();
+  }
 
   private handleEditFormSubmit(modal: any): void {
     const form = document.getElementById("profile-form") as HTMLFormElement;
