@@ -196,9 +196,31 @@ export class Users {
 
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
+
+    this.handlePasswordChangeFormSubmit(bootstrapModal);
   }
 
-  private handleEditFormSubmit(modal: any): void {
+  private handlePasswordChangeFormSubmit(modal: bootstrap.Modal): void {
+    const form = document.getElementById("password-form") as HTMLFormElement;
+    if (!form) return;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data: Record<string, string> = {};
+
+      formData.forEach((value, key) => {
+        data[key] = String(value);
+      });
+
+      console.log(data);
+
+      modal.hide();
+      form.reset();
+    };
+  }
+
+  private handleEditFormSubmit(modal: bootstrap.Modal): void {
     const form = document.getElementById("profile-form") as HTMLFormElement;
     if (!form) return;
 
