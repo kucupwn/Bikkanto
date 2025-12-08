@@ -1,4 +1,4 @@
-import type { AuthUser, User } from "../types/user.types";
+import { UserDataChange, type AuthUser, type User } from "../types/user.types";
 import {
   attachUserEventListeners,
   setModalHeaderTitle,
@@ -190,6 +190,26 @@ export class Users {
     this.handleEditFormSubmit(bootstrapModal);
   }
 
+  private handleEditFormSubmit(modal: bootstrap.Modal): void {
+    const form = document.getElementById("profile-form") as HTMLFormElement;
+    if (!form) return;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data: Record<string, string> = {};
+
+      formData.forEach((value, key) => {
+        data[key] = String(value);
+      });
+
+      await this.submitEditedUserData(data, UserDataChange.UserData);
+
+      modal.hide();
+      form.reset();
+    };
+  }
+
   private openPasswordChangeModal(): void {
     const modalEl = document.getElementById("password-modal");
     if (!modalEl) return;
@@ -213,27 +233,13 @@ export class Users {
         data[key] = String(value);
       });
 
-      console.log(data);
-
-      modal.hide();
-      form.reset();
-    };
-  }
-
-  private handleEditFormSubmit(modal: bootstrap.Modal): void {
-    const form = document.getElementById("profile-form") as HTMLFormElement;
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const data: Record<string, string> = {};
-
-      formData.forEach((value, key) => {
-        data[key] = String(value);
-      });
-
-      await this.submitEditedUserData(data);
+      if (data["new_password"] === data["new_password_verify"]) {
+        delete data["new_password_verify"];
+        this.submitEditedUserData(data, UserDataChange.Password);
+      } else {
+        alert("New passwords are not matching!");
+        return;
+      }
 
       modal.hide();
       form.reset();
@@ -241,11 +247,15 @@ export class Users {
   }
 
   private async submitEditedUserData(
-    data: Record<string, string>
+    data: Record<string, string>,
+    editData: UserDataChange
   ): Promise<void> {
     const token = localStorage.getItem("token");
+    const endpoint =
+      editData === UserDataChange.UserData ? "users" : "users/change_password";
+
     try {
-      const res = await fetch(`${this.apiUrl}/users`, {
+      const res = await fetch(`${this.apiUrl}/${endpoint}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -260,7 +270,7 @@ export class Users {
         throw new Error(JSON.stringify(err));
       }
 
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error("Could not update user data:", err);
     }
