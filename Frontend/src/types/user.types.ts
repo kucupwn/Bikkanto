@@ -13,6 +13,13 @@ export interface AuthUser {
   role: string;
 }
 
+export const UserDataChange = {
+  UserData: "userdata",
+  Password: "password",
+} as const;
+export type UserDataChange =
+  (typeof UserDataChange)[keyof typeof UserDataChange];
+
 export type UserCallbacks = {
   onLogin: (username: string, password: string) => Promise<void> | void;
   onRegister: (form: HTMLFormElement) => Promise<void> | void;
