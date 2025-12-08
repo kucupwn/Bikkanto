@@ -270,7 +270,7 @@ export class Users {
         throw new Error(JSON.stringify(err));
       }
 
-      // window.location.reload();
+      window.location.reload();
     } catch (err) {
       console.error("Could not update user data:", err);
     }
