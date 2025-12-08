@@ -107,9 +107,9 @@ async def update_user(
     return UserRead.model_validate(user_model)
 
 
-@router.put("/change_password", status_code=status.HTTP_204_NO_CONTENT)
+@router.patch("/change_password", status_code=status.HTTP_204_NO_CONTENT)
 async def change_password(
-    user: user_dependency, db: db_dependency, user_verification: UserVerification
+    user_verification: UserVerification, user: user_dependency, db: db_dependency
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
@@ -121,6 +121,6 @@ async def change_password(
     ):
         raise HTTPException(status_code=401, detail="Error on password change")
 
-    user_model.hashed_password = bcrypt_context.hash(user_verification.password)
+    user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
 
     db.commit()
