@@ -5,7 +5,7 @@ import {
   setCurrentProfileTextContent,
   getNewUserFormData,
   getEditInput,
-} from "./users.utils";
+} from "./usersUtils";
 import { Modal } from "bootstrap";
 
 export class Users {

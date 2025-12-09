@@ -17,7 +17,7 @@ import {
   fillModifyModalDefaultValues,
   attachExercisesEventListeners,
   setExercisesModalHeaderTitle,
-} from "./exercises.utils";
+} from "./exercisesUtils";
 import { Modal } from "bootstrap";
 
 export class ExercisesTable {

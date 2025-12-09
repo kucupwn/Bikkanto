@@ -9,7 +9,7 @@ import {
   HISTORY_COLUMN_ORDER,
   HISTORY_COLUMN_LABELS,
 } from "../types/history.types";
-import { fetchAllHistory } from "./history.utils";
+import { fetchAllHistory } from "./historyUtils";
 import { getHandsontable } from "../table/handsontable";
 
 export class HistoryTable {

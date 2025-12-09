@@ -8,12 +8,12 @@ import {
   toggleRollSettingsOverview,
   toggleUnsubmittedRollDisplay,
   getHistoryEntries,
-} from "./roll.utils";
+} from "./rollUtils";
 
 import {
   fetchCategories,
   fetchAllExercises,
-} from "../exercises/exercises.utils";
+} from "../exercises/exercisesUtils";
 
 import { users } from "../users/users";
 import { history } from "../history/history";
