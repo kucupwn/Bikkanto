@@ -19,6 +19,7 @@ import {
   setExercisesModalHeaderTitle,
 } from "./exercisesUtils";
 import { Modal } from "bootstrap";
+import { apiRequest } from "../api/apiRequest";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
@@ -160,22 +161,18 @@ export class ExercisesTable {
     };
   }
 
-  private async deleteExercise(exerciseId: number): Promise<void> {
+  private async postNewExercise(
+    newExercise: Record<string, any>
+  ): Promise<void> {
     try {
-      const res = await fetch(`${this.apiUrl}/${exerciseId}`, {
-        method: "DELETE",
+      await apiRequest(this.apiUrl, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newExercise),
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error response:", err);
-        throw new Error(JSON.stringify(err));
-      }
-
       await this.refresh();
-    } catch (err) {
-      console.error("Error deleting exercise: ", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to add new exercise.");
     }
   }
 
@@ -184,43 +181,26 @@ export class ExercisesTable {
     update: Record<string, any>
   ): Promise<void> {
     try {
-      const res = await fetch(`${this.apiUrl}/${exerciseId}`, {
+      await apiRequest(`${this.apiUrl}/${exerciseId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(update),
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error response:", err);
-        throw new Error(JSON.stringify(err));
-      }
-
       await this.refresh();
-    } catch (err) {
-      console.error("Error updating exercise: ", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to update exercise.");
     }
   }
 
-  private async postNewExercise(
-    newExercise: Record<string, any>
-  ): Promise<void> {
+  private async deleteExercise(exerciseId: number): Promise<void> {
     try {
-      const res = await fetch(this.apiUrl, {
-        method: "POST",
+      await apiRequest(`${this.apiUrl}/${exerciseId}`, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newExercise),
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error response:", err);
-        throw new Error(JSON.stringify(err));
-      }
-
       await this.refresh();
-    } catch (err) {
-      console.error("Error adding exercise: ", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to delete exercise.");
     }
   }
 }
