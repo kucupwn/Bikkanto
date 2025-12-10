@@ -1,4 +1,9 @@
-import { UserDataChange, type AuthUser, type User } from "../types/user.types";
+import {
+  UserDataChange,
+  type AuthUser,
+  type User,
+  type AuthResponse,
+} from "../types/user.types";
 import {
   attachUserEventListeners,
   setModalHeaderTitle,
@@ -44,22 +49,18 @@ export class Users {
   }
 
   private async getToken(formData: URLSearchParams): Promise<void> {
-    const res = await fetch(`${this.apiUrl}/auth/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData,
-    });
-
-    if (!res.ok) {
-      alert("Invalid username or password!");
-      return;
+    try {
+      const data = await apiRequest<AuthResponse>(`${this.apiUrl}/auth/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
+      });
+      const token = data.access_token;
+      localStorage.setItem("token", token);
+      this.startAutoLogout(token);
+    } catch (err: any) {
+      alert("Invalid username or password.");
     }
-
-    const data = await res.json();
-    const token = data.access_token;
-    localStorage.setItem("token", token);
-
-    this.startAutoLogout(token);
   }
 
   public logout(): void {
