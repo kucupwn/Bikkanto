@@ -12,7 +12,8 @@ export async function apiRequest<T = any>(
     if (!res.ok) {
       throw {
         status: res.status,
-        message: data?.message || data?.error || "Unknown error",
+        message:
+          data?.message || data?.error || data?.detail || "Unknown error",
         raw: data,
       };
     }
