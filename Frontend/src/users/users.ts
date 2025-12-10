@@ -90,21 +90,14 @@ export class Users {
     if (!data) return;
 
     try {
-      const res = await fetch(`${this.apiUrl}/users/register`, {
+      await apiRequest(`${this.apiUrl}/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/JSON" },
         body: JSON.stringify(data),
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error response:", err);
-        throw new Error(JSON.stringify(err));
-      }
-
       window.location.href = "/index.html";
-    } catch (err) {
-      console.warn("Error creating user: ", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to add new user.");
     }
   }
 
