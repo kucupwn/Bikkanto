@@ -10,10 +10,10 @@ export async function apiRequest<T = any>(
     } catch {}
 
     if (!res.ok) {
+      const msg = data?.message || data?.error || data?.detail;
       throw {
         status: res.status,
-        message:
-          data?.message || data?.error || data?.detail || "Unknown error",
+        message: msg ?? null,
         raw: data,
       };
     }
