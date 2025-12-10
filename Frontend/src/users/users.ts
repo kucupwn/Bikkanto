@@ -59,7 +59,7 @@ export class Users {
       localStorage.setItem("token", token);
       this.startAutoLogout(token);
     } catch (err: any) {
-      alert("Invalid username or password.");
+      alert(err.message || "Invalid username or password.");
     }
   }
 
