@@ -6,6 +6,7 @@ import {
   getNewUserFormData,
   getEditInput,
 } from "./usersUtils";
+import { apiRequest } from "../api/apiRequest";
 import { Modal } from "bootstrap";
 
 export class Users {
@@ -255,7 +256,7 @@ export class Users {
       editData === UserDataChange.UserData ? "users" : "users/change_password";
 
     try {
-      const res = await fetch(`${this.apiUrl}/${endpoint}`, {
+      await apiRequest(`${this.apiUrl}/${endpoint}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -263,16 +264,9 @@ export class Users {
         },
         body: JSON.stringify(data),
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error response:", err);
-        throw new Error(JSON.stringify(err));
-      }
-
       window.location.reload();
-    } catch (err) {
-      console.error("Could not update user data:", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to update user data.");
     }
   }
 }
