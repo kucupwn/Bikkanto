@@ -38,7 +38,9 @@ export class Users {
 
     await this.getToken(formData);
 
-    window.location.href = "/index.html";
+    if (localStorage.getItem("token")) {
+      window.location.href = "/index.html";
+    }
   }
 
   private async getToken(formData: URLSearchParams): Promise<void> {
