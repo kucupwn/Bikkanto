@@ -13,6 +13,11 @@ export interface AuthUser {
   role: string;
 }
 
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export const UserDataChange = {
   UserData: "userdata",
   Password: "password",
