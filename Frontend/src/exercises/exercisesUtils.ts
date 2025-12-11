@@ -1,3 +1,4 @@
+import { apiRequest } from "../api/apiRequest";
 import {
   type Exercises,
   type ExercisesCallbacks,
@@ -13,12 +14,11 @@ import { EXERCISE_OPERATIONS } from "../types/exercises.types";
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   try {
-    const res = await fetch(apiUrl);
-    const data: Exercises[] = await res.json();
+    const data = await apiRequest<Exercises[]>(apiUrl);
 
     return data;
-  } catch (err) {
-    console.log("Error loading data: ", err);
+  } catch (err: any) {
+    alert(err.message || "Failed to fetch exercises.");
 
     return [];
   }
@@ -26,14 +26,12 @@ export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
 
 export async function fetchCategories(apiUrl: string): Promise<string[]> {
   try {
-    const res = await fetch(apiUrl);
-    if (!res.ok) throw new Error("Failed to fetch categories");
-
-    const data = await res.json();
+    const data = await apiRequest(apiUrl);
 
     return data;
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    alert(err.message || "Failed to fetch categories.");
+
     return [];
   }
 }
