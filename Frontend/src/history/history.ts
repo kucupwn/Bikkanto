@@ -11,6 +11,7 @@ import {
 } from "../types/history.types";
 import { fetchAllHistory } from "./historyUtils";
 import { getHandsontable } from "../table/handsontable";
+import { apiRequest } from "../api/apiRequest";
 
 export class HistoryTable {
   private hotInstance: Handsontable | null = null;
@@ -56,19 +57,13 @@ export class HistoryTable {
     historyEntry: Record<string, any>[]
   ): Promise<void> {
     try {
-      const res = await fetch(this.apiUrl, {
+      await apiRequest(this.apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(historyEntry),
       });
-
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error resoponse: ", err);
-        throw new Error(JSON.stringify(err));
-      }
-    } catch (err) {
-      console.error("Error adding history entry: ", err);
+    } catch (err: any) {
+      alert(err.message || "Failed to create history records.");
     }
   }
 }
