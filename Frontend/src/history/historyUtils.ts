@@ -1,3 +1,4 @@
+import { apiRequest } from "../api/apiRequest";
 import type { WorkoutHistory } from "../types/history.types";
 
 export async function fetchAllHistory(
@@ -5,18 +6,17 @@ export async function fetchAllHistory(
 ): Promise<WorkoutHistory[]> {
   try {
     const token = localStorage.getItem("token");
-    const res = await fetch(apiUrl, {
+    const data = await apiRequest<WorkoutHistory[]>(apiUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
-    const data: WorkoutHistory[] = await res.json();
 
     return data;
-  } catch (err) {
-    console.warn("Error loading data: ", err);
+  } catch (err: any) {
+    alert(err.message || "Failed to fetch history.");
 
     return [];
   }
