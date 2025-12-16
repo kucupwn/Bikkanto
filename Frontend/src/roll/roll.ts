@@ -127,9 +127,25 @@ export class Roll {
       "exercise-categories-container"
     ) as HTMLDivElement;
     if (!container) return;
-    container.innerHTML = "";
 
-    createCategorySelections(count, this.allCategories, container);
+    const rows = Array.from(document.querySelectorAll(".exercise-row"));
+    const existingCount = rows.length;
+
+    if (count > existingCount) {
+      createCategorySelections(
+        existingCount + 1,
+        count,
+        this.allCategories,
+        container
+      );
+    }
+
+    if (count < existingCount) {
+      for (let i = existingCount - 1; i >= count; i--) {
+        console.log(i);
+        rows[i].remove();
+      }
+    }
   }
 
   public getWorkout(): WorkoutEntry[] {

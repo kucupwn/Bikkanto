@@ -98,11 +98,12 @@ export function toggleUnsubmittedRollDisplay(
 }
 
 export function createCategorySelections(
-  count: number,
+  start: number,
+  end: number,
   categories: string[],
   container: HTMLDivElement
 ): void {
-  for (let i = 1; i <= count; i++) {
+  for (let i = start; i <= end; i++) {
     const row = document.createElement("div");
     row.classList = "exercise-row";
 
