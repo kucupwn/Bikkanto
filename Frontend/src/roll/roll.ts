@@ -219,5 +219,4 @@ export class Roll {
   }
 }
 
-const roll = new Roll();
-await roll.init();
+export const roll = new Roll();

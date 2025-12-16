@@ -205,5 +205,4 @@ export class ExercisesTable {
   }
 }
 
-const exercisesTable = new ExercisesTable();
-await exercisesTable.init();
+export const exercisesTable = new ExercisesTable();

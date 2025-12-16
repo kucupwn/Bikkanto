@@ -26,7 +26,7 @@ export class HistoryTable {
       this.allHistory = await fetchAllHistory(this.apiUrl);
       this.renderTable(this.allHistory);
     } catch (error) {
-      console.error("Error initializing exercises table:", error);
+      console.error("Error initializing exercises history table:", error);
     }
   }
 
@@ -69,4 +69,3 @@ export class HistoryTable {
 }
 
 export const history = new HistoryTable();
-await history.init();
