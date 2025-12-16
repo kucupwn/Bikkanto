@@ -151,8 +151,10 @@ export class Users {
   // --------------------------------------------------------------
 
   public async fillProfilePageWithCurrentData(
-    currentUser: AuthUser
+    currentUser: AuthUser | null
   ): Promise<void> {
+    if (!currentUser) return;
+
     const userData = await this.getCurrentUserAllDetails(currentUser);
     const firstName = document.getElementById("firstname-paragraph");
     const lastName = document.getElementById("lastname-paragraph");

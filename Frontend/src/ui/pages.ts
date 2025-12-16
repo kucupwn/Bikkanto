@@ -1,4 +1,8 @@
 import type { AuthUser } from "../types/user.types";
+import { roll } from "../roll/roll";
+import { exercisesTable } from "../exercises/exercises";
+import { history } from "../history/history";
+import { users } from "../users/users";
 
 export function protectPage(user: AuthUser | null): boolean {
   const excludedPages = ["/index.html", "/login.html", "/register.html"];
@@ -34,5 +38,24 @@ export function setHomeUi(username: string | null): void {
     welcome.textContent = `Welcome!`;
     loginAdvice.textContent = "Please login for full experience.";
     guide?.classList.add("hidden");
+  }
+}
+
+export async function loadCurrentPage(
+  currentUser: AuthUser | null
+): Promise<void> {
+  const pageInitMap: Record<string, () => Promise<void>> = {
+    "index.html": async () => setHomeUi(currentUser?.username || null),
+    "profile.html": async () =>
+      users.fillProfilePageWithCurrentData(currentUser),
+    "roll.html": async () => await roll.init(),
+    "exercises.html": async () => await exercisesTable.init(),
+    "history.html": async () => await history.init(),
+  };
+
+  const currentPage = window.location.pathname.split("/").pop() || "";
+
+  if (pageInitMap[currentPage]) {
+    await pageInitMap[currentPage]();
   }
 }
