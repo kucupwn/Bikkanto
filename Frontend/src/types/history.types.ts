@@ -20,6 +20,7 @@ export const HISTORY_COLUMN_ORDER = [
 ] as const;
 
 export const HISTORY_COLUMN_LABELS = {
+  id: "id",
   date_complete: "Date",
   cycles: "Cycles",
   category: "Category",

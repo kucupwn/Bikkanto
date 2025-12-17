@@ -1,5 +1,5 @@
 export interface Exercises {
-  id: number;
+  id?: number;
   exercise_name: string;
   category: string;
   easy_min: number;
@@ -41,6 +41,7 @@ export const NUMERIC_COLUMN_LABELS = {
 };
 
 export const EXERCISE_COLUMN_LABELS = {
+  id: "id",
   exercise_name: "Exercise",
   category: "Category",
   ...NUMERIC_COLUMN_LABELS,
