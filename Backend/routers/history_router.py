@@ -4,7 +4,7 @@ from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
 from .auth import get_current_user
 from ..database import get_db
-from ..models import History
+from ..models import History, Users, Exercises
 from ..schemas.history_schema import HistoryRead, HistoryCreate
 
 router = APIRouter(prefix="/history", tags=["history"])
@@ -19,15 +19,56 @@ async def read_all(user: user_dependency, db: db_dependency):
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     history_entries = (
-        db.query(History).filter(History.user == user.get("username")).all()
+        db.query(History)
+        .join(Users)
+        .filter(Users.username == user.get("username"))
+        .all()
     )
 
-    return history_entries
+    return [
+        HistoryRead(
+            id=h.id,
+            date_complete=h.date_complete,
+            cycles=h.cycles,
+            category=h.category,
+            exercise=h.exercise.exercise_name,
+            repetitions=h.repetitions,
+            sum_repetitions=h.sum_repetitions,
+            user=h.user.username,
+        )
+        for h in history_entries
+    ]
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_history_batch(db: db_dependency, entries: List[HistoryCreate]):
-    history_models = [History(**entry.model_dump()) for entry in entries]
+    history_models = []
+
+    for entry in entries:
+        user = db.query(Users).filter(Users.username == entry.user).first()
+        exercise = (
+            db.query(Exercises)
+            .filter(Exercises.exercise_name == entry.exercise)
+            .first()
+        )
+
+        if not user or not exercise:
+            raise HTTPException(
+                status_code=400, detail="User or exercise reference not found"
+            )
+
+        history = History(
+            date_complete=entry.date_complete,
+            cycles=entry.cycles,
+            category=entry.category,
+            exercise_id=exercise.id,
+            repetitions=entry.repetitions,
+            sum_repetitions=entry.sum_repetitions,
+            user_id=user.id,
+        )
+
+        history_models.append(history)
+
     db.add_all(history_models)
     db.commit()
 

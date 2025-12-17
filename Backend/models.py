@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy.orm import relationship
 from .database import Base
 
 
@@ -23,10 +24,13 @@ class History(Base):
     date_complete = Column(Date)
     cycles = Column(Integer)
     category = Column(String)
-    exercise = Column(String)
+    exercise_id = Column(Integer, ForeignKey("exercises.id"))
     repetitions = Column(Integer)
     sum_repetitions = Column(Integer)
-    user = Column(String, ForeignKey("users.username"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    user = relationship("Users")
+    exercise = relationship("Exercises")
 
 
 class Users(Base):
