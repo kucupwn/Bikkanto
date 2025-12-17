@@ -7,7 +7,7 @@ import {
   EXERCISE_COLUMN_LABELS,
   NUMERIC_COLUMNS_SET,
 } from "../types/exercises.types";
-import { getHandsontable } from "../table/handsontable";
+import { renderTable } from "../table/handsontable";
 import {
   generateAddModalInput,
   generateModifyModalInput,
@@ -40,24 +40,15 @@ export class ExercisesTable {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
       this.allCategories = await fetchCategories(`${this.apiUrl}/categories`);
-      this.renderTable(this.allExercises);
+      renderTable(
+        this.tableContainer,
+        this.allExercises,
+        EXERCISE_COLUMNS_ORDER,
+        EXERCISE_COLUMN_LABELS
+      );
     } catch (error) {
       console.error("Error initializing exercises table:", error);
     }
-  }
-
-  private renderTable(data: Exercises[]): void {
-    const columns = EXERCISE_COLUMNS_ORDER.map((key) => ({
-      data: key,
-      title: EXERCISE_COLUMN_LABELS[key],
-    }));
-
-    this.hotInstance = getHandsontable<Exercises>(
-      this.tableContainer,
-      data,
-      columns,
-      [...EXERCISE_COLUMNS_ORDER]
-    );
   }
 
   public async refresh(): Promise<void> {

@@ -10,7 +10,7 @@ import {
   HISTORY_COLUMN_LABELS,
 } from "../types/history.types";
 import { fetchAllHistory } from "./historyUtils";
-import { getHandsontable } from "../table/handsontable";
+import { renderTable } from "../table/handsontable";
 import { apiRequest } from "../api/apiRequest";
 
 export class HistoryTable {
@@ -24,7 +24,12 @@ export class HistoryTable {
   public async init(): Promise<void> {
     try {
       this.allHistory = await fetchAllHistory(this.apiUrl);
-      this.renderTable(this.allHistory);
+      renderTable(
+        this.tableContainer,
+        this.allHistory,
+        HISTORY_COLUMN_ORDER,
+        HISTORY_COLUMN_LABELS
+      );
     } catch (error) {
       console.error("Error initializing exercises history table:", error);
     }
@@ -37,20 +42,6 @@ export class HistoryTable {
     } catch (error) {
       console.error("Error refreshing history:", error);
     }
-  }
-
-  private renderTable(data: WorkoutHistory[]): void {
-    const columns = HISTORY_COLUMN_ORDER.map((key) => ({
-      data: key,
-      title: HISTORY_COLUMN_LABELS[key],
-    }));
-
-    this.hotInstance = getHandsontable<WorkoutHistory>(
-      this.tableContainer,
-      data,
-      columns,
-      [...HISTORY_COLUMN_ORDER]
-    );
   }
 
   public async postBatchHistory(
