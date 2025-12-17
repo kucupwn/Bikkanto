@@ -29,3 +29,17 @@ export function getHandsontable<T extends Handsontable.RowObject>(
 
   return hotInstance;
 }
+
+export function renderTable<T extends object>(
+  container: HTMLDivElement,
+  data: T[],
+  columnOrder: readonly (keyof T & string)[],
+  columnLabels: Record<keyof T & string, string>
+) {
+  const columns = columnOrder.map((key) => ({
+    data: key,
+    title: columnLabels[key],
+  }));
+
+  return getHandsontable<T>(container, data, columns, [...columnOrder]);
+}
