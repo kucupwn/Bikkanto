@@ -8,6 +8,7 @@ import {
   toggleRollSettingsOverview,
   toggleUnsubmittedRollDisplay,
   getHistoryEntries,
+  getWorkoutCycles,
 } from "./rollUtils";
 
 import {
@@ -192,15 +193,8 @@ export class Roll {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const cyclesInput = document.getElementById(
-      "cycles-input"
-    ) as HTMLInputElement;
-    const cycles = Number(cyclesInput.value);
-
-    if (!cycles || cycles < 1) {
-      alert("Please enter valid cycles");
-      return;
-    }
+    const cycles = getWorkoutCycles();
+    if (cycles < 1) return;
 
     const userDetails = users.getCurrentUser();
     if (!userDetails) {

@@ -186,6 +186,20 @@ export function getRandomExercise(
   };
 }
 
+export function getWorkoutCycles(): number {
+  const cyclesInput = document.getElementById(
+    "cycles-input"
+  ) as HTMLInputElement;
+  const cycles = Number(cyclesInput.value);
+
+  if (!cycles || cycles < 1) {
+    alert("Please enter valid cycles");
+    return 0;
+  }
+
+  return cycles;
+}
+
 export function getHistoryEntries(
   rows: NodeListOf<Element>,
   today: string,
