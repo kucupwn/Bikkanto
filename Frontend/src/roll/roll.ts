@@ -1,6 +1,5 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 import {
-  createCategorySelections,
   getRandomExercise,
   getSelectedCategories,
   attachRollEventListeners,
@@ -9,6 +8,7 @@ import {
   toggleUnsubmittedRollDisplay,
   getHistoryEntries,
   getWorkoutCycles,
+  handleExerciseSelectionDisplay,
 } from "./rollUtils";
 
 import {
@@ -132,21 +132,13 @@ export class Roll {
     const rows = Array.from(document.querySelectorAll(".exercise-row"));
     const existingCount = rows.length;
 
-    if (count > existingCount) {
-      createCategorySelections(
-        existingCount + 1,
-        count,
-        this.allCategories,
-        container
-      );
-    }
-
-    if (count < existingCount) {
-      for (let i = existingCount - 1; i >= count; i--) {
-        console.log(i);
-        rows[i].remove();
-      }
-    }
+    handleExerciseSelectionDisplay(
+      container,
+      this.allCategories,
+      rows,
+      count,
+      existingCount
+    );
   }
 
   public getWorkout(): WorkoutEntry[] {

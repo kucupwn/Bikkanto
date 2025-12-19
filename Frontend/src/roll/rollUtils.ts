@@ -186,6 +186,24 @@ export function getRandomExercise(
   };
 }
 
+export function handleExerciseSelectionDisplay(
+  container: HTMLDivElement,
+  categories: string[],
+  rows: any,
+  count: number,
+  existingCount: number
+): void {
+  if (count > existingCount) {
+    createCategorySelections(existingCount + 1, count, categories, container);
+  }
+
+  if (count < existingCount) {
+    for (let i = existingCount - 1; i >= count; i--) {
+      rows[i].remove();
+    }
+  }
+}
+
 export function getWorkoutCycles(): number {
   const cyclesInput = document.getElementById(
     "cycles-input"
