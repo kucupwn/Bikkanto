@@ -9,6 +9,7 @@ import {
   getHistoryEntries,
   getWorkoutCycles,
   handleExerciseSelectionDisplay,
+  fillOverviewTable,
 } from "./rollUtils";
 
 import {
@@ -47,7 +48,7 @@ export class Roll {
       onGetWorkout: () => this.getWorkout(),
 
       onFillOverviewTable: (workout: WorkoutEntry[]) =>
-        this.fillOverviewTable(workout),
+        this.getOverviewTable(workout),
 
       onToggleRollSettingsOverview: () => {
         if (this.settingsContainer && this.overviewContainer) {
@@ -153,29 +154,13 @@ export class Roll {
     return workout;
   }
 
-  public fillOverviewTable(workout: WorkoutEntry[]): void {
+  public getOverviewTable(workout: WorkoutEntry[]): void {
     const tbody = document.querySelector("tbody");
     if (!tbody) return;
 
     tbody.innerHTML = "";
 
-    workout.forEach((entry) => {
-      const row = document.createElement("tr");
-
-      const categoryCell = document.createElement("td");
-      categoryCell.textContent = entry.category;
-
-      const exerciseCell = document.createElement("td");
-      exerciseCell.textContent = entry.exercise;
-
-      const repsCell = document.createElement("td");
-      repsCell.textContent = entry.reps.toString();
-
-      row.appendChild(categoryCell);
-      row.appendChild(exerciseCell);
-      row.appendChild(repsCell);
-      tbody.appendChild(row);
-    });
+    fillOverviewTable(workout, tbody);
   }
 
   private async saveWorkoutHistory(): Promise<void> {
