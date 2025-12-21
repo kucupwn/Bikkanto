@@ -9,14 +9,11 @@ import {
 } from "../types/exercises.types";
 import { renderTable } from "../table/handsontable";
 import {
-  generateAddModalInput,
-  generateModifyModalInput,
-  generateDeleteModalInput,
   fetchAllExercises,
   fetchCategories,
-  fillModifyModalDefaultValues,
   attachExercisesEventListeners,
   setExercisesModalHeaderTitle,
+  getModalForExercisesOperation,
 } from "./exercisesUtils";
 import { Modal } from "bootstrap";
 import { apiRequest } from "../api/apiRequest";
@@ -66,28 +63,12 @@ export class ExercisesTable {
 
     setExercisesModalHeaderTitle(operation);
 
-    if (operation === EXERCISE_OPERATIONS.ADD) {
-      modalBody.innerHTML = generateAddModalInput(this.allCategories);
-    } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
-      modalBody.innerHTML = generateModifyModalInput(
-        this.allExercises,
-        this.allCategories
-      );
-
-      const selectEl = document.getElementById(
-        "select-exercise"
-      ) as HTMLSelectElement | null;
-      if (selectEl) {
-        selectEl.addEventListener("change", (e) => {
-          const selectedId = Number((e.target as HTMLSelectElement).value);
-          if (selectedId && !isNaN(selectedId)) {
-            fillModifyModalDefaultValues(this.allExercises, selectedId);
-          }
-        });
-      }
-    } else if (operation === EXERCISE_OPERATIONS.DELETE) {
-      modalBody.innerHTML = generateDeleteModalInput(this.allExercises);
-    }
+    getModalForExercisesOperation(
+      modalBody,
+      operation,
+      this.allExercises,
+      this.allCategories
+    );
 
     const modalEl = document.getElementById("exercise-modal");
     if (!modalEl) return;

@@ -76,6 +76,33 @@ function getExerciseOptions(allExercises: Exercises[]) {
   return options;
 }
 
+export function getModalForExercisesOperation(
+  modalBody: HTMLElement,
+  operation: ExerciseOperation,
+  allExercises: Exercises[],
+  allCategories: string[]
+): void {
+  if (operation === EXERCISE_OPERATIONS.ADD) {
+    modalBody.innerHTML = generateAddModalInput(allCategories);
+  } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
+    modalBody.innerHTML = generateModifyModalInput(allExercises, allCategories);
+
+    const selectEl = document.getElementById(
+      "select-exercise"
+    ) as HTMLSelectElement | null;
+    if (selectEl) {
+      selectEl.addEventListener("change", (e) => {
+        const selectedId = Number((e.target as HTMLSelectElement).value);
+        if (selectedId && !isNaN(selectedId)) {
+          fillModifyModalDefaultValues(allExercises, selectedId);
+        }
+      });
+    }
+  } else if (operation === EXERCISE_OPERATIONS.DELETE) {
+    modalBody.innerHTML = generateDeleteModalInput(allExercises);
+  }
+}
+
 export function fillModifyModalDefaultValues(
   exercises: Exercises[],
   selectedId: number
