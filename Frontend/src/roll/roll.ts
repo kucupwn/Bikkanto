@@ -12,10 +12,7 @@ import {
   fillOverviewTable,
 } from "./rollUtils";
 
-import {
-  fetchCategories,
-  fetchAllExercises,
-} from "../exercises/exercisesUtils";
+import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
 import { users } from "../users/users";
 import { history } from "../history/history";
