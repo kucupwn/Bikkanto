@@ -17,7 +17,7 @@ import { Modal } from "bootstrap";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
-  public allExercises: Exercises[] = [];
+  private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
   private tableContainer: HTMLDivElement = document.getElementById(
@@ -73,7 +73,7 @@ export class ExercisesTable {
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
 
-    handleFormSubmit(bootstrapModal, operation, this.apiUrl);
+    handleFormSubmit(bootstrapModal, operation, this.allExercises, this.apiUrl);
   }
 }
 

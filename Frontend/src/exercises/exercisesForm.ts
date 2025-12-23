@@ -4,7 +4,6 @@ import {
   EXERCISE_OPERATIONS,
   NUMERIC_COLUMNS_SET,
 } from "../types/exercises.types";
-import { exercisesTable } from "./exercises";
 import {
   postNewExercise,
   updateExercise,
@@ -35,6 +34,7 @@ export function getFormData(
 export function handleFormSubmit(
   modal: any,
   operation: ExerciseOperation,
+  allExercises: Exercises[],
   apiUrl: string
 ): void {
   const form = document.getElementById("exercise-form") as HTMLFormElement;
@@ -43,7 +43,7 @@ export function handleFormSubmit(
   form.onsubmit = async (e) => {
     e.preventDefault();
 
-    const formData = getFormData(form, exercisesTable.allExercises);
+    const formData = getFormData(form, allExercises);
 
     if (operation === EXERCISE_OPERATIONS.ADD) {
       await postNewExercise(formData, apiUrl);
