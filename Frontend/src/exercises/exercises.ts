@@ -8,10 +8,10 @@ import {
 } from "../types/exercises.types";
 import { fetchAllExercises, fetchCategories } from "./exercisesApi";
 import {
-  attachExercisesEventListeners,
   setExercisesModalHeaderTitle,
   getModalForExercisesOperation,
-} from "./exercisesUtils";
+} from "./exercisesModal";
+import { attachExercisesEventListeners } from "./exercisesUtils";
 import { handleFormSubmit } from "./exercisesForm";
 import { Modal } from "bootstrap";
 
