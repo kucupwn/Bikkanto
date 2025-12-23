@@ -2,10 +2,8 @@ import Handsontable from "handsontable/base";
 import {
   type ExerciseOperation,
   type Exercises,
-  EXERCISE_OPERATIONS,
   EXERCISE_COLUMNS_ORDER,
   EXERCISE_COLUMN_LABELS,
-  NUMERIC_COLUMNS_SET,
 } from "../types/exercises.types";
 import { renderTable } from "../table/handsontable";
 import {
@@ -15,16 +13,12 @@ import {
   setExercisesModalHeaderTitle,
   getModalForExercisesOperation,
 } from "./exercisesUtils";
-import {
-  postNewExercise,
-  updateExercise,
-  deleteExercise,
-} from "./exercisesApi";
+import { handleFormSubmit } from "./exercisesForm";
 import { Modal } from "bootstrap";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
-  private allExercises: Exercises[] = [];
+  public allExercises: Exercises[] = [];
   private allCategories: string[] = [];
   private readonly apiUrl = "http://127.0.0.1:8000/exercises";
   private tableContainer: HTMLDivElement = document.getElementById(
@@ -80,61 +74,7 @@ export class ExercisesTable {
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
 
-    this.handleFormSubmit(bootstrapModal, operation);
-  }
-
-  private getFormData(form: HTMLFormElement): Record<string, any> {
-    const formData = new FormData(form);
-    const data: Record<string, any> = {};
-
-    formData.forEach((value, key) => {
-      if (key === "select-exercise") {
-        const selectedId = Number(value);
-        const selectedExercise = this.allExercises.find(
-          (ex) => ex.id === selectedId
-        );
-        data["exercise_id"] = selectedId;
-        data["exercise_name"] = selectedExercise?.exercise_name ?? "";
-      } else {
-        data[key] = NUMERIC_COLUMNS_SET.has(key)
-          ? Number(value)
-          : String(value);
-      }
-    });
-
-    return data;
-  }
-
-  private handleFormSubmit(modal: any, operation: ExerciseOperation): void {
-    const form = document.getElementById("exercise-form") as HTMLFormElement;
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-
-      const formData = this.getFormData(form);
-
-      if (operation === EXERCISE_OPERATIONS.ADD) {
-        await postNewExercise(formData, this.apiUrl);
-      } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
-        const { exercise_id: exerciseId, ...updateData } = formData;
-        if (!exerciseId) {
-          alert("Please select an exercise to modify.");
-          return;
-        }
-        await updateExercise(exerciseId, updateData, this.apiUrl);
-      } else if (operation === EXERCISE_OPERATIONS.DELETE) {
-        const exerciseId = formData.exercise_id;
-        if (!exerciseId) {
-          alert("Please select an exercise to modify.");
-          return;
-        }
-        await deleteExercise(exerciseId, this.apiUrl);
-      }
-
-      modal.hide();
-      form.reset();
-    };
+    handleFormSubmit(bootstrapModal, operation, this.apiUrl);
   }
 }
 

@@ -1,0 +1,69 @@
+import {
+  type Exercises,
+  type ExerciseOperation,
+  EXERCISE_OPERATIONS,
+  NUMERIC_COLUMNS_SET,
+} from "../types/exercises.types";
+import { exercisesTable } from "./exercises";
+import {
+  postNewExercise,
+  updateExercise,
+  deleteExercise,
+} from "./exercisesApi";
+
+export function getFormData(
+  form: HTMLFormElement,
+  allExercises: Exercises[]
+): Record<string, any> {
+  const formData = new FormData(form);
+  const data: Record<string, any> = {};
+
+  formData.forEach((value, key) => {
+    if (key === "select-exercise") {
+      const selectedId = Number(value);
+      const selectedExercise = allExercises.find((ex) => ex.id === selectedId);
+      data["exercise_id"] = selectedId;
+      data["exercise_name"] = selectedExercise?.exercise_name ?? "";
+    } else {
+      data[key] = NUMERIC_COLUMNS_SET.has(key) ? Number(value) : String(value);
+    }
+  });
+
+  return data;
+}
+
+export function handleFormSubmit(
+  modal: any,
+  operation: ExerciseOperation,
+  apiUrl: string
+): void {
+  const form = document.getElementById("exercise-form") as HTMLFormElement;
+  if (!form) return;
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = getFormData(form, exercisesTable.allExercises);
+
+    if (operation === EXERCISE_OPERATIONS.ADD) {
+      await postNewExercise(formData, apiUrl);
+    } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
+      const { exercise_id: exerciseId, ...updateData } = formData;
+      if (!exerciseId) {
+        alert("Please select an exercise to modify.");
+        return;
+      }
+      await updateExercise(exerciseId, updateData, apiUrl);
+    } else if (operation === EXERCISE_OPERATIONS.DELETE) {
+      const exerciseId = formData.exercise_id;
+      if (!exerciseId) {
+        alert("Please select an exercise to modify.");
+        return;
+      }
+      await deleteExercise(exerciseId, apiUrl);
+    }
+
+    modal.hide();
+    form.reset();
+  };
+}
