@@ -34,7 +34,7 @@ export class ExercisesTable {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
       this.allCategories = await fetchCategories(`${this.apiUrl}/categories`);
-      renderTable(
+      this.hotInstance = renderTable(
         this.tableContainer,
         this.allExercises,
         EXERCISE_COLUMNS_ORDER,
@@ -73,7 +73,13 @@ export class ExercisesTable {
     const bootstrapModal = new Modal(modalEl);
     bootstrapModal.show();
 
-    handleFormSubmit(bootstrapModal, operation, this.allExercises, this.apiUrl);
+    handleFormSubmit(
+      bootstrapModal,
+      operation,
+      this.allExercises,
+      this.apiUrl,
+      () => this.refresh()
+    );
   }
 }
 

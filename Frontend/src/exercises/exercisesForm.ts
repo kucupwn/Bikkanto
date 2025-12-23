@@ -35,7 +35,8 @@ export function handleFormSubmit(
   modal: any,
   operation: ExerciseOperation,
   allExercises: Exercises[],
-  apiUrl: string
+  apiUrl: string,
+  onSuccess: () => Promise<void>
 ): void {
   const form = document.getElementById("exercise-form") as HTMLFormElement;
   if (!form) return;
@@ -47,6 +48,7 @@ export function handleFormSubmit(
 
     if (operation === EXERCISE_OPERATIONS.ADD) {
       await postNewExercise(formData, apiUrl);
+      await onSuccess();
     } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
       const { exercise_id: exerciseId, ...updateData } = formData;
       if (!exerciseId) {
@@ -54,6 +56,7 @@ export function handleFormSubmit(
         return;
       }
       await updateExercise(exerciseId, updateData, apiUrl);
+      await onSuccess();
     } else if (operation === EXERCISE_OPERATIONS.DELETE) {
       const exerciseId = formData.exercise_id;
       if (!exerciseId) {
@@ -61,6 +64,7 @@ export function handleFormSubmit(
         return;
       }
       await deleteExercise(exerciseId, apiUrl);
+      await onSuccess();
     }
 
     modal.hide();

@@ -1,5 +1,4 @@
 import { apiRequest } from "../api/apiRequest";
-import { exercisesTable } from "./exercises";
 import { type Exercises } from "../types/exercises.types";
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
@@ -36,7 +35,6 @@ export async function postNewExercise(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newExercise),
     });
-    await exercisesTable.refresh();
   } catch (err: any) {
     alert(err.message || "Failed to add new exercise.");
   }
@@ -53,7 +51,6 @@ export async function updateExercise(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(update),
     });
-    await exercisesTable.refresh();
   } catch (err: any) {
     alert(err.message || "Failed to update exercise.");
   }
@@ -68,7 +65,6 @@ export async function deleteExercise(
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
-    await exercisesTable.refresh();
   } catch (err: any) {
     alert(err.message || "Failed to delete exercise.");
   }
