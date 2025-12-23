@@ -1,14 +1,13 @@
 import Handsontable from "handsontable/base";
+import { renderTable } from "../table/handsontable";
 import {
   type ExerciseOperation,
   type Exercises,
   EXERCISE_COLUMNS_ORDER,
   EXERCISE_COLUMN_LABELS,
 } from "../types/exercises.types";
-import { renderTable } from "../table/handsontable";
+import { fetchAllExercises, fetchCategories } from "./exercisesApi";
 import {
-  fetchAllExercises,
-  fetchCategories,
   attachExercisesEventListeners,
   setExercisesModalHeaderTitle,
   getModalForExercisesOperation,

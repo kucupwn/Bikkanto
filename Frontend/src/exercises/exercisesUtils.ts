@@ -1,4 +1,3 @@
-import { apiRequest } from "../api/apiRequest";
 import {
   type Exercises,
   type ExercisesCallbacks,
@@ -11,30 +10,6 @@ import {
   NUMERIC_COLUMNS_SET,
 } from "../types/exercises.types";
 import { EXERCISE_OPERATIONS } from "../types/exercises.types";
-
-export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
-  try {
-    const data = await apiRequest<Exercises[]>(apiUrl);
-
-    return data;
-  } catch (err: any) {
-    alert(err.message || "Failed to fetch exercises.");
-
-    return [];
-  }
-}
-
-export async function fetchCategories(apiUrl: string): Promise<string[]> {
-  try {
-    const data = await apiRequest(apiUrl);
-
-    return data;
-  } catch (err: any) {
-    alert(err.message || "Failed to fetch categories.");
-
-    return [];
-  }
-}
 
 export function attachExercisesEventListeners(
   callback: ExercisesCallbacks
