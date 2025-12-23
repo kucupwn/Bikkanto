@@ -15,8 +15,12 @@ import {
   setExercisesModalHeaderTitle,
   getModalForExercisesOperation,
 } from "./exercisesUtils";
+import {
+  postNewExercise,
+  updateExercise,
+  deleteExercise,
+} from "./exercisesApi";
 import { Modal } from "bootstrap";
-import { apiRequest } from "../api/apiRequest";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
@@ -111,69 +115,26 @@ export class ExercisesTable {
       const formData = this.getFormData(form);
 
       if (operation === EXERCISE_OPERATIONS.ADD) {
-        await this.postNewExercise(formData);
+        await postNewExercise(formData, this.apiUrl);
       } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
         const { exercise_id: exerciseId, ...updateData } = formData;
         if (!exerciseId) {
           alert("Please select an exercise to modify.");
           return;
         }
-        await this.updateExercise(exerciseId, updateData);
+        await updateExercise(exerciseId, updateData, this.apiUrl);
       } else if (operation === EXERCISE_OPERATIONS.DELETE) {
         const exerciseId = formData.exercise_id;
         if (!exerciseId) {
           alert("Please select an exercise to modify.");
           return;
         }
-        await this.deleteExercise(exerciseId);
+        await deleteExercise(exerciseId, this.apiUrl);
       }
 
       modal.hide();
       form.reset();
     };
-  }
-
-  private async postNewExercise(
-    newExercise: Record<string, any>
-  ): Promise<void> {
-    try {
-      await apiRequest(this.apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newExercise),
-      });
-      await this.refresh();
-    } catch (err: any) {
-      alert(err.message || "Failed to add new exercise.");
-    }
-  }
-
-  private async updateExercise(
-    exerciseId: number,
-    update: Record<string, any>
-  ): Promise<void> {
-    try {
-      await apiRequest(`${this.apiUrl}/${exerciseId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(update),
-      });
-      await this.refresh();
-    } catch (err: any) {
-      alert(err.message || "Failed to update exercise.");
-    }
-  }
-
-  private async deleteExercise(exerciseId: number): Promise<void> {
-    try {
-      await apiRequest(`${this.apiUrl}/${exerciseId}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-      await this.refresh();
-    } catch (err: any) {
-      alert(err.message || "Failed to delete exercise.");
-    }
   }
 }
 
