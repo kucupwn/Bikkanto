@@ -13,13 +13,14 @@ import {
 } from "./exercisesModal";
 import { attachExercisesEventListeners } from "./exercisesUtils";
 import { handleFormSubmit } from "./exercisesForm";
+import { EXERCISES_API_URL } from "../api/urls";
 import { Modal } from "bootstrap";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
-  private readonly apiUrl = "http://127.0.0.1:8000/exercises";
+  private readonly apiUrl = EXERCISES_API_URL;
   private tableContainer: HTMLDivElement = document.getElementById(
     "exercises-table"
   ) as HTMLDivElement;
