@@ -12,11 +12,12 @@ import {
 import { fetchAllHistory } from "./historyUtils";
 import { renderTable } from "../table/handsontable";
 import { apiRequest } from "../api/apiRequest";
+import { HISTORY_API_URL } from "../api/urls";
 
 export class HistoryTable {
   private hotInstance: Handsontable | null = null;
   private allHistory: WorkoutHistory[] = [];
-  private readonly apiUrl: string = "http://127.0.0.1:8000/history";
+  private readonly apiUrl: string = HISTORY_API_URL;
   private tableContainer: HTMLDivElement = document.getElementById(
     "history-table"
   ) as HTMLDivElement;
