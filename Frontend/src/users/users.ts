@@ -13,10 +13,14 @@ import {
 } from "./usersUtils";
 import { apiRequest } from "../api/apiRequest";
 import { Modal } from "bootstrap";
+import {
+  CHANGE_PASSWORD_API_URL,
+  REGISTER_API_URL,
+  TOKEN_API_URL,
+  USERS_API_URL,
+} from "../api/urls";
 
 export class Users {
-  private readonly apiUrl = "http://127.0.0.1:8000";
-
   constructor() {
     attachUserEventListeners({
       onLogin: async (username, password) => this.login(username, password),
@@ -50,7 +54,7 @@ export class Users {
 
   private async getToken(formData: URLSearchParams): Promise<void> {
     try {
-      const data = await apiRequest<AuthResponse>(`${this.apiUrl}/auth/token`, {
+      const data = await apiRequest<AuthResponse>(TOKEN_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
@@ -90,7 +94,7 @@ export class Users {
     if (!data) return;
 
     try {
-      await apiRequest(`${this.apiUrl}/users/register`, {
+      await apiRequest(REGISTER_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/JSON" },
         body: JSON.stringify(data),
@@ -128,7 +132,7 @@ export class Users {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch(`${this.apiUrl}/users`, {
+      const res = await fetch(USERS_API_URL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -251,10 +255,12 @@ export class Users {
   ): Promise<void> {
     const token = localStorage.getItem("token");
     const endpoint =
-      editData === UserDataChange.UserData ? "users" : "users/change_password";
+      editData === UserDataChange.UserData
+        ? USERS_API_URL
+        : CHANGE_PASSWORD_API_URL;
 
     try {
-      await apiRequest(`${this.apiUrl}/${endpoint}`, {
+      await apiRequest(endpoint, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
