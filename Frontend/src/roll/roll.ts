@@ -16,11 +16,12 @@ import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
 import { users } from "../users/users";
 import { history } from "../history/history";
+import { EXERCISES_API_URL, EXERCISES_CATEGORY_API_URL } from "../api/urls";
 
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
-  private readonly apiUrlExercises = "http://127.0.0.1:8000/exercises";
+  private readonly apiUrlExercises = EXERCISES_API_URL;
   private overviewTableButtonsContainer: HTMLElement | null;
   private rollSubmitContainer: HTMLElement | null;
   private settingsContainer: HTMLElement | null;
@@ -92,9 +93,7 @@ export class Roll {
   public async init(): Promise<void> {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrlExercises);
-      this.allCategories = await fetchCategories(
-        `${this.apiUrlExercises}/categories`
-      );
+      this.allCategories = await fetchCategories(EXERCISES_CATEGORY_API_URL);
     } catch (err) {
       console.log("Error fetching exercises:", err);
     }
