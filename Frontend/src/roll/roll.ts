@@ -15,8 +15,13 @@ import {
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
 import { users } from "../users/users";
-import { history } from "../history/history";
-import { EXERCISES_API_URL, EXERCISES_CATEGORY_API_URL } from "../api/urls";
+import { postBatchHistory } from "../history/historyApi";
+import {
+  EXERCISES_API_URL,
+  EXERCISES_CATEGORY_API_URL,
+  HISTORY_API_URL,
+} from "../api/urls";
+import { historyTable } from "../history/history";
 
 export class Roll {
   private allExercises: Exercises[] = [];
@@ -179,7 +184,8 @@ export class Roll {
 
     const historyEntries = getHistoryEntries(rows, today, cycles, user);
 
-    await history.postBatchHistory(historyEntries);
+    await postBatchHistory(historyEntries, HISTORY_API_URL);
+    await historyTable.refresh();
 
     alert("Good job! Workout saved.");
     window.location.href = "/history.html";

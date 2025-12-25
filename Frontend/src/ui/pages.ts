@@ -1,7 +1,7 @@
 import type { AuthUser } from "../types/user.types";
 import { roll } from "../roll/roll";
 import { exercisesTable } from "../exercises/exercises";
-import { history } from "../history/history";
+import { historyTable } from "../history/history";
 import { users } from "../users/users";
 
 export function protectPage(user: AuthUser | null): boolean {
@@ -50,7 +50,7 @@ export async function loadCurrentPage(
       users.fillProfilePageWithCurrentData(currentUser),
     "roll.html": async () => await roll.init(),
     "exercises.html": async () => await exercisesTable.init(),
-    "history.html": async () => await history.init(),
+    "history.html": async () => await historyTable.init(),
   };
 
   const currentPage = window.location.pathname.split("/").pop() || "";
