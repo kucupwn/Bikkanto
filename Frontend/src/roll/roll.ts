@@ -2,15 +2,17 @@ import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 import {
   getRandomExercise,
   getSelectedCategories,
-  toggleRollOverviewSubmit,
-  toggleRollSettingsOverview,
-  toggleUnsubmittedRollDisplay,
   getHistoryEntries,
   getWorkoutCycles,
   handleExerciseSelectionDisplay,
   fillOverviewTable,
 } from "./rollUtils";
 import { attachRollEventListeners } from "./rollEvents";
+import {
+  toggleRollSettingsOverview,
+  toggleRollOverviewSubmit,
+  toggleUnsubmittedRollDisplay,
+} from "./rollView";
 
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
