@@ -1,10 +1,8 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 import {
   getRandomExercise,
-  getSelectedCategories,
   getHistoryEntries,
   getWorkoutCycles,
-  handleExerciseSelectionDisplay,
   fillOverviewTable,
 } from "./rollUtils";
 import { attachRollEventListeners } from "./rollEvents";
@@ -13,6 +11,7 @@ import {
   toggleRollOverviewSubmit,
   toggleUnsubmittedRollDisplay,
 } from "./rollView";
+import { getExerciseSelections, getSelectedCategories } from "./rollSelection";
 
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
@@ -48,7 +47,7 @@ export class Roll {
 
     attachRollEventListeners({
       onGetExerciseSelections: (exerciseCount: number) =>
-        this.getExerciseSelections(exerciseCount),
+        getExerciseSelections(exerciseCount, this.allCategories),
 
       onGetWorkout: () => this.getWorkout(),
 
@@ -125,24 +124,6 @@ export class Roll {
       this.rollSubmitContainer?.classList.remove("hidden");
       this.pendingRollContainer?.classList.add("hidden");
     }
-  }
-
-  public async getExerciseSelections(count: number): Promise<void> {
-    const container = document.getElementById(
-      "exercise-categories-container"
-    ) as HTMLDivElement;
-    if (!container) return;
-
-    const rows = Array.from(document.querySelectorAll(".exercise-row"));
-    const existingCount = rows.length;
-
-    handleExerciseSelectionDisplay(
-      container,
-      this.allCategories,
-      rows,
-      count,
-      existingCount
-    );
   }
 
   public getWorkout(): WorkoutEntry[] {
