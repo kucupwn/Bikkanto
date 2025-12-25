@@ -9,9 +9,8 @@ import {
   HISTORY_COLUMN_ORDER,
   HISTORY_COLUMN_LABELS,
 } from "../types/history.types";
-import { fetchAllHistory } from "./historyUtils";
+import { fetchAllHistory } from "./historyApi";
 import { renderTable } from "../table/handsontable";
-import { apiRequest } from "../api/apiRequest";
 import { HISTORY_API_URL } from "../api/urls";
 
 export class HistoryTable {
@@ -44,20 +43,6 @@ export class HistoryTable {
       console.error("Error refreshing history:", error);
     }
   }
-
-  public async postBatchHistory(
-    historyEntry: Record<string, any>[]
-  ): Promise<void> {
-    try {
-      await apiRequest(this.apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(historyEntry),
-      });
-    } catch (err: any) {
-      alert(err.message || "Failed to create history records.");
-    }
-  }
 }
 
-export const history = new HistoryTable();
+export const historyTable = new HistoryTable();

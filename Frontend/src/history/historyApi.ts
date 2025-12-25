@@ -21,3 +21,18 @@ export async function fetchAllHistory(
     return [];
   }
 }
+
+export async function postBatchHistory(
+  historyEntry: Record<string, any>[],
+  apiUrl: string
+): Promise<void> {
+  try {
+    await apiRequest(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(historyEntry),
+    });
+  } catch (err: any) {
+    alert(err.message || "Failed to create history records.");
+  }
+}
