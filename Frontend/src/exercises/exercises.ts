@@ -11,7 +11,7 @@ import {
   setExercisesModalHeaderTitle,
   getModalForExercisesOperation,
 } from "./exercisesModal";
-import { attachExercisesEventListeners } from "./exercisesUtils";
+import { attachExercisesEventListeners } from "./exercisesEvents";
 import { handleFormSubmit } from "./exercisesForm";
 import { EXERCISES_API_URL } from "../api/urls";
 import { Modal } from "bootstrap";
