@@ -1,6 +1,6 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 
-export function getExerciseSelections(
+export function getExerciseSelectionRows(
   count: number,
   allCategories: string[]
 ): void {
@@ -12,7 +12,7 @@ export function getExerciseSelections(
   const rows = Array.from(document.querySelectorAll(".exercise-row"));
   const existingCount = rows.length;
 
-  handleExerciseSelectionDisplay(
+  handleExerciseSelectionRowsDisplay(
     container,
     allCategories,
     rows,
@@ -54,7 +54,7 @@ export function getRandomExercise(
   };
 }
 
-export function createCategorySelections(
+export function createCategorySelectionDropdowns(
   start: number,
   end: number,
   categories: string[],
@@ -92,7 +92,7 @@ export function createCategorySelections(
   }
 }
 
-export function handleExerciseSelectionDisplay(
+export function handleExerciseSelectionRowsDisplay(
   container: HTMLDivElement,
   categories: string[],
   rows: any,
@@ -100,7 +100,12 @@ export function handleExerciseSelectionDisplay(
   existingCount: number
 ): void {
   if (count > existingCount) {
-    createCategorySelections(existingCount + 1, count, categories, container);
+    createCategorySelectionDropdowns(
+      existingCount + 1,
+      count,
+      categories,
+      container
+    );
   }
 
   if (count < existingCount) {

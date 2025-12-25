@@ -7,7 +7,7 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
   if (exerciseCountInput)
     exerciseCountInput.addEventListener("change", () => {
       const exerciseCount = Number(exerciseCountInput.value);
-      callback.onGetExerciseSelections(exerciseCount);
+      callback.onGetExerciseSelectionRows(exerciseCount);
     });
 
   const getButton = document.getElementById("btn-get") as HTMLButtonElement;

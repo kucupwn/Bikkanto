@@ -6,7 +6,7 @@ import {
   togglePendingRollOptions,
 } from "./rollView";
 import {
-  getExerciseSelections,
+  getExerciseSelectionRows,
   getSelectedCategories,
   getRandomExercise,
 } from "./rollSelection";
@@ -39,8 +39,8 @@ export class Roll {
     );
 
     attachRollEventListeners({
-      onGetExerciseSelections: (exerciseCount: number) =>
-        getExerciseSelections(exerciseCount, this.allCategories),
+      onGetExerciseSelectionRows: (exerciseCount: number) =>
+        getExerciseSelectionRows(exerciseCount, this.allCategories),
 
       onGetWorkout: () => this.getWorkout(),
 

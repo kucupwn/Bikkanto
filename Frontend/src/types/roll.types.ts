@@ -1,7 +1,7 @@
 import type { WorkoutEntry } from "./exercises.types";
 
 export type RollCallbacks = {
-  onGetExerciseSelections: (exerciseCount: number) => void;
+  onGetExerciseSelectionRows: (exerciseCount: number) => void;
   onGetWorkout: () => WorkoutEntry[];
   onFillOverviewTable: (workout: WorkoutEntry[]) => void;
   onApplyRoll: () => void;
