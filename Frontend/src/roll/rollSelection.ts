@@ -1,9 +1,9 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 
-export async function getExerciseSelections(
+export function getExerciseSelections(
   count: number,
   allCategories: string[]
-): Promise<void> {
+): void {
   const container = document.getElementById(
     "exercise-categories-container"
   ) as HTMLDivElement;
