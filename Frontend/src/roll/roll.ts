@@ -1,12 +1,15 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
-import { getRandomExercise } from "./rollUtils";
 import { attachRollEventListeners } from "./rollEvents";
 import {
   toggleRollSettingsOverview,
   toggleRollOverviewSubmit,
   togglePendingRollOptions,
 } from "./rollView";
-import { getExerciseSelections, getSelectedCategories } from "./rollSelection";
+import {
+  getExerciseSelections,
+  getSelectedCategories,
+  getRandomExercise,
+} from "./rollSelection";
 import { loadUnsubmittedTable, getOverviewTable } from "./rollOverviewTable";
 import { saveWorkoutHistory } from "./rollHistory";
 
