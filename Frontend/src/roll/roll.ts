@@ -2,7 +2,6 @@ import type { Exercises, WorkoutEntry } from "../types/exercises.types";
 import {
   getRandomExercise,
   getSelectedCategories,
-  attachRollEventListeners,
   toggleRollOverviewSubmit,
   toggleRollSettingsOverview,
   toggleUnsubmittedRollDisplay,
@@ -11,6 +10,7 @@ import {
   handleExerciseSelectionDisplay,
   fillOverviewTable,
 } from "./rollUtils";
+import { attachRollEventListeners } from "./rollEvents";
 
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
@@ -155,7 +155,7 @@ export class Roll {
     return workout;
   }
 
-  public getOverviewTable(workout: WorkoutEntry[]): void {
+  private getOverviewTable(workout: WorkoutEntry[]): void {
     const tbody = document.querySelector("tbody");
     if (!tbody) return;
 
