@@ -34,29 +34,6 @@ export function getRandomExercise(
   };
 }
 
-export function fillOverviewTable(
-  workout: WorkoutEntry[],
-  tbody: HTMLElement
-): void {
-  workout.forEach((entry) => {
-    const row = document.createElement("tr");
-
-    const categoryCell = document.createElement("td");
-    categoryCell.textContent = entry.category;
-
-    const exerciseCell = document.createElement("td");
-    exerciseCell.textContent = entry.exercise;
-
-    const repsCell = document.createElement("td");
-    repsCell.textContent = entry.reps.toString();
-
-    row.appendChild(categoryCell);
-    row.appendChild(exerciseCell);
-    row.appendChild(repsCell);
-    tbody.appendChild(row);
-  });
-}
-
 export function getWorkoutCycles(): number {
   const cyclesInput = document.getElementById(
     "cycles-input"

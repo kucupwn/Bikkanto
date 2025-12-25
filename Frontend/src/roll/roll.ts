@@ -3,7 +3,6 @@ import {
   getRandomExercise,
   getHistoryEntries,
   getWorkoutCycles,
-  fillOverviewTable,
 } from "./rollUtils";
 import { attachRollEventListeners } from "./rollEvents";
 import {
@@ -12,7 +11,7 @@ import {
   togglePendingRollOptions,
 } from "./rollView";
 import { getExerciseSelections, getSelectedCategories } from "./rollSelection";
-import { loadUnsubmittedTable } from "./rollOverviewTable";
+import { loadUnsubmittedTable, getOverviewTable } from "./rollOverviewTable";
 
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
@@ -53,7 +52,7 @@ export class Roll {
       onGetWorkout: () => this.getWorkout(),
 
       onFillOverviewTable: (workout: WorkoutEntry[]) =>
-        this.getOverviewTable(workout),
+        getOverviewTable(workout),
 
       onToggleRollSettingsOverview: () => {
         if (this.settingsContainer && this.overviewContainer) {
@@ -119,15 +118,6 @@ export class Roll {
     });
 
     return workout;
-  }
-
-  private getOverviewTable(workout: WorkoutEntry[]): void {
-    const tbody = document.querySelector("tbody");
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-    fillOverviewTable(workout, tbody);
   }
 
   private async saveWorkoutHistory(): Promise<void> {
