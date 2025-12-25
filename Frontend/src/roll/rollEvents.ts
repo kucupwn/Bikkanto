@@ -56,7 +56,7 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
   if (discardButton)
     discardButton.addEventListener("click", () => {
       localStorage.removeItem("pendingTable");
-      callback.onToggleUnsubmittedRollDisplay();
+      callback.onTogglePendingRollOptions();
     });
 
   const loadButton = document.getElementById("load-roll") as HTMLButtonElement;

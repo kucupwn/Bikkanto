@@ -8,6 +8,6 @@ export type RollCallbacks = {
   onToggleRollSettingsOverview: () => void;
   onToggleRollOverviewSubmit: () => void;
   onSaveWorkoutHistory: () => Promise<void> | void;
-  onToggleUnsubmittedRollDisplay: () => void;
+  onTogglePendingRollOptions: () => void;
   onLoadUnsubmittedTable: () => void;
 };

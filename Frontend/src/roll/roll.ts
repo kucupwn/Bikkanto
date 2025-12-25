@@ -9,9 +9,10 @@ import { attachRollEventListeners } from "./rollEvents";
 import {
   toggleRollSettingsOverview,
   toggleRollOverviewSubmit,
-  toggleUnsubmittedRollDisplay,
+  togglePendingRollOptions,
 } from "./rollView";
 import { getExerciseSelections, getSelectedCategories } from "./rollSelection";
+import { loadUnsubmittedTable } from "./rollOverviewTable";
 
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
@@ -82,18 +83,21 @@ export class Roll {
       },
 
       onSaveWorkoutHistory: async () => await this.saveWorkoutHistory(),
-      onToggleUnsubmittedRollDisplay: () =>
-        toggleUnsubmittedRollDisplay(
+      onTogglePendingRollOptions: () =>
+        togglePendingRollOptions(
           this.pendingRollContainer,
           this.settingsContainer
         ),
-      onLoadUnsubmittedTable: () => this.loadUnsubmittedTable(),
+      onLoadUnsubmittedTable: () =>
+        loadUnsubmittedTable(
+          this.overviewContainer,
+          this.overviewTableButtonsContainer,
+          this.rollSubmitContainer,
+          this.pendingRollContainer
+        ),
     });
 
-    toggleUnsubmittedRollDisplay(
-      this.pendingRollContainer,
-      this.settingsContainer
-    );
+    togglePendingRollOptions(this.pendingRollContainer, this.settingsContainer);
   }
 
   public async init(): Promise<void> {
@@ -105,28 +109,7 @@ export class Roll {
     }
   }
 
-  private loadUnsubmittedTable(): void {
-    const table = localStorage.getItem("pendingTable");
-
-    if (table) {
-      this.overviewContainer?.classList.remove("hidden");
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(table, "text/html");
-      const tbody = doc.querySelector("tbody");
-      const actualTBody = this.overviewContainer?.querySelector("tbody");
-
-      if (tbody && actualTBody) {
-        actualTBody.innerHTML = tbody.innerHTML;
-      }
-
-      this.overviewTableButtonsContainer?.classList.add("hidden");
-      this.rollSubmitContainer?.classList.remove("hidden");
-      this.pendingRollContainer?.classList.add("hidden");
-    }
-  }
-
-  public getWorkout(): WorkoutEntry[] {
+  private getWorkout(): WorkoutEntry[] {
     const difficulty = (
       document.getElementById("exercise-difficulty") as HTMLSelectElement
     ).value;

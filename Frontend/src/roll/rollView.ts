@@ -14,7 +14,7 @@ export function toggleRollOverviewSubmit(
   rollSubmitContainer?.classList.toggle("hidden");
 }
 
-export function toggleUnsubmittedRollDisplay(
+export function togglePendingRollOptions(
   pendingRollContainer: HTMLElement | null,
   settingsContainer: HTMLElement | null
 ): void {
@@ -25,4 +25,16 @@ export function toggleUnsubmittedRollDisplay(
     pendingRollContainer?.classList.add("hidden");
     settingsContainer?.classList.remove("hidden");
   }
+}
+
+export function toggleUnsubmittedRollDisplay(
+  overviewContainer: HTMLElement | null,
+  overviewTableButtonsContainer: HTMLElement | null,
+  rollSubmitContainer: HTMLElement | null,
+  pendingRollContainer: HTMLElement | null
+): void {
+  overviewContainer?.classList.remove("hidden");
+  overviewTableButtonsContainer?.classList.add("hidden");
+  rollSubmitContainer?.classList.remove("hidden");
+  pendingRollContainer?.classList.add("hidden");
 }
