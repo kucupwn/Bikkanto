@@ -1,9 +1,5 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
-import {
-  getRandomExercise,
-  getHistoryEntries,
-  getWorkoutCycles,
-} from "./rollUtils";
+import { getRandomExercise } from "./rollUtils";
 import { attachRollEventListeners } from "./rollEvents";
 import {
   toggleRollSettingsOverview,
@@ -12,17 +8,11 @@ import {
 } from "./rollView";
 import { getExerciseSelections, getSelectedCategories } from "./rollSelection";
 import { loadUnsubmittedTable, getOverviewTable } from "./rollOverviewTable";
+import { saveWorkoutHistory } from "./rollHistory";
 
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
-import { users } from "../users/users";
-import { postBatchHistory } from "../history/historyApi";
-import {
-  EXERCISES_API_URL,
-  EXERCISES_CATEGORY_API_URL,
-  HISTORY_API_URL,
-} from "../api/urls";
-import { historyTable } from "../history/history";
+import { EXERCISES_API_URL, EXERCISES_CATEGORY_API_URL } from "../api/urls";
 
 export class Roll {
   private allExercises: Exercises[] = [];
@@ -81,7 +71,7 @@ export class Roll {
         }
       },
 
-      onSaveWorkoutHistory: async () => await this.saveWorkoutHistory(),
+      onSaveWorkoutHistory: async () => await saveWorkoutHistory(),
       onTogglePendingRollOptions: () =>
         togglePendingRollOptions(
           this.pendingRollContainer,
@@ -118,33 +108,6 @@ export class Roll {
     });
 
     return workout;
-  }
-
-  private async saveWorkoutHistory(): Promise<void> {
-    const table = document.getElementById("overview-table") as HTMLTableElement;
-
-    const rows = table.querySelectorAll("tbody tr");
-
-    const today = new Date().toISOString().split("T")[0];
-
-    const cycles = getWorkoutCycles();
-    if (cycles < 1) return;
-
-    const userDetails = users.getCurrentUser();
-    if (!userDetails) {
-      alert("Login to save workout!");
-      return;
-    }
-
-    const user = userDetails.username;
-
-    const historyEntries = getHistoryEntries(rows, today, cycles, user);
-
-    await postBatchHistory(historyEntries, HISTORY_API_URL);
-    await historyTable.refresh();
-
-    alert("Good job! Workout saved.");
-    window.location.href = "/history.html";
   }
 }
 

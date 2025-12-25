@@ -1,5 +1,4 @@
 import type { Exercises, WorkoutEntry } from "../types/exercises.types";
-import type { WorkoutHistory } from "../types/history.types";
 
 export function getRandomExercise(
   exercises: Exercises[],
@@ -32,40 +31,4 @@ export function getRandomExercise(
     exercise: exercise.exercise_name,
     reps,
   };
-}
-
-export function getWorkoutCycles(): number {
-  const cyclesInput = document.getElementById(
-    "cycles-input"
-  ) as HTMLInputElement;
-  const cycles = Number(cyclesInput.value);
-
-  if (!cycles || cycles < 1) {
-    alert("Please enter valid cycles");
-    return 0;
-  }
-
-  return cycles;
-}
-
-export function getHistoryEntries(
-  rows: NodeListOf<Element>,
-  today: string,
-  cycles: number,
-  user: string
-): WorkoutHistory[] {
-  const historyEntries = Array.from(rows).map((row) => {
-    const cells = row.querySelectorAll("td");
-    return {
-      date_complete: today,
-      cycles,
-      category: cells[0].textContent || "",
-      exercise: cells[1].textContent || "",
-      repetitions: Number(cells[2].textContent) || 0,
-      sum_repetitions: (Number(cells[2].textContent) || 0) * cycles,
-      user,
-    };
-  });
-
-  return historyEntries;
 }
