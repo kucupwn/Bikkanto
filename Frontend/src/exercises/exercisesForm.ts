@@ -10,7 +10,7 @@ import {
   deleteExercise,
 } from "./exercisesApi";
 
-export function getFormData(
+function getFormData(
   form: HTMLFormElement,
   allExercises: Exercises[]
 ): Record<string, any> {

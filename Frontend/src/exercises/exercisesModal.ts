@@ -63,7 +63,7 @@ export function getModalForExercisesOperation(
   }
 }
 
-export function fillModifyModalDefaultValues(
+function fillModifyModalDefaultValues(
   exercises: Exercises[],
   selectedId: number
 ) {
@@ -85,7 +85,7 @@ export function fillModifyModalDefaultValues(
   });
 }
 
-export function generateAddModalInput(allCategories: string[]): string {
+function generateAddModalInput(allCategories: string[]): string {
   const categoryOptions = getCategoryOptions(allCategories);
 
   return `
@@ -119,7 +119,7 @@ export function generateAddModalInput(allCategories: string[]): string {
   `;
 }
 
-export function generateModifyModalInput(
+function generateModifyModalInput(
   exercises: Exercises[],
   allCategories: string[]
 ) {
@@ -154,7 +154,7 @@ export function generateModifyModalInput(
   `;
 }
 
-export function generateDeleteModalInput(exercises: Exercises[]) {
+function generateDeleteModalInput(exercises: Exercises[]) {
   const exerciseOptions = getExerciseOptions(exercises);
 
   return `
