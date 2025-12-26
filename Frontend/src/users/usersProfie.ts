@@ -16,7 +16,7 @@ export async function fillProfilePageWithCurrentData(
   setCurrentProfileTextContent(email, userData?.email);
 }
 
-export function setCurrentProfileTextContent(
+function setCurrentProfileTextContent(
   element: HTMLElement | null,
   value: string | undefined
 ): void {
