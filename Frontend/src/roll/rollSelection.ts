@@ -54,7 +54,7 @@ export function getRandomExercise(
   };
 }
 
-export function createCategorySelectionDropdowns(
+function createCategorySelectionDropdowns(
   start: number,
   end: number,
   categories: string[],
@@ -92,7 +92,7 @@ export function createCategorySelectionDropdowns(
   }
 }
 
-export function handleExerciseSelectionRowsDisplay(
+function handleExerciseSelectionRowsDisplay(
   container: HTMLDivElement,
   categories: string[],
   rows: any,

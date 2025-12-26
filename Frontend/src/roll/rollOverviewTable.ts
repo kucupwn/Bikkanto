@@ -10,10 +10,7 @@ export function getOverviewTable(workout: WorkoutEntry[]): void {
   fillOverviewTable(workout, tbody);
 }
 
-export function fillOverviewTable(
-  workout: WorkoutEntry[],
-  tbody: HTMLElement
-): void {
+function fillOverviewTable(workout: WorkoutEntry[], tbody: HTMLElement): void {
   workout.forEach((entry) => {
     const row = document.createElement("tr");
 

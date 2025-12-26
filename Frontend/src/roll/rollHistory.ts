@@ -6,7 +6,7 @@ import { HISTORY_API_URL } from "../api/urls";
 import { historyTable } from "../history/history";
 import { postBatchHistory } from "../history/historyApi";
 
-export function getHistoryEntries(
+function getHistoryEntries(
   rows: NodeListOf<Element>,
   today: string,
   cycles: number,
@@ -28,7 +28,7 @@ export function getHistoryEntries(
   return historyEntries;
 }
 
-export function getWorkoutCycles(): number {
+function getWorkoutCycles(): number {
   const cyclesInput = document.getElementById(
     "cycles-input"
   ) as HTMLInputElement;
