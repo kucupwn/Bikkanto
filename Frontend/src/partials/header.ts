@@ -1,6 +1,6 @@
 import { Collapse } from "bootstrap";
 import type { AuthUser } from "../types/user.types";
-import { users } from "../users/users";
+import { logout } from "../users/usersLogin";
 
 export class Header {
   private header = document.querySelector("header") as HTMLElement;
@@ -34,7 +34,7 @@ export class Header {
 
     this.logoutButton?.addEventListener("click", (e) => {
       e.preventDefault();
-      users.logout();
+      logout();
       window.location.href = "index.html";
     });
   }

@@ -2,7 +2,7 @@ import type { AuthUser } from "../types/user.types";
 import { roll } from "../roll/roll";
 import { exercisesTable } from "../exercises/exercises";
 import { historyTable } from "../history/history";
-import { users } from "../users/users";
+import { fillProfilePageWithCurrentData } from "../users/usersProfie";
 
 export function protectPage(user: AuthUser | null): boolean {
   const excludedPages = ["/index.html", "/login.html", "/register.html"];
@@ -46,8 +46,7 @@ export async function loadCurrentPage(
 ): Promise<void> {
   const pageInitMap: Record<string, () => Promise<void>> = {
     "index.html": async () => setHomeUi(currentUser?.username || null),
-    "profile.html": async () =>
-      users.fillProfilePageWithCurrentData(currentUser),
+    "profile.html": async () => fillProfilePageWithCurrentData(currentUser),
     "roll.html": async () => await roll.init(),
     "exercises.html": async () => await exercisesTable.init(),
     "history.html": async () => await historyTable.init(),
