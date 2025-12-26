@@ -66,8 +66,8 @@ export async function getCurrentUserAllDetails(
     const data: User = await res.json();
 
     return data;
-  } catch (err) {
-    console.warn("Error loading data: ", err);
+  } catch (err: any) {
+    alert(err.message || "Failed to get user details.");
 
     return null;
   }
