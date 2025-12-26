@@ -1,113 +1,24 @@
-import {
-  UserDataChange,
-  type AuthUser,
-  type User,
-  type AuthResponse,
-} from "../types/user.types";
-import {
-  attachUserEventListeners,
-  setModalHeaderTitle,
-  setCurrentProfileTextContent,
-  getNewUserFormData,
-  getEditInput,
-} from "./usersUtils";
-import { apiRequest } from "../api/apiRequest";
-import { Modal } from "bootstrap";
-import {
-  CHANGE_PASSWORD_API_URL,
-  REGISTER_API_URL,
-  TOKEN_API_URL,
-  USERS_API_URL,
-} from "../api/urls";
+import { type AuthUser } from "../types/user.types";
+import { attachUserEventListeners } from "./usersEvents";
+import { login, startAutoLogout } from "./usersLogin";
+import { addNewUser } from "./usersApi";
+import { openEditModal, openPasswordChangeModal } from "./usersModalForm";
 
 export class Users {
   constructor() {
     attachUserEventListeners({
-      onLogin: async (username, password) => this.login(username, password),
-      onRegister: async (form) => this.addNewUser(form),
+      onLogin: async (username, password) => login(username, password),
+      onRegister: async (form) => addNewUser(form),
       onOpenEdit: (editKey, label, sourceId) =>
-        this.openEditModal(editKey, label, sourceId),
-      onOpenPasswordChange: () => this.openPasswordChangeModal(),
+        openEditModal(editKey, label, sourceId),
+      onOpenPasswordChange: () => openPasswordChangeModal(),
     });
 
     const token = localStorage.getItem("token");
     if (token) {
-      this.startAutoLogout(token);
+      startAutoLogout(token);
     }
   }
-
-  // --------------------------------------------------------------
-  // LOGIN/LOGOUT
-  // --------------------------------------------------------------
-
-  public async login(username: string, password: string): Promise<void> {
-    const formData = new URLSearchParams();
-    formData.append("username", username);
-    formData.append("password", password);
-
-    await this.getToken(formData);
-
-    if (localStorage.getItem("token")) {
-      window.location.href = "/index.html";
-    }
-  }
-
-  private async getToken(formData: URLSearchParams): Promise<void> {
-    try {
-      const data = await apiRequest<AuthResponse>(TOKEN_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData,
-      });
-      const token = data.access_token;
-      localStorage.setItem("token", token);
-      this.startAutoLogout(token);
-    } catch (err: any) {
-      alert(err.message || "Invalid username or password.");
-    }
-  }
-
-  public logout(): void {
-    localStorage.removeItem("token");
-    window.location.href = "/index.html";
-  }
-
-  private startAutoLogout(token: string): void {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-
-    const expiry = payload.exp * 1000;
-    const now = Date.now();
-    const timeLeft = expiry - now;
-
-    if (timeLeft <= 0) {
-      this.logout();
-      return;
-    }
-
-    setTimeout(() => {
-      this.logout();
-    }, timeLeft);
-  }
-
-  private async addNewUser(formData: HTMLFormElement): Promise<void> {
-    const data = getNewUserFormData(formData);
-    if (!data) return;
-
-    try {
-      await apiRequest(REGISTER_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/JSON" },
-        body: JSON.stringify(data),
-      });
-      window.location.href = "/index.html";
-    } catch (err: any) {
-      alert(err.message || "Failed to add new user.");
-    }
-  }
-
-  // --------------------------------------------------------------
-  // GET USER DATA
-  // --------------------------------------------------------------
 
   public getCurrentUser(): AuthUser | null {
     const token = localStorage.getItem("token");
@@ -120,158 +31,6 @@ export class Users {
       username: payload.sub,
       role: payload.role,
     };
-  }
-
-  private async getCurrentUserAllDetails(
-    currentUser: AuthUser
-  ): Promise<User | null> {
-    if (!currentUser) {
-      return null;
-    }
-
-    const token = localStorage.getItem("token");
-
-    try {
-      const res = await fetch(USERS_API_URL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data: User = await res.json();
-
-      return data;
-    } catch (err) {
-      console.warn("Error loading data: ", err);
-
-      return null;
-    }
-  }
-
-  // --------------------------------------------------------------
-  // USER DATA EDITING
-  // --------------------------------------------------------------
-
-  public async fillProfilePageWithCurrentData(
-    currentUser: AuthUser | null
-  ): Promise<void> {
-    if (!currentUser) return;
-
-    const userData = await this.getCurrentUserAllDetails(currentUser);
-    const firstName = document.getElementById("firstname-paragraph");
-    const lastName = document.getElementById("lastname-paragraph");
-    const email = document.getElementById("email-paragraph");
-
-    setCurrentProfileTextContent(firstName, userData?.first_name);
-    setCurrentProfileTextContent(lastName, userData?.last_name);
-    setCurrentProfileTextContent(email, userData?.email);
-  }
-
-  private openEditModal(
-    editKey: string,
-    headerLabel: string,
-    sourceParagraphId: string
-  ): void {
-    const modalEl = document.getElementById("profile-modal");
-    if (!modalEl) return;
-
-    setModalHeaderTitle(headerLabel);
-
-    const body = document.getElementById("profile-form-body");
-    if (!body) return;
-
-    const currentValue = sourceParagraphId
-      ? (document.getElementById(sourceParagraphId)?.textContent ?? "")
-      : "";
-    body.innerHTML = getEditInput(editKey, currentValue);
-
-    const bootstrapModal = new Modal(modalEl);
-    bootstrapModal.show();
-
-    this.handleEditFormSubmit(bootstrapModal);
-  }
-
-  private handleEditFormSubmit(modal: bootstrap.Modal): void {
-    const form = document.getElementById("profile-form") as HTMLFormElement;
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const data: Record<string, string> = {};
-
-      formData.forEach((value, key) => {
-        data[key] = String(value);
-      });
-
-      await this.submitEditedUserData(data, UserDataChange.UserData);
-
-      modal.hide();
-      form.reset();
-    };
-  }
-
-  private openPasswordChangeModal(): void {
-    const modalEl = document.getElementById("password-modal");
-    if (!modalEl) return;
-
-    const bootstrapModal = new Modal(modalEl);
-    bootstrapModal.show();
-
-    this.handlePasswordChangeFormSubmit(bootstrapModal);
-  }
-
-  private handlePasswordChangeFormSubmit(modal: bootstrap.Modal): void {
-    const form = document.getElementById("password-form") as HTMLFormElement;
-    if (!form) return;
-
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const data: Record<string, string> = {};
-
-      formData.forEach((value, key) => {
-        data[key] = String(value);
-      });
-
-      if (data["new_password"] === data["new_password_verify"]) {
-        delete data["new_password_verify"];
-        this.submitEditedUserData(data, UserDataChange.Password);
-      } else {
-        alert("New passwords are not matching!");
-        return;
-      }
-
-      modal.hide();
-      form.reset();
-    };
-  }
-
-  private async submitEditedUserData(
-    data: Record<string, string>,
-    editData: UserDataChange
-  ): Promise<void> {
-    const token = localStorage.getItem("token");
-    const endpoint =
-      editData === UserDataChange.UserData
-        ? USERS_API_URL
-        : CHANGE_PASSWORD_API_URL;
-
-    try {
-      await apiRequest(endpoint, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
-      window.location.reload();
-    } catch (err: any) {
-      alert(err.message || "Failed to update user data.");
-    }
   }
 }
 
