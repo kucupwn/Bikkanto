@@ -26,18 +26,18 @@ export function openEditModal(
   handleEditFormSubmit(bootstrapModal);
 }
 
-export function getEditInput(editKey: string, currentValue: string): string {
+function getEditInput(editKey: string, currentValue: string): string {
   return `<input id="profile-input" name="${editKey}" type="text" class="form-control" placeholder="${currentValue}">`;
 }
 
-export function setModalHeaderTitle(editData: string) {
+function setModalHeaderTitle(editData: string) {
   const title = document.getElementById("profile-modal-label");
   if (!title) return;
 
   title.textContent = `Change ${editData}`;
 }
 
-export function handleEditFormSubmit(modal: bootstrap.Modal): void {
+function handleEditFormSubmit(modal: bootstrap.Modal): void {
   const form = document.getElementById("profile-form") as HTMLFormElement;
   if (!form) return;
 
@@ -67,7 +67,7 @@ export function openPasswordChangeModal(): void {
   handlePasswordChangeFormSubmit(bootstrapModal);
 }
 
-export function handlePasswordChangeFormSubmit(modal: bootstrap.Modal): void {
+function handlePasswordChangeFormSubmit(modal: bootstrap.Modal): void {
   const form = document.getElementById("password-form") as HTMLFormElement;
   if (!form) return;
 
