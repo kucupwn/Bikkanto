@@ -21,7 +21,7 @@ export function protectPage(user: AuthUser | null): boolean {
   }
 }
 
-export function setHomeUi(username: string | null): void {
+function setHomeUi(username: string | null): void {
   const welcome = document.getElementById("welcome-text") as HTMLHeadingElement;
   const loginAdvice = document.getElementById(
     "login-advice-text"
