@@ -122,3 +122,18 @@ a {
   justify-self: center;
   max-width: 600px;
 }
+
+.feedback-ribbon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+}
+
+.feedback-ribbon.success {
+  background-color: rgba(82, 238, 68, 0.7);
+}
+
+.feedback-ribbon.error {
+  background-color: rgba(244, 67, 67, 0.7);
+}
