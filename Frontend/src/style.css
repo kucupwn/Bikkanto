@@ -59,6 +59,52 @@ a {
   font-size: 32px;
 }
 
+.feedback-ribbon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+}
+
+.feedback-ribbon p {
+  margin: 0;
+  padding: 0.5rem;
+  color: rgba(60, 40, 40);
+}
+
+.feedback-ribbon.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feedback-ribbon.hide {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+}
+
+.feedback-ribbon p {
+  margin: 0;
+  padding: 0.5rem;
+  color: rgba(50, 50, 50);
+}
+
+.feedback-ribbon.success {
+  background-color: rgba(82, 238, 68, 0.7);
+}
+
+.feedback-ribbon.error {
+  background-color: rgba(244, 67, 67, 0.7);
+}
+
 #title-text {
   font-family: "Courier New", Courier, monospace;
   color: black;
@@ -121,19 +167,4 @@ a {
 #guide-container {
   justify-self: center;
   max-width: 600px;
-}
-
-.feedback-ribbon {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 999;
-}
-
-.feedback-ribbon.success {
-  background-color: rgba(82, 238, 68, 0.7);
-}
-
-.feedback-ribbon.error {
-  background-color: rgba(244, 67, 67, 0.7);
 }
