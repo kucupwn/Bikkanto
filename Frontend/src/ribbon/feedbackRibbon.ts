@@ -4,9 +4,18 @@ export function showFeedback(message: string, type: FeedbackType): void {
   const ribbon = createFeedbackRibbon(message, type);
   document.body.appendChild(ribbon);
 
+  requestAnimationFrame(() => {
+    ribbon.classList.add("show");
+  });
+
+  setTimeout(() => {
+    ribbon.classList.remove("show");
+    ribbon.classList.add("hide");
+  }, 3000);
+
   setTimeout(() => {
     ribbon.remove();
-  }, 3000);
+  }, 4000);
 }
 
 function createFeedbackRibbon(
