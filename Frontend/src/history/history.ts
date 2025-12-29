@@ -1,9 +1,4 @@
 import Handsontable from "handsontable/base";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/styles/handsontable.css";
-import "handsontable/styles/ht-theme-main.css";
-registerAllModules();
-
 import {
   type WorkoutHistory,
   HISTORY_COLUMN_ORDER,
@@ -12,6 +7,7 @@ import {
 import { fetchAllHistory } from "./historyApi";
 import { renderTable } from "../table/handsontable";
 import { HISTORY_API_URL } from "../api/urls";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 
 export class HistoryTable {
   private hotInstance: Handsontable | null = null;
@@ -30,8 +26,9 @@ export class HistoryTable {
         HISTORY_COLUMN_ORDER,
         HISTORY_COLUMN_LABELS
       );
-    } catch (error) {
-      console.error("Error initializing exercises history table:", error);
+    } catch (err: any) {
+      showFeedback("Error initializing exercises history table", "error");
+      console.error(err.message);
     }
   }
 
@@ -39,8 +36,9 @@ export class HistoryTable {
     try {
       this.allHistory = await fetchAllHistory(this.apiUrl);
       this.hotInstance?.loadData(this.allHistory);
-    } catch (error) {
-      console.error("Error refreshing history:", error);
+    } catch (err: any) {
+      showFeedback("Error refreshing history", "error");
+      console.error(err.message);
     }
   }
 }
