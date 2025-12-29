@@ -1,4 +1,5 @@
 import { apiRequest } from "../api/apiRequest";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 import type { WorkoutHistory } from "../types/history.types";
 
 export async function fetchAllHistory(
@@ -16,7 +17,8 @@ export async function fetchAllHistory(
 
     return data;
   } catch (err: any) {
-    alert(err.message || "Failed to fetch history.");
+    showFeedback("Failed to fetch history", "error");
+    console.error(err.message);
 
     return [];
   }
@@ -32,7 +34,9 @@ export async function postBatchHistory(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(historyEntry),
     });
+    showFeedback("History record(s) added successfully", "success");
   } catch (err: any) {
-    alert(err.message || "Failed to create history records.");
+    showFeedback("Failed to add history records", "error");
+    console.error(err.message);
   }
 }
