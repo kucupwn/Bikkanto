@@ -168,3 +168,11 @@ a {
   justify-self: center;
   max-width: 600px;
 }
+
+#finished-roll-container {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  justify-content: center;
+  align-items: center;
+}
