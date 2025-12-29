@@ -26,6 +26,7 @@ export class Roll {
   private settingsContainer: HTMLElement | null;
   private overviewContainer: HTMLElement | null;
   private pendingRollContainer: HTMLElement | null;
+  private finishedRollContainer: HTMLElement | null;
 
   constructor() {
     this.overviewTableButtonsContainer = document.getElementById(
@@ -36,6 +37,9 @@ export class Roll {
     this.overviewContainer = document.getElementById("overview-container");
     this.pendingRollContainer = document.getElementById(
       "pending-roll-container"
+    );
+    this.finishedRollContainer = document.getElementById(
+      "finished-roll-container"
     );
 
     attachRollEventListeners({
@@ -74,7 +78,11 @@ export class Roll {
         }
       },
 
-      onSaveWorkoutHistory: async () => await saveWorkoutHistory(),
+      onSaveWorkoutHistory: async () =>
+        await saveWorkoutHistory(
+          this.overviewContainer,
+          this.finishedRollContainer
+        ),
       onTogglePendingRollOptions: () =>
         togglePendingRollOptions(
           this.pendingRollContainer,

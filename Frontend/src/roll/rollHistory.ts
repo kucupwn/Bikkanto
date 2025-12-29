@@ -3,9 +3,9 @@ import { type WorkoutHistory } from "../types/history.types";
 import { users } from "../users/users";
 
 import { HISTORY_API_URL } from "../api/urls";
-import { historyTable } from "../history/history";
 import { postBatchHistory } from "../history/historyApi";
 import { showFeedback } from "../ribbon/feedbackRibbon";
+import { toggleFinishedWorkoutDisplay } from "./rollView";
 
 function getHistoryEntries(
   rows: NodeListOf<Element>,
@@ -43,7 +43,10 @@ function getWorkoutCycles(): number {
   return cycles;
 }
 
-export async function saveWorkoutHistory(): Promise<void> {
+export async function saveWorkoutHistory(
+  overviewContainer: HTMLElement | null,
+  finishedRollContainer: HTMLElement | null
+): Promise<void> {
   const table = document.getElementById("overview-table") as HTMLTableElement;
 
   const rows = table.querySelectorAll("tbody tr");
@@ -64,5 +67,5 @@ export async function saveWorkoutHistory(): Promise<void> {
   const historyEntries = getHistoryEntries(rows, today, cycles, user);
 
   await postBatchHistory(historyEntries, HISTORY_API_URL);
-  await historyTable.refresh();
+  toggleFinishedWorkoutDisplay(overviewContainer, finishedRollContainer);
 }

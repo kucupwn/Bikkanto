@@ -38,3 +38,11 @@ export function toggleUnsubmittedRollDisplay(
   rollSubmitContainer?.classList.remove("hidden");
   pendingRollContainer?.classList.add("hidden");
 }
+
+export function toggleFinishedWorkoutDisplay(
+  overviewContainer: HTMLElement | null,
+  finishedRollContainer: HTMLElement | null
+): void {
+  overviewContainer?.classList.add("hidden");
+  finishedRollContainer?.classList.remove("hidden");
+}
