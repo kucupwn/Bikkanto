@@ -16,11 +16,11 @@ import { saveWorkoutHistory } from "./rollHistory";
 import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
 import { EXERCISES_API_URL, EXERCISES_CATEGORY_API_URL } from "../api/urls";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 
 export class Roll {
   private allExercises: Exercises[] = [];
   private allCategories: string[] = [];
-  private readonly apiUrlExercises = EXERCISES_API_URL;
   private overviewTableButtonsContainer: HTMLElement | null;
   private rollSubmitContainer: HTMLElement | null;
   private settingsContainer: HTMLElement | null;
@@ -94,10 +94,11 @@ export class Roll {
 
   public async init(): Promise<void> {
     try {
-      this.allExercises = await fetchAllExercises(this.apiUrlExercises);
+      this.allExercises = await fetchAllExercises(EXERCISES_API_URL);
       this.allCategories = await fetchCategories(EXERCISES_CATEGORY_API_URL);
-    } catch (err) {
-      console.log("Error fetching exercises:", err);
+    } catch (err: any) {
+      showFeedback("Failed to fetch exercises", "error");
+      console.error(err);
     }
   }
 

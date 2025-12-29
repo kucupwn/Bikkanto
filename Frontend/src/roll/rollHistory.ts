@@ -5,6 +5,7 @@ import { users } from "../users/users";
 import { HISTORY_API_URL } from "../api/urls";
 import { historyTable } from "../history/history";
 import { postBatchHistory } from "../history/historyApi";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 
 function getHistoryEntries(
   rows: NodeListOf<Element>,
@@ -35,7 +36,7 @@ function getWorkoutCycles(): number {
   const cycles = Number(cyclesInput.value);
 
   if (!cycles || cycles < 1) {
-    alert("Please enter valid cycles");
+    showFeedback("Please enter valid cycles", "error");
     return 0;
   }
 
@@ -54,7 +55,7 @@ export async function saveWorkoutHistory(): Promise<void> {
 
   const userDetails = users.getCurrentUser();
   if (!userDetails) {
-    alert("Login to save workout!");
+    showFeedback("Login to save workout!", "error");
     return;
   }
 
@@ -64,7 +65,4 @@ export async function saveWorkoutHistory(): Promise<void> {
 
   await postBatchHistory(historyEntries, HISTORY_API_URL);
   await historyTable.refresh();
-
-  alert("Good job! Workout saved.");
-  window.location.href = "/history.html";
 }
