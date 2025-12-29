@@ -1,4 +1,5 @@
 import { apiRequest } from "../api/apiRequest";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 import { type Exercises } from "../types/exercises.types";
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
@@ -7,7 +8,8 @@ export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
 
     return data;
   } catch (err: any) {
-    alert(err.message || "Failed to fetch exercises.");
+    showFeedback("Failed to fetch exercises", "error");
+    alert(err.message);
 
     return [];
   }
@@ -19,7 +21,8 @@ export async function fetchCategories(apiUrl: string): Promise<string[]> {
 
     return data;
   } catch (err: any) {
-    alert(err.message || "Failed to fetch categories.");
+    showFeedback("Failed to fetch categories", "error");
+    console.error(err.message);
 
     return [];
   }
@@ -35,8 +38,10 @@ export async function postNewExercise(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newExercise),
     });
+    showFeedback("New exercise added successfully", "success");
   } catch (err: any) {
-    alert(err.message || "Failed to add new exercise.");
+    showFeedback("Failed to add new exercise", "error");
+    console.error(err.message);
   }
 }
 
@@ -51,8 +56,10 @@ export async function updateExercise(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(update),
     });
+    showFeedback("Exercise updated successfully", "success");
   } catch (err: any) {
-    alert(err.message || "Failed to update exercise.");
+    showFeedback("Failed to update exercise", "error");
+    console.error(err.message);
   }
 }
 
@@ -65,7 +72,9 @@ export async function deleteExercise(
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
+    showFeedback("Exercise deleted successfully", "success");
   } catch (err: any) {
-    alert(err.message || "Failed to delete exercise.");
+    showFeedback("Failed to delete exercise", "error");
+    console.error(err.message);
   }
 }

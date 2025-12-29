@@ -15,6 +15,7 @@ import { attachExercisesEventListeners } from "./exercisesEvents";
 import { handleFormSubmit } from "./exercisesForm";
 import { EXERCISES_API_URL } from "../api/urls";
 import { Modal } from "bootstrap";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
@@ -41,8 +42,9 @@ export class ExercisesTable {
         EXERCISE_COLUMNS_ORDER,
         EXERCISE_COLUMN_LABELS
       );
-    } catch (error) {
-      console.error("Error initializing exercises table:", error);
+    } catch (err: any) {
+      showFeedback("Error initializing exercises table", "error");
+      console.error(err.message);
     }
   }
 
@@ -50,8 +52,9 @@ export class ExercisesTable {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
       this.hotInstance?.loadData(this.allExercises);
-    } catch (error) {
-      console.error("Error refreshing exercises:", error);
+    } catch (err: any) {
+      showFeedback("Error refreshing exercises table", "error");
+      console.error(err.message);
     }
   }
 
