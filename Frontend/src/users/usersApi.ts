@@ -13,6 +13,7 @@ import {
 } from "../api/urls";
 import { startAutoLogout } from "./usersLogin";
 import { getNewUserFormData } from "./usersModalForm";
+import { showFeedback } from "../ribbon/feedbackRibbon";
 
 export async function getToken(formData: URLSearchParams): Promise<void> {
   try {
@@ -25,7 +26,8 @@ export async function getToken(formData: URLSearchParams): Promise<void> {
     localStorage.setItem("token", token);
     startAutoLogout(token);
   } catch (err: any) {
-    alert(err.message || "Invalid username or password.");
+    showFeedback("Invalid username or password", "error");
+    console.error(err.message);
   }
 }
 
@@ -39,9 +41,11 @@ export async function addNewUser(formData: HTMLFormElement): Promise<void> {
       headers: { "Content-Type": "application/JSON" },
       body: JSON.stringify(data),
     });
-    window.location.href = "/index.html";
+    showFeedback("Registered successfully, redirecting to login...", "success");
+    setTimeout(() => (window.location.href = "/login.html"), 3000);
   } catch (err: any) {
-    alert(err.message || "Failed to add new user.");
+    showFeedback("Failed to add new user", "error");
+    console.error(err.message);
   }
 }
 
@@ -67,7 +71,8 @@ export async function getCurrentUserAllDetails(
 
     return data;
   } catch (err: any) {
-    alert(err.message || "Failed to get user details.");
+    showFeedback("Failed to get user details", "error");
+    console.error(err.message);
 
     return null;
   }
@@ -94,6 +99,7 @@ export async function submitEditedUserData(
     });
     window.location.reload();
   } catch (err: any) {
-    alert(err.message || "Failed to update user data.");
+    showFeedback("Failed to update user data", "error");
+    console.error(err.message);
   }
 }
