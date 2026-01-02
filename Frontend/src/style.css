@@ -137,6 +137,12 @@ a {
   margin: 1rem;
 }
 
+#history-table-button-wrapper {
+  display: flex;
+  justify-self: center;
+  margin: 1rem;
+}
+
 #cycles-input {
   width: auto;
   justify-self: center;
