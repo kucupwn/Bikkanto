@@ -29,3 +29,7 @@ export const HISTORY_COLUMN_LABELS = {
   sum_repetitions: "Total Reps",
   user: "User",
 };
+
+export type HistoryCallbacks = {
+  onOpenStats: () => void;
+};

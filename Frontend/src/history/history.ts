@@ -8,6 +8,8 @@ import { fetchAllHistory } from "./historyApi";
 import { renderTable } from "../table/handsontable";
 import { HISTORY_API_URL } from "../api/urls";
 import { showFeedback } from "../ribbon/feedbackRibbon";
+import { attachHistoryEventListeners } from "./historyEvents";
+import { openStatsModal } from "./historyStats";
 
 export class HistoryTable {
   private hotInstance: Handsontable | null = null;
@@ -16,6 +18,12 @@ export class HistoryTable {
   private tableContainer: HTMLDivElement = document.getElementById(
     "history-table"
   ) as HTMLDivElement;
+
+  constructor() {
+    attachHistoryEventListeners({
+      onOpenStats: () => openStatsModal(),
+    });
+  }
 
   public async init(): Promise<void> {
     try {
