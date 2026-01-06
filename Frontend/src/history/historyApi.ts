@@ -28,10 +28,15 @@ export async function postBatchHistory(
   historyEntry: Record<string, any>[],
   apiUrl: string
 ): Promise<void> {
+  const token = localStorage.getItem("token");
+
   try {
     await apiRequest(apiUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(historyEntry),
     });
     showFeedback("History record(s) added successfully", "success");
