@@ -13,16 +13,13 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
-@router.get("/", response_model=list[HistoryRead], status_code=status.HTTP_200_OK)
+@router.get("/", response_model=List[HistoryRead], status_code=status.HTTP_200_OK)
 async def read_all(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     history_entries = (
-        db.query(History)
-        .join(Users)
-        .filter(Users.username == user.get("username"))
-        .all()
+        db.query(History).join(Users).filter(Users.id == user.get("id")).all()
     )
 
     return [
@@ -34,18 +31,19 @@ async def read_all(user: user_dependency, db: db_dependency):
             exercise=h.exercise.exercise_name,
             repetitions=h.repetitions,
             sum_repetitions=h.sum_repetitions,
-            user=h.user.username,
         )
         for h in history_entries
     ]
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_history_batch(db: db_dependency, entries: List[HistoryCreate]):
+async def create_history_batch(
+    user: user_dependency, db: db_dependency, entries: List[HistoryCreate]
+):
     history_models = []
 
     for entry in entries:
-        user = db.query(Users).filter(Users.username == entry.user).first()
+        user = db.query(Users).filter(Users.id == user.get("id")).first()
         exercise = (
             db.query(Exercises)
             .filter(Exercises.exercise_name == entry.exercise)
