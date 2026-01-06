@@ -29,7 +29,6 @@ class History(Base):
     sum_repetitions = Column(Integer)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    user = relationship("Users")
     exercise = relationship("Exercises")
 
 

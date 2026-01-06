@@ -10,7 +10,6 @@ class HistoryBase(BaseModel):
     exercise: str
     repetitions: int
     sum_repetitions: int
-    user: str
 
 
 class HistoryRead(HistoryBase):
@@ -27,4 +26,3 @@ class HistoryCreate(HistoryBase):
     exercise: str = Field(..., min_length=1)
     repetitions: int = Field(..., gt=0)
     sum_repetitions: int = Field(..., gt=0)
-    user: str = Field(..., min_length=1)

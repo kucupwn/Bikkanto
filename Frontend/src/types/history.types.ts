@@ -6,7 +6,6 @@ export interface WorkoutHistory {
   exercise: string;
   repetitions: number;
   sum_repetitions: number;
-  user: string;
 }
 
 export const HISTORY_COLUMN_ORDER = [
@@ -16,7 +15,6 @@ export const HISTORY_COLUMN_ORDER = [
   "exercise",
   "repetitions",
   "sum_repetitions",
-  "user",
 ] as const;
 
 export const HISTORY_COLUMN_LABELS = {
@@ -27,7 +25,6 @@ export const HISTORY_COLUMN_LABELS = {
   exercise: "Exercise",
   repetitions: "Repetitions",
   sum_repetitions: "Total Reps",
-  user: "User",
 };
 
 export type HistoryCallbacks = {
