@@ -1,7 +1,4 @@
 import { type WorkoutHistory } from "../types/history.types";
-
-import { users } from "../users/users";
-
 import { HISTORY_API_URL } from "../api/urls";
 import { postBatchHistory } from "../history/historyApi";
 import { showFeedback } from "../ribbon/feedbackRibbon";
@@ -10,8 +7,7 @@ import { toggleFinishedWorkoutDisplay } from "./rollView";
 function getHistoryEntries(
   rows: NodeListOf<Element>,
   today: string,
-  cycles: number,
-  user: string
+  cycles: number
 ): WorkoutHistory[] {
   const historyEntries = Array.from(rows).map((row) => {
     const cells = row.querySelectorAll("td");
@@ -22,7 +18,6 @@ function getHistoryEntries(
       exercise: cells[1].textContent || "",
       repetitions: Number(cells[2].textContent) || 0,
       sum_repetitions: (Number(cells[2].textContent) || 0) * cycles,
-      user,
     };
   });
 
@@ -56,15 +51,7 @@ export async function saveWorkoutHistory(
   const cycles = getWorkoutCycles();
   if (cycles < 1) return;
 
-  const userDetails = users.getCurrentUser();
-  if (!userDetails) {
-    showFeedback("Login to save workout!", "error");
-    return;
-  }
-
-  const user = userDetails.username;
-
-  const historyEntries = getHistoryEntries(rows, today, cycles, user);
+  const historyEntries = getHistoryEntries(rows, today, cycles);
 
   await postBatchHistory(historyEntries, HISTORY_API_URL);
   toggleFinishedWorkoutDisplay(overviewContainer, finishedRollContainer);
