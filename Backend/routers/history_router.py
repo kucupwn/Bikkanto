@@ -2,6 +2,7 @@ from typing import Annotated, List
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
+from datetime import date
 from .auth import get_current_user
 from ..database import get_db
 from ..models import History, Users, Exercises
@@ -34,6 +35,31 @@ async def read_all(user: user_dependency, db: db_dependency):
         )
         for h in history_entries
     ]
+
+
+@router.get("/range", response_model=List[HistoryRead], status_code=status.HTTP_200_OK)
+async def get_history_range(
+    user: user_dependency, db: db_dependency, start_date: date, end_date: date
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    if start_date > end_date:
+        raise HTTPException(
+            status_code=400, detail="Start date must be before or equal to end date"
+        )
+
+    history_entries = (
+        db.query(History)
+        .filter(
+            History.user_id == user.get("id"),
+            History.date_complete >= start_date,
+            History.date_complete <= end_date,
+        )
+        .all()
+    )
+
+    return history_entries
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
