@@ -5,6 +5,7 @@ export const EXERCISES_API_URL = `${API_BASE_URL}/exercises`;
 export const EXERCISES_CATEGORY_API_URL = `${EXERCISES_API_URL}/categories`;
 
 export const HISTORY_API_URL = `${API_BASE_URL}/history`;
+export const HISTORY_RANGE_URL = `${HISTORY_API_URL}/range`;
 
 export const TOKEN_API_URL = `${API_BASE_URL}/auth/token`;
 
