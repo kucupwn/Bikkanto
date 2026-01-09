@@ -53,13 +53,23 @@ async def get_history_range(
         db.query(History)
         .filter(
             History.user_id == user.get("id"),
-            History.date_complete >= start_date,
-            History.date_complete <= end_date,
+            History.date_complete.between(start_date, end_date),
         )
         .all()
     )
 
-    return history_entries
+    return [
+        {
+            "id": h.id,
+            "date_complete": h.date_complete,
+            "cycles": h.cycles,
+            "category": h.category,
+            "exercise": h.exercise.exercise_name,
+            "repetitions": h.repetitions,
+            "sum_repetitions": h.sum_repetitions,
+        }
+        for h in history_entries
+    ]
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
