@@ -1,10 +1,10 @@
 export interface WorkoutHistory {
   id?: number;
   date_complete: string;
-  cycles: number;
+  exercise: string;
   category: string;
   difficulty: string;
-  exercise: string;
+  cycles: number;
   repetitions: number;
   sum_repetitions: number;
 }
