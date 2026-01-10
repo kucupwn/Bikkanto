@@ -19,20 +19,6 @@
     </div>
     <div id="roll-settings-container" class="container text-center my-4">
       <div class="row justify-content-center mb-3 g-3">
-        <div id="difficulty-container" class="col-auto">
-          <label for="exercise-difficulty" class="form-label d-block">
-            Select exercise difficulty
-          </label>
-          <select
-            name="exercise-difficulty"
-            id="exercise-difficulty"
-            class="form-select d-inline-block w-auto"
-          >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
         <div id="count-container" class="col-auto">
           <label for="exercise-count-input" class="form-label d-block">
             Select exercise count
@@ -53,6 +39,20 @@
             Add
           </button>
         </div>
+        <div id="exercise-reps-container" class="col-auto">
+          <label for="exercise-reps-difficulty" class="form-label d-block">
+            Select reps difficulty
+          </label>
+          <select
+            name="exercise-reps-difficulty"
+            id="exercise-reps-difficulty"
+            class="form-select d-inline-block w-auto"
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
       </div>
       <div id="exercise-categories-container" class="mb-3"></div>
       <button id="btn-get" class="btn btn-primary fs-4">Get</button>
@@ -64,8 +64,9 @@
       >
         <thead class="table-light">
           <tr id="header">
-            <th id="category-header">Category</th>
             <th id="exercise-header">Exercise</th>
+            <th id="category-header">Category</th>
+            <th id="difficulty-header">Difficulty</th>
             <th id="count-header">Count</th>
           </tr>
         </thead>

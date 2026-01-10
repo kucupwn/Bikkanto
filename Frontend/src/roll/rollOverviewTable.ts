@@ -14,17 +14,21 @@ function fillOverviewTable(workout: WorkoutEntry[], tbody: HTMLElement): void {
   workout.forEach((entry) => {
     const row = document.createElement("tr");
 
+    const exerciseCell = document.createElement("td");
+    exerciseCell.textContent = entry.exercise;
+
     const categoryCell = document.createElement("td");
     categoryCell.textContent = entry.category;
 
-    const exerciseCell = document.createElement("td");
-    exerciseCell.textContent = entry.exercise;
+    const difficultyCell = document.createElement("td");
+    difficultyCell.textContent = entry.difficulty;
 
     const repsCell = document.createElement("td");
     repsCell.textContent = entry.reps.toString();
 
-    row.appendChild(categoryCell);
     row.appendChild(exerciseCell);
+    row.appendChild(categoryCell);
+    row.appendChild(difficultyCell);
     row.appendChild(repsCell);
     tbody.appendChild(row);
   });

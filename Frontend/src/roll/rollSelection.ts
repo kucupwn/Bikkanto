@@ -1,4 +1,10 @@
-import type { Exercises, WorkoutEntry } from "../types/exercises.types";
+import { showFeedback } from "../ribbon/feedbackRibbon";
+import {
+  DIFFICULTY,
+  type Exercises,
+  type ExerciseSelection,
+  type WorkoutEntry,
+} from "../types/exercises.types";
 
 export function getExerciseSelectionRows(
   count: number,
@@ -24,14 +30,18 @@ export function getExerciseSelectionRows(
 export function getRandomExercise(
   exercises: Exercises[],
   category: string,
-  difficulty: string
+  exercisecDifficulty: string,
+  repsDifficulty: string
 ): WorkoutEntry {
-  const filtered = exercises.filter((ex) => ex.category === category);
+  const filtered = exercises
+    .filter((ex) => ex.category === category)
+    .filter((ex) => ex.difficulty === exercisecDifficulty);
 
   if (filtered.length === 0) {
     return {
-      category: "No exercise found",
       exercise: "No exercise found",
+      category: "No exercise found",
+      difficulty: "No exercise found",
       reps: 0,
     };
   }
@@ -39,8 +49,8 @@ export function getRandomExercise(
   const idx = Math.floor(Math.random() * filtered.length);
   const exercise = filtered[idx];
 
-  const minKey = `${difficulty}_min` as keyof Exercises;
-  const maxKey = `${difficulty}_max` as keyof Exercises;
+  const minKey = `${repsDifficulty}_min` as keyof Exercises;
+  const maxKey = `${repsDifficulty}_max` as keyof Exercises;
 
   const minRep = exercise[minKey] as number;
   const maxRep = exercise[maxKey] as number;
@@ -48,8 +58,9 @@ export function getRandomExercise(
   const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
 
   return {
-    category: exercise.category,
     exercise: exercise.exercise_name,
+    category: exercise.category,
+    difficulty: exercise.difficulty,
     reps,
   };
 }
@@ -68,25 +79,43 @@ function createCategorySelectionDropdowns(
     label.textContent = `Exercise ${i}`;
     label.classList = "exercise-label";
 
-    const select = document.createElement("select");
-    select.id = `exercise-select-${i}`;
-    select.classList = "form-select";
-    select.style = "width: auto";
+    const selectCategory = document.createElement("select");
+    selectCategory.id = `exercise-category-select-${i}`;
+    selectCategory.classList = "form-select category";
+    selectCategory.style = "width: auto";
 
-    const option = document.createElement("option");
-    option.value = "";
-    option.textContent = "-- Select --";
-    select.appendChild(option);
+    const selectDifficulty = document.createElement("select");
+    selectDifficulty.id = `exercise-difficulty-select-${i}`;
+    selectDifficulty.classList = "form-select difficulty";
+    selectDifficulty.style = "width: auto";
+
+    const optionCategory = document.createElement("option");
+    optionCategory.value = "";
+    optionCategory.textContent = "-- Category --";
+    selectCategory.appendChild(optionCategory);
+
+    const optionDifficulty = document.createElement("option");
+    optionDifficulty.value = "";
+    optionDifficulty.textContent = "-- Difficulty --";
+    selectDifficulty.appendChild(optionDifficulty);
 
     categories.forEach((category) => {
       const option = document.createElement("option");
       option.value = category;
       option.textContent = category.toUpperCase();
-      select.appendChild(option);
+      selectCategory.appendChild(option);
+    });
+
+    DIFFICULTY.forEach((diff) => {
+      const option = document.createElement("option");
+      option.value = diff;
+      option.textContent = diff.toUpperCase();
+      selectDifficulty.appendChild(option);
     });
 
     row.appendChild(label);
-    row.appendChild(select);
+    row.appendChild(selectCategory);
+    row.appendChild(selectDifficulty);
 
     container.appendChild(row);
   }
@@ -115,20 +144,37 @@ function handleExerciseSelectionRowsDisplay(
   }
 }
 
-export function getSelectedCategories(): string[] {
+export function getSelectedCategories(): ExerciseSelection[] {
   const container = document.getElementById("exercise-categories-container");
   if (!container) return [];
 
-  const selectElements = container.querySelectorAll("select");
+  const rows = container.querySelectorAll(".exercise-row");
 
-  const categorySelections: string[] = [];
+  const selections: ExerciseSelection[] = [];
 
-  selectElements.forEach((ex) => {
-    const value = (ex as HTMLSelectElement).value;
-    if (value) {
-      categorySelections.push(value);
+  rows.forEach((row) => {
+    const categorySelect = row.querySelector(
+      "select.category"
+    ) as HTMLSelectElement | null;
+
+    const difficultySelect = row.querySelector(
+      "select.difficulty"
+    ) as HTMLSelectElement | null;
+
+    const category = categorySelect?.value;
+    const difficulty = difficultySelect?.value;
+
+    if (!category) {
+      showFeedback("Please select category", "error");
+      return;
     }
+    if (!difficulty) {
+      showFeedback("Please select difficulty", "error");
+      return;
+    }
+
+    selections.push({ category, difficulty });
   });
 
-  return categorySelections;
+  return selections;
 }

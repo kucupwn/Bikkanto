@@ -111,12 +111,17 @@ export class Roll {
   }
 
   private getWorkout(): WorkoutEntry[] {
-    const difficulty = (
-      document.getElementById("exercise-difficulty") as HTMLSelectElement
+    const repsDifficulty = (
+      document.getElementById("exercise-reps-difficulty") as HTMLSelectElement
     ).value;
     const selectedCategories = getSelectedCategories();
-    const workout = selectedCategories?.map((category) => {
-      return getRandomExercise(this.allExercises, category, difficulty);
+    const workout = selectedCategories?.map((selection) => {
+      return getRandomExercise(
+        this.allExercises,
+        selection.category,
+        selection.difficulty,
+        repsDifficulty
+      );
     });
 
     return workout;
