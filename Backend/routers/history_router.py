@@ -27,9 +27,10 @@ async def read_all(user: user_dependency, db: db_dependency):
         HistoryRead(
             id=h.id,
             date_complete=h.date_complete,
-            cycles=h.cycles,
-            category=h.category,
             exercise=h.exercise.exercise_name,
+            category=h.category,
+            difficulty=h.difficulty,
+            cycles=h.cycles,
             repetitions=h.repetitions,
             sum_repetitions=h.sum_repetitions,
         )
@@ -62,9 +63,10 @@ async def get_history_range(
         {
             "id": h.id,
             "date_complete": h.date_complete,
-            "cycles": h.cycles,
-            "category": h.category,
             "exercise": h.exercise.exercise_name,
+            "category": h.category,
+            "difficulty": h.difficulty,
+            "cycles": h.cycles,
             "repetitions": h.repetitions,
             "sum_repetitions": h.sum_repetitions,
         }
@@ -79,7 +81,6 @@ async def create_history_batch(
     history_models = []
 
     for entry in entries:
-        user = db.query(Users).filter(Users.id == user.get("id")).first()
         exercise = (
             db.query(Exercises)
             .filter(Exercises.exercise_name == entry.exercise)
@@ -93,12 +94,13 @@ async def create_history_batch(
 
         history = History(
             date_complete=entry.date_complete,
-            cycles=entry.cycles,
-            category=entry.category,
             exercise_id=exercise.id,
+            category=entry.category,
+            difficulty=entry.difficulty,
+            cycles=entry.cycles,
             repetitions=entry.repetitions,
             sum_repetitions=entry.sum_repetitions,
-            user_id=user.id,
+            user_id=user.get("id"),
         )
 
         history_models.append(history)
