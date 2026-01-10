@@ -13,11 +13,12 @@ function getHistoryEntries(
     const cells = row.querySelectorAll("td");
     return {
       date_complete: today,
+      exercise: cells[0].textContent || "",
+      category: cells[1].textContent || "",
+      difficulty: cells[2].textContent || "",
       cycles,
-      category: cells[0].textContent || "",
-      exercise: cells[1].textContent || "",
-      repetitions: Number(cells[2].textContent) || 0,
-      sum_repetitions: (Number(cells[2].textContent) || 0) * cycles,
+      repetitions: Number(cells[3].textContent) || 0,
+      sum_repetitions: (Number(cells[3].textContent) || 0) * cycles,
     };
   });
 

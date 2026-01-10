@@ -26,7 +26,7 @@ export async function fetchAllHistory(
 }
 
 export async function postBatchHistory(
-  historyEntry: Record<string, any>[],
+  historyEntries: Record<string, any>[],
   apiUrl: string
 ): Promise<void> {
   const token = localStorage.getItem("token");
@@ -38,7 +38,7 @@ export async function postBatchHistory(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(historyEntry),
+      body: JSON.stringify(historyEntries),
     });
     showFeedback("History record(s) added successfully", "success");
   } catch (err: any) {
