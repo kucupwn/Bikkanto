@@ -18,6 +18,11 @@ export interface WorkoutEntry {
   reps: number;
 }
 
+export interface ExerciseSelection {
+  category: string;
+  difficulty: string;
+}
+
 export const DIFFICULTY = ["beginner", "advanced", "pro"] as const;
 
 export const NUMERIC_COLUMNS = [
