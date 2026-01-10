@@ -2,6 +2,7 @@ export interface Exercises {
   id?: number;
   exercise_name: string;
   category: string;
+  difficulty: string;
   easy_min: number;
   easy_max: number;
   medium_min: number;
@@ -11,10 +12,13 @@ export interface Exercises {
 }
 
 export interface WorkoutEntry {
+  difficulty: string;
   category: string;
   exercise: string;
   reps: number;
 }
+
+export const DIFFICULTY = ["beginner", "advanced", "pro"] as const;
 
 export const NUMERIC_COLUMNS = [
   "easy_min",
@@ -28,6 +32,7 @@ export const NUMERIC_COLUMNS = [
 export const EXERCISE_COLUMNS_ORDER = [
   "exercise_name",
   "category",
+  "difficulty",
   ...NUMERIC_COLUMNS,
 ] as const;
 
@@ -44,10 +49,11 @@ export const EXERCISE_COLUMN_LABELS = {
   id: "id",
   exercise_name: "Exercise",
   category: "Category",
+  difficulty: "Difficulty",
   ...NUMERIC_COLUMN_LABELS,
 };
 
-export const REQUIRED_COLUMNS = ["exercise_name", "category"];
+export const REQUIRED_COLUMNS = ["exercise_name", "category", "difficulty"];
 export const NUMERIC_COLUMNS_SET = new Set<string>(NUMERIC_COLUMNS);
 
 export type ExercisesCallbacks = {

@@ -3,6 +3,7 @@ export interface WorkoutHistory {
   date_complete: string;
   cycles: number;
   category: string;
+  difficulty: string;
   exercise: string;
   repetitions: number;
   sum_repetitions: number;
@@ -10,9 +11,10 @@ export interface WorkoutHistory {
 
 export const HISTORY_COLUMN_ORDER = [
   "date_complete",
-  "cycles",
-  "category",
   "exercise",
+  "category",
+  "difficulty",
+  "cycles",
   "repetitions",
   "sum_repetitions",
 ] as const;
@@ -20,9 +22,10 @@ export const HISTORY_COLUMN_ORDER = [
 export const HISTORY_COLUMN_LABELS = {
   id: "id",
   date_complete: "Date",
-  cycles: "Cycles",
-  category: "Category",
   exercise: "Exercise",
+  category: "Category",
+  difficulty: "Difficulty",
+  cycles: "Cycles",
   repetitions: "Repetitions",
   sum_repetitions: "Total Reps",
 };
