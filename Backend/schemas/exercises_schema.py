@@ -15,9 +15,16 @@ class Category(str, Enum):
     OTHER = "other"
 
 
+class Difficulty(str, Enum):
+    BEGINNER = "beginner"
+    ADVANCED = "advanced"
+    PRO = "pro"
+
+
 class ExerciseBase(BaseModel):
     exercise_name: str
     category: Category
+    difficulty: Difficulty
     easy_min: int
     easy_max: int
     medium_min: int
@@ -36,6 +43,7 @@ class ExerciseRead(ExerciseBase):
 class ExerciseCreate(ExerciseBase):
     exercise_name: str = Field(..., min_length=1)
     category: Category
+    difficulty: Difficulty
     easy_min: int = Field(gt=0)
     easy_max: int = Field(gt=0)
     medium_min: int = Field(gt=0)
