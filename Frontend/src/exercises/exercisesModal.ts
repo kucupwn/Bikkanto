@@ -8,6 +8,7 @@ import {
   EXERCISE_COLUMNS_ORDER,
   EXERCISE_COLUMN_LABELS,
   REQUIRED_COLUMNS,
+  DIFFICULTY,
 } from "../types/exercises.types";
 
 export function setExercisesModalHeaderTitle(operation: string) {
@@ -17,10 +18,18 @@ export function setExercisesModalHeaderTitle(operation: string) {
   title.textContent = `${operation} exercise`;
 }
 
-function getCategoryOptions(categories: string[]) {
+function getCategoryOptions(categories: string[]): string {
   const options = categories
     .map((opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`)
     .join("");
+
+  return options;
+}
+
+function getDifficultyOptions(): string {
+  const options = DIFFICULTY.map(
+    (opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`
+  ).join("");
 
   return options;
 }
@@ -77,6 +86,13 @@ function fillModifyModalDefaultValues(
     categorySelect.value = selectedExercises.category;
   }
 
+  const difficultySelect = document.getElementById(
+    "select-difficulty"
+  ) as HTMLSelectElement | null;
+  if (difficultySelect) {
+    difficultySelect.value = selectedExercises.difficulty;
+  }
+
   NUMERIC_COLUMNS.forEach((col) => {
     const input = document.getElementById(col) as HTMLInputElement | null;
     if (input) {
@@ -87,19 +103,31 @@ function fillModifyModalDefaultValues(
 
 function generateAddModalInput(allCategories: string[]): string {
   const categoryOptions = getCategoryOptions(allCategories);
+  const difficultyOptions = getDifficultyOptions();
 
   return `
     <div class="row row-cols-2 g-3">
       ${EXERCISE_COLUMNS_ORDER.map((col) => {
         const isRequired = REQUIRED_COLUMNS.includes(col) ? "required" : "";
+        const colClass = col === "exercise_name" ? "col-12" : "col";
 
         if (col === "category") {
           return `
-            <div class="col">
+            <div class="${colClass}">
               <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
               <select class="form-select" id="${col}" name="${col}" ${isRequired}>
                 <option>-- Select --</option>
                 ${categoryOptions}
+              </select>
+            </div>
+          `;
+        } else if (col === "difficulty") {
+          return `
+            <div class="${colClass}">
+              <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
+              <select class="form-select" id="${col}" name="${col}" ${isRequired}>
+                <option>-- Select --</option>
+                ${difficultyOptions}
               </select>
             </div>
           `;
@@ -108,7 +136,7 @@ function generateAddModalInput(allCategories: string[]): string {
           const defaultValue = NUMERIC_COLUMNS_SET.has(col) ? "1" : "";
 
           return `
-                <div class="col">
+                <div class="${colClass}">
                   <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
                   <input type="${inputType}" class="form-control" id="${col}" name="${col}" value="${defaultValue}" ${isRequired}>
                 </div>
@@ -125,10 +153,11 @@ function generateModifyModalInput(
 ) {
   const exerciseOptions = getExerciseOptions(exercises);
   const categoryOptions = getCategoryOptions(allCategories);
+  const difficultyOptions = getDifficultyOptions();
 
   return `
     <div class="row row-cols-2 g-3">
-      <div class="col">
+      <div class="col-12">
         <label for="exercises" class="form-label">Exercises</label>
         <select class="form-select" id="select-exercise" name="select-exercise">
           <option>-- Select --</option>
@@ -136,10 +165,17 @@ function generateModifyModalInput(
         </select>
       </div>
       <div class="col">
-        <label for="categories" class="form-label">Categories</label>
+        <label for="categories" class="form-label">Category</label>
         <select class="form-select" id="select-category" name="category">
           <option>-- Select --</option>
           ${categoryOptions}
+        </select>
+      </div>
+      <div class="col">
+        <label for="select-difficulty" class="form-label">Difficulty</label>
+        <select class="form-select" id="select-difficulty" name="difficulty">
+          <option>-- Select --</option>
+          ${difficultyOptions}
         </select>
       </div>
       ${NUMERIC_COLUMNS.map((col) => {
