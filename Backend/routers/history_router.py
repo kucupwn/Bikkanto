@@ -25,16 +25,16 @@ async def read_all(user: user_dependency, db: db_dependency):
 
     return [
         HistoryRead(
-            id=h.id,
-            date_complete=h.date_complete,
-            exercise=h.exercise.exercise_name,
-            category=h.category,
-            difficulty=h.difficulty,
-            cycles=h.cycles,
-            repetitions=h.repetitions,
-            sum_repetitions=h.sum_repetitions,
+            id=entry.id,
+            date_complete=entry.date_complete,
+            exercise=entry.exercise.exercise_name,
+            category=entry.category,
+            difficulty=entry.difficulty,
+            cycles=entry.cycles,
+            repetitions=entry.repetitions,
+            sum_repetitions=entry.sum_repetitions,
         )
-        for h in history_entries
+        for entry in history_entries
     ]
 
 
@@ -61,16 +61,16 @@ async def get_history_range(
 
     return [
         {
-            "id": h.id,
-            "date_complete": h.date_complete,
-            "exercise": h.exercise.exercise_name,
-            "category": h.category,
-            "difficulty": h.difficulty,
-            "cycles": h.cycles,
-            "repetitions": h.repetitions,
-            "sum_repetitions": h.sum_repetitions,
+            "id": entry.id,
+            "date_complete": entry.date_complete,
+            "exercise": entry.exercise.exercise_name,
+            "category": entry.category,
+            "difficulty": entry.difficulty,
+            "cycles": entry.cycles,
+            "repetitions": entry.repetitions,
+            "sum_repetitions": entry.sum_repetitions,
         }
-        for h in history_entries
+        for entry in history_entries
     ]
 
 
