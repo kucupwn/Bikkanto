@@ -17,6 +17,8 @@ class Exercises(Base):
     hard_min = Column(Integer)
     hard_max = Column(Integer)
 
+    histories = relationship("History", back_populates="exercise")
+
 
 class History(Base):
     __tablename__ = "history"
@@ -25,13 +27,15 @@ class History(Base):
     date_complete = Column(Date)
     cycles = Column(Integer)
     category = Column(String)
-    exercise_id = Column(Integer, ForeignKey("exercises.id"))
     difficulty = Column(String)
     repetitions = Column(Integer)
     sum_repetitions = Column(Integer)
+
+    exercise_id = Column(Integer, ForeignKey("exercises.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    exercise = relationship("Exercises")
+    exercise = relationship("Exercises", back_populates="histories")
+    user = relationship("Users", back_populates="histories")
 
 
 class Users(Base):
@@ -44,3 +48,5 @@ class Users(Base):
     last_name = Column(String)
     role = Column(String, default="user")
     hashed_password = Column(String)
+
+    histories = relationship("History", back_populates="user")
