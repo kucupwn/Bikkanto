@@ -15,6 +15,18 @@ class Category(str, Enum):
     OTHER = "other"
 
 
+class CategoryRead(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
+class CategoryCreate(BaseModel):
+    name: str
+
+
 class Difficulty(str, Enum):
     BEGINNER = "beginner"
     ADVANCED = "advanced"
