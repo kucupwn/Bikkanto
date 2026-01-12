@@ -8,7 +8,6 @@ class Exercises(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     exercise_name = Column(String, unique=True)
-    category = Column(String)
     difficulty = Column(String)
     easy_min = Column(Integer)
     easy_max = Column(Integer)
@@ -17,7 +16,20 @@ class Exercises(Base):
     hard_min = Column(Integer)
     hard_max = Column(Integer)
 
-    histories = relationship("History", back_populates="exercise")
+    category_id = Column(Integer, ForeignKey("categories.id"))
+
+    category = relationship("Categories", back_populates="exercise")
+    history = relationship("History", back_populates="exercise")
+
+
+class Categories(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True)
+
+    exercise = relationship("Exercises", back_populates="category")
+    history = relationship("History", back_populates="category")
 
 
 class History(Base):
@@ -26,16 +38,17 @@ class History(Base):
     id = Column(Integer, primary_key=True, index=True)
     date_complete = Column(Date)
     cycles = Column(Integer)
-    category = Column(String)
     difficulty = Column(String)
     repetitions = Column(Integer)
     sum_repetitions = Column(Integer)
 
     exercise_id = Column(Integer, ForeignKey("exercises.id"))
+    category_id = Column(Integer, ForeignKey("categories.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    exercise = relationship("Exercises", back_populates="histories")
-    user = relationship("Users", back_populates="histories")
+    exercise = relationship("Exercises", back_populates="history")
+    category = relationship("Categories", back_populates="history")
+    user = relationship("Users", back_populates="history")
 
 
 class Users(Base):
@@ -49,4 +62,4 @@ class Users(Base):
     role = Column(String, default="user")
     hashed_password = Column(String)
 
-    histories = relationship("History", back_populates="user")
+    history = relationship("History", back_populates="user")
