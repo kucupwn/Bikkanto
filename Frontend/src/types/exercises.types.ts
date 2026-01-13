@@ -1,7 +1,6 @@
 export interface Exercises {
-  id?: number;
+  id: number;
   exercise_name: string;
-  category: string;
   difficulty: string;
   easy_min: number;
   easy_max: number;
@@ -9,21 +8,42 @@ export interface Exercises {
   medium_max: number;
   hard_min: number;
   hard_max: number;
+  category_id: number;
+  category_name: string;
 }
 
 export interface WorkoutEntry {
+  exercise_id: number;
+  exercise_name: string;
+  category_id: number;
+  category_name: string;
   difficulty: string;
-  category: string;
-  exercise: string;
   reps: number;
 }
 
 export interface ExerciseSelection {
-  category: string;
+  category_id: number;
   difficulty: string;
 }
 
-export const DIFFICULTY = ["beginner", "advanced", "pro"] as const;
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export type ExerciseTableRow = Pick<
+  Exercises,
+  | "id"
+  | "exercise_name"
+  | "category_name"
+  | "difficulty"
+  | "easy_min"
+  | "easy_max"
+  | "medium_min"
+  | "medium_max"
+  | "hard_min"
+  | "hard_max"
+>;
 
 export const NUMERIC_COLUMNS = [
   "easy_min",
@@ -36,7 +56,7 @@ export const NUMERIC_COLUMNS = [
 
 export const EXERCISE_COLUMNS_ORDER = [
   "exercise_name",
-  "category",
+  "category_name",
   "difficulty",
   ...NUMERIC_COLUMNS,
 ] as const;
@@ -53,7 +73,7 @@ export const NUMERIC_COLUMN_LABELS = {
 export const EXERCISE_COLUMN_LABELS = {
   id: "id",
   exercise_name: "Exercise",
-  category: "Category",
+  category_name: "Category",
   difficulty: "Difficulty",
   ...NUMERIC_COLUMN_LABELS,
 };
@@ -72,3 +92,6 @@ export const EXERCISE_OPERATIONS = {
 } as const;
 export type ExerciseOperation =
   (typeof EXERCISE_OPERATIONS)[keyof typeof EXERCISE_OPERATIONS];
+
+export const DIFFICULTY = ["beginner", "advanced", "pro"] as const;
+export type Difficulty = (typeof DIFFICULTY)[number];

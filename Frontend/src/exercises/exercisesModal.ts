@@ -9,6 +9,7 @@ import {
   EXERCISE_COLUMN_LABELS,
   REQUIRED_COLUMNS,
   DIFFICULTY,
+  type Category,
 } from "../types/exercises.types";
 
 export function setExercisesModalHeaderTitle(operation: string) {
@@ -18,9 +19,11 @@ export function setExercisesModalHeaderTitle(operation: string) {
   title.textContent = `${operation} exercise`;
 }
 
-function getCategoryOptions(categories: string[]): string {
+function getCategoryOptions(categories: Category[]): string {
   const options = categories
-    .map((opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`)
+    .map(
+      (opt) => `<option value="${opt.id}">${opt.name.toUpperCase()}</option>`
+    )
     .join("");
 
   return options;
@@ -49,7 +52,7 @@ export function getModalForExercisesOperation(
   modalBody: HTMLElement,
   operation: ExerciseOperation,
   allExercises: Exercises[],
-  allCategories: string[]
+  allCategories: Category[]
 ): void {
   if (operation === EXERCISE_OPERATIONS.ADD) {
     modalBody.innerHTML = generateAddModalInput(allCategories);
@@ -83,7 +86,7 @@ function fillModifyModalDefaultValues(
     "select-category"
   ) as HTMLSelectElement | null;
   if (categorySelect) {
-    categorySelect.value = selectedExercises.category;
+    categorySelect.value = String(selectedExercises.category_id);
   }
 
   const difficultySelect = document.getElementById(
@@ -101,7 +104,7 @@ function fillModifyModalDefaultValues(
   });
 }
 
-function generateAddModalInput(allCategories: string[]): string {
+function generateAddModalInput(allCategories: Category[]): string {
   const categoryOptions = getCategoryOptions(allCategories);
   const difficultyOptions = getDifficultyOptions();
 
@@ -111,12 +114,12 @@ function generateAddModalInput(allCategories: string[]): string {
         const isRequired = REQUIRED_COLUMNS.includes(col) ? "required" : "";
         const colClass = col === "exercise_name" ? "col-12" : "col";
 
-        if (col === "category") {
+        if (col === "category_name") {
           return `
             <div class="${colClass}">
               <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
-              <select class="form-select" id="${col}" name="${col}" ${isRequired}>
-                <option>-- Select --</option>
+              <select class="form-select" id="category-select" name="category_id" ${isRequired}>
+                <option value="">-- Select --</option>
                 ${categoryOptions}
               </select>
             </div>
@@ -125,8 +128,8 @@ function generateAddModalInput(allCategories: string[]): string {
           return `
             <div class="${colClass}">
               <label for="${col}" class="form-label">${EXERCISE_COLUMN_LABELS[col]}</label>
-              <select class="form-select" id="${col}" name="${col}" ${isRequired}>
-                <option>-- Select --</option>
+              <select class="form-select" id="difficulty-select" name="${col}" ${isRequired}>
+                <option value="">-- Select --</option>
                 ${difficultyOptions}
               </select>
             </div>
@@ -149,7 +152,7 @@ function generateAddModalInput(allCategories: string[]): string {
 
 function generateModifyModalInput(
   exercises: Exercises[],
-  allCategories: string[]
+  allCategories: Category[]
 ) {
   const exerciseOptions = getExerciseOptions(exercises);
   const categoryOptions = getCategoryOptions(allCategories);
@@ -160,21 +163,21 @@ function generateModifyModalInput(
       <div class="col-12">
         <label for="exercises" class="form-label">Exercises</label>
         <select class="form-select" id="select-exercise" name="select-exercise">
-          <option>-- Select --</option>
+          <option value="">-- Select --</option>
           ${exerciseOptions}
         </select>
       </div>
       <div class="col">
-        <label for="categories" class="form-label">Category</label>
-        <select class="form-select" id="select-category" name="category">
-          <option>-- Select --</option>
+        <label for="select-category" class="form-label">Category</label>
+        <select class="form-select" id="select-category" name="category_id">
+          <option value="">-- Select --</option>
           ${categoryOptions}
         </select>
       </div>
       <div class="col">
         <label for="select-difficulty" class="form-label">Difficulty</label>
         <select class="form-select" id="select-difficulty" name="difficulty">
-          <option>-- Select --</option>
+          <option value="">-- Select --</option>
           ${difficultyOptions}
         </select>
       </div>
@@ -197,7 +200,7 @@ function generateDeleteModalInput(exercises: Exercises[]) {
   <div class="col">
     <label for="exercises" class="form-label">Exercises</label>
     <select class="form-select" id="select-exercise" name="select-exercise">
-      <option>-- Select --</option>
+      <option value="">-- Select --</option>
       ${exerciseOptions}
     </select>
   </div>

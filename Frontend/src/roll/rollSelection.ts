@@ -1,6 +1,7 @@
 import { showFeedback } from "../ribbon/feedbackRibbon";
 import {
   DIFFICULTY,
+  type Category,
   type Exercises,
   type ExerciseSelection,
   type WorkoutEntry,
@@ -8,7 +9,7 @@ import {
 
 export function getExerciseSelectionRows(
   count: number,
-  allCategories: string[]
+  allCategories: Category[]
 ): void {
   const container = document.getElementById(
     "exercise-categories-container"
@@ -29,25 +30,19 @@ export function getExerciseSelectionRows(
 
 export function getRandomExercise(
   exercises: Exercises[],
-  category: string,
+  category: number,
   exercisecDifficulty: string,
   repsDifficulty: string
-): WorkoutEntry {
+): WorkoutEntry | null {
   const filtered = exercises
-    .filter((ex) => ex.category === category)
+    .filter((ex) => ex.category_id === category)
     .filter((ex) => ex.difficulty === exercisecDifficulty);
 
   if (filtered.length === 0) {
-    return {
-      exercise: "No exercise found",
-      category: "No exercise found",
-      difficulty: "No exercise found",
-      reps: 0,
-    };
+    return null;
   }
 
-  const idx = Math.floor(Math.random() * filtered.length);
-  const exercise = filtered[idx];
+  const exercise = filtered[Math.floor(Math.random() * filtered.length)];
 
   const minKey = `${repsDifficulty}_min` as keyof Exercises;
   const maxKey = `${repsDifficulty}_max` as keyof Exercises;
@@ -58,8 +53,10 @@ export function getRandomExercise(
   const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
 
   return {
-    exercise: exercise.exercise_name,
-    category: exercise.category,
+    exercise_id: exercise.id,
+    exercise_name: exercise.exercise_name,
+    category_id: exercise.category_id,
+    category_name: exercise.category_name,
     difficulty: exercise.difficulty,
     reps,
   };
@@ -68,7 +65,7 @@ export function getRandomExercise(
 function createCategorySelectionDropdowns(
   start: number,
   end: number,
-  categories: string[],
+  categories: Category[],
   container: HTMLDivElement
 ): void {
   for (let i = start; i <= end; i++) {
@@ -101,8 +98,8 @@ function createCategorySelectionDropdowns(
 
     categories.forEach((category) => {
       const option = document.createElement("option");
-      option.value = category;
-      option.textContent = category.toUpperCase();
+      option.value = category.id.toString();
+      option.textContent = category.name.toUpperCase();
       selectCategory.appendChild(option);
     });
 
@@ -123,7 +120,7 @@ function createCategorySelectionDropdowns(
 
 function handleExerciseSelectionRowsDisplay(
   container: HTMLDivElement,
-  categories: string[],
+  categories: Category[],
   rows: any,
   count: number,
   existingCount: number
@@ -161,10 +158,10 @@ export function getSelectedCategories(): ExerciseSelection[] {
       "select.difficulty"
     ) as HTMLSelectElement | null;
 
-    const category = categorySelect?.value;
+    const category_id = Number(categorySelect?.value);
     const difficulty = difficultySelect?.value;
 
-    if (!category) {
+    if (!category_id) {
       showFeedback("Please select category", "error");
       return;
     }
@@ -173,7 +170,7 @@ export function getSelectedCategories(): ExerciseSelection[] {
       return;
     }
 
-    selections.push({ category, difficulty });
+    selections.push({ category_id, difficulty });
   });
 
   return selections;

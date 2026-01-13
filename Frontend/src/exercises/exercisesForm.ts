@@ -23,6 +23,8 @@ function getFormData(
       const selectedExercise = allExercises.find((ex) => ex.id === selectedId);
       data["exercise_id"] = selectedId;
       data["exercise_name"] = selectedExercise?.exercise_name ?? "";
+    } else if (key === "category_id") {
+      data["category_id"] = Number(value);
     } else {
       data[key] = NUMERIC_COLUMNS_SET.has(key) ? Number(value) : String(value);
     }

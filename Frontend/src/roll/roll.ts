@@ -1,4 +1,8 @@
-import type { Exercises, WorkoutEntry } from "../types/exercises.types";
+import type {
+  Category,
+  Exercises,
+  WorkoutEntry,
+} from "../types/exercises.types";
 import { attachRollEventListeners } from "./rollEvents";
 import {
   toggleRollSettingsOverview,
@@ -20,13 +24,14 @@ import { showFeedback } from "../ribbon/feedbackRibbon";
 
 export class Roll {
   private allExercises: Exercises[] = [];
-  private allCategories: string[] = [];
+  private allCategories: Category[] = [];
   private overviewTableButtonsContainer: HTMLElement | null;
   private rollSubmitContainer: HTMLElement | null;
   private settingsContainer: HTMLElement | null;
   private overviewContainer: HTMLElement | null;
   private pendingRollContainer: HTMLElement | null;
   private finishedRollContainer: HTMLElement | null;
+  private currentWorkout: WorkoutEntry[] = [];
 
   constructor() {
     this.overviewTableButtonsContainer = document.getElementById(
@@ -80,6 +85,7 @@ export class Roll {
 
       onSaveWorkoutHistory: async () =>
         await saveWorkoutHistory(
+          this.currentWorkout,
           this.overviewContainer,
           this.finishedRollContainer
         ),
@@ -114,17 +120,25 @@ export class Roll {
     const repsDifficulty = (
       document.getElementById("exercise-reps-difficulty") as HTMLSelectElement
     ).value;
-    const selectedCategories = getSelectedCategories();
-    const workout = selectedCategories?.map((selection) => {
-      return getRandomExercise(
-        this.allExercises,
-        selection.category,
-        selection.difficulty,
-        repsDifficulty
-      );
-    });
 
-    return workout;
+    const selectedCategories = getSelectedCategories();
+
+    if (!selectedCategories || selectedCategories.length === 0) {
+      return [];
+    }
+
+    this.currentWorkout = selectedCategories
+      .map((selection) =>
+        getRandomExercise(
+          this.allExercises,
+          selection.category_id,
+          selection.difficulty,
+          repsDifficulty
+        )
+      )
+      .filter((entry): entry is WorkoutEntry => entry !== null);
+
+    return this.currentWorkout;
   }
 }
 

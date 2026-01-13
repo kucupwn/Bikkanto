@@ -3,26 +3,24 @@ import { HISTORY_API_URL } from "../api/urls";
 import { postBatchHistory } from "../history/historyApi";
 import { showFeedback } from "../ribbon/feedbackRibbon";
 import { toggleFinishedWorkoutDisplay } from "./rollView";
+import type { WorkoutEntry } from "../types/exercises.types";
 
 function getHistoryEntries(
-  rows: NodeListOf<Element>,
+  workout: WorkoutEntry[],
   today: string,
   cycles: number
 ): WorkoutHistory[] {
-  const historyEntries = Array.from(rows).map((row) => {
-    const cells = row.querySelectorAll("td");
-    return {
-      date_complete: today,
-      exercise: cells[0].textContent || "",
-      category: cells[1].textContent || "",
-      difficulty: cells[2].textContent || "",
-      cycles,
-      repetitions: Number(cells[3].textContent) || 0,
-      sum_repetitions: (Number(cells[3].textContent) || 0) * cycles,
-    };
-  });
-
-  return historyEntries;
+  return workout.map((entry) => ({
+    date_complete: today,
+    exercise_id: entry.exercise_id,
+    exercise_name: entry.exercise_name,
+    category_id: entry.category_id,
+    category_name: entry.category_name,
+    difficulty: entry.difficulty,
+    cycles,
+    repetitions: entry.reps,
+    sum_repetitions: entry.reps * cycles,
+  }));
 }
 
 function getWorkoutCycles(): number {
@@ -40,19 +38,16 @@ function getWorkoutCycles(): number {
 }
 
 export async function saveWorkoutHistory(
+  currentWorkout: WorkoutEntry[],
   overviewContainer: HTMLElement | null,
   finishedRollContainer: HTMLElement | null
 ): Promise<void> {
-  const table = document.getElementById("overview-table") as HTMLTableElement;
-
-  const rows = table.querySelectorAll("tbody tr");
-
   const today = new Date().toISOString().split("T")[0];
 
   const cycles = getWorkoutCycles();
   if (cycles < 1) return;
 
-  const historyEntries = getHistoryEntries(rows, today, cycles);
+  const historyEntries = getHistoryEntries(currentWorkout, today, cycles);
 
   await postBatchHistory(historyEntries, HISTORY_API_URL);
   toggleFinishedWorkoutDisplay(overviewContainer, finishedRollContainer);

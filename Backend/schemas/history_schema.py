@@ -15,6 +15,7 @@ class HistoryBase(BaseModel):
 
 class HistoryRead(HistoryBase):
     id: int
+    exercise_name: str
     category_name: str
 
     class Config:

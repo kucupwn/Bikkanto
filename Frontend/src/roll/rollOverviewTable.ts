@@ -15,10 +15,10 @@ function fillOverviewTable(workout: WorkoutEntry[], tbody: HTMLElement): void {
     const row = document.createElement("tr");
 
     const exerciseCell = document.createElement("td");
-    exerciseCell.textContent = entry.exercise;
+    exerciseCell.textContent = entry.exercise_name;
 
     const categoryCell = document.createElement("td");
-    categoryCell.textContent = entry.category;
+    categoryCell.textContent = entry.category_name;
 
     const difficultyCell = document.createElement("td");
     difficultyCell.textContent = entry.difficulty;

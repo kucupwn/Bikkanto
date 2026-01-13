@@ -1,7 +1,9 @@
 import Handsontable from "handsontable/base";
 import { renderTable } from "../table/handsontable";
 import {
+  type Category,
   type ExerciseOperation,
+  type ExerciseTableRow,
   type Exercises,
   EXERCISE_COLUMNS_ORDER,
   EXERCISE_COLUMN_LABELS,
@@ -20,7 +22,7 @@ import { showFeedback } from "../ribbon/feedbackRibbon";
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
   private allExercises: Exercises[] = [];
-  private allCategories: string[] = [];
+  private allCategories: Category[] = [];
   private readonly apiUrl = EXERCISES_API_URL;
   private tableContainer: HTMLDivElement = document.getElementById(
     "exercises-table"
@@ -36,7 +38,7 @@ export class ExercisesTable {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
       this.allCategories = await fetchCategories(`${this.apiUrl}/categories`);
-      this.hotInstance = renderTable(
+      this.hotInstance = renderTable<ExerciseTableRow>(
         this.tableContainer,
         this.allExercises,
         EXERCISE_COLUMNS_ORDER,

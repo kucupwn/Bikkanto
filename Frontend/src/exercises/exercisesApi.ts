@@ -1,6 +1,6 @@
 import { apiRequest } from "../api/apiRequest";
 import { showFeedback } from "../ribbon/feedbackRibbon";
-import { type Exercises } from "../types/exercises.types";
+import { type Category, type Exercises } from "../types/exercises.types";
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   try {
@@ -15,7 +15,7 @@ export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   }
 }
 
-export async function fetchCategories(apiUrl: string): Promise<string[]> {
+export async function fetchCategories(apiUrl: string): Promise<Category[]> {
   try {
     const data = await apiRequest(apiUrl);
 
