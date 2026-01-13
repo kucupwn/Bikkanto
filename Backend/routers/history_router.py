@@ -1,11 +1,11 @@
 from typing import Annotated, List
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
 from datetime import date
 from .auth import get_current_user
 from ..database import get_db
-from ..models import History, Users, Exercises
+from ..models import History, Exercises, Categories
 from ..schemas.history_schema import HistoryRead, HistoryCreate
 
 router = APIRouter(prefix="/history", tags=["history"])
@@ -20,22 +20,13 @@ async def read_all(user: user_dependency, db: db_dependency):
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     history_entries = (
-        db.query(History).join(Users).filter(Users.id == user.get("id")).all()
+        db.query(History)
+        .filter(History.user_id == user.get("id"))
+        .options(joinedload(History.exercise), joinedload(History.category))
+        .all()
     )
 
-    return [
-        HistoryRead(
-            id=entry.id,
-            date_complete=entry.date_complete,
-            exercise=entry.exercise.exercise_name,
-            category=entry.category,
-            difficulty=entry.difficulty,
-            cycles=entry.cycles,
-            repetitions=entry.repetitions,
-            sum_repetitions=entry.sum_repetitions,
-        )
-        for entry in history_entries
-    ]
+    return history_entries
 
 
 @router.get("/range", response_model=List[HistoryRead], status_code=status.HTTP_200_OK)
@@ -56,46 +47,35 @@ async def get_history_range(
             History.user_id == user.get("id"),
             History.date_complete.between(start_date, end_date),
         )
+        .options(joinedload(History.exercise), joinedload(History.category))
         .all()
     )
 
-    return [
-        {
-            "id": entry.id,
-            "date_complete": entry.date_complete,
-            "exercise": entry.exercise.exercise_name,
-            "category": entry.category,
-            "difficulty": entry.difficulty,
-            "cycles": entry.cycles,
-            "repetitions": entry.repetitions,
-            "sum_repetitions": entry.sum_repetitions,
-        }
-        for entry in history_entries
-    ]
+    return history_entries
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=List[HistoryRead])
 async def create_history_batch(
     user: user_dependency, db: db_dependency, entries: List[HistoryCreate]
 ):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
     history_models = []
 
     for entry in entries:
-        exercise = (
-            db.query(Exercises)
-            .filter(Exercises.exercise_name == entry.exercise)
-            .first()
-        )
+        exercise = db.get(Exercises, entry.exercise_id)
+        if not exercise:
+            raise HTTPException(status_code=400, detail=f"Invalid exercise id")
 
-        if not user or not exercise:
-            raise HTTPException(
-                status_code=400, detail="User or exercise reference not found"
-            )
+        category = db.get(Categories, entry.category_id)
+        if not category:
+            raise HTTPException(status_code=400, detail=f"Invalid category id")
 
         history = History(
             date_complete=entry.date_complete,
-            exercise_id=exercise.id,
-            category=entry.category,
+            exercise_id=entry.exercise_id,
+            category_id=entry.category_id,
             difficulty=entry.difficulty,
             cycles=entry.cycles,
             repetitions=entry.repetitions,
