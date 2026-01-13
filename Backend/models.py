@@ -21,6 +21,10 @@ class Exercises(Base):
     category = relationship("Categories", back_populates="exercise")
     history = relationship("History", back_populates="exercise")
 
+    @property
+    def category_name(self):
+        return self.category.name if self.category else None
+
 
 class Categories(Base):
     __tablename__ = "categories"
@@ -49,6 +53,14 @@ class History(Base):
     exercise = relationship("Exercises", back_populates="history")
     category = relationship("Categories", back_populates="history")
     user = relationship("Users", back_populates="history")
+
+    @property
+    def category_name(self):
+        return self.category.name if self.category else None
+
+    @property
+    def exercise_name(self):
+        return self.exercise.exercise_name if self.exercise else None
 
 
 class Users(Base):
