@@ -1,10 +1,12 @@
-import { apiRequest } from "../api/apiRequest";
+import { apiRequest, authHeaders } from "../api/apiRequest";
 import { showFeedback } from "../ribbon/feedbackRibbon";
 import { type Category, type Exercises } from "../types/exercises.types";
 
 export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
   try {
-    const data = await apiRequest<Exercises[]>(apiUrl);
+    const data = await apiRequest<Exercises[]>(apiUrl, {
+      headers: authHeaders(),
+    });
 
     return data;
   } catch (err: any) {
@@ -17,7 +19,9 @@ export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
 
 export async function fetchCategories(apiUrl: string): Promise<Category[]> {
   try {
-    const data = await apiRequest(apiUrl);
+    const data = await apiRequest(apiUrl, {
+      headers: authHeaders(),
+    });
 
     return data;
   } catch (err: any) {
@@ -35,7 +39,7 @@ export async function postNewExercise(
   try {
     await apiRequest(apiUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(),
       body: JSON.stringify(newExercise),
     });
     showFeedback("New exercise added successfully", "success");
@@ -53,7 +57,7 @@ export async function updateExercise(
   try {
     await apiRequest(`${apiUrl}/${exerciseId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(),
       body: JSON.stringify(update),
     });
     showFeedback("Exercise updated successfully", "success");
@@ -70,7 +74,7 @@ export async function deleteExercise(
   try {
     await apiRequest(`${apiUrl}/${exerciseId}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(),
     });
     showFeedback("Exercise deleted successfully", "success");
   } catch (err: any) {
