@@ -33,6 +33,7 @@ class ExerciseBase(BaseModel):
 
 class ExerciseRead(ExerciseBase):
     id: int
+    category_id: int
     category_name: str
 
     class Config:
