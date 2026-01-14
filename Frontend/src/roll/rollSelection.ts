@@ -99,7 +99,7 @@ function createCategorySelectionDropdowns(
     categories.forEach((category) => {
       const option = document.createElement("option");
       option.value = category.id.toString();
-      option.textContent = category.name.toUpperCase();
+      option.textContent = category.category_name.toUpperCase();
       selectCategory.appendChild(option);
     });
 

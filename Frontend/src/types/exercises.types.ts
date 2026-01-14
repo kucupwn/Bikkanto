@@ -28,7 +28,7 @@ export interface ExerciseSelection {
 
 export interface Category {
   id: number;
-  name: string;
+  category_name: string;
 }
 
 export type ExerciseTableRow = Pick<

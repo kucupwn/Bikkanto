@@ -4,14 +4,14 @@ from pydantic import BaseModel, Field
 
 class CategoryRead(BaseModel):
     id: int
-    name: str
+    category_name: str
 
     class Config:
         from_attributes = True
 
 
 class CategoryCreate(BaseModel):
-    name: str
+    category_name: str
 
 
 class Difficulty(str, Enum):

@@ -22,7 +22,8 @@ export function setExercisesModalHeaderTitle(operation: string) {
 function getCategoryOptions(categories: Category[]): string {
   const options = categories
     .map(
-      (opt) => `<option value="${opt.id}">${opt.name.toUpperCase()}</option>`
+      (opt) =>
+        `<option value="${opt.id}">${opt.category_name.toUpperCase()}</option>`
     )
     .join("");
 

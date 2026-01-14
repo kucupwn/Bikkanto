@@ -34,15 +34,17 @@ class Exercises(Base):
 
     @property
     def category_name(self):
-        return self.category.name if self.category else None
+        return self.category.category_name if self.category else None
 
 
 class Categories(Base):
     __tablename__ = "categories"
-    __table_args__ = (UniqueConstraint("name", "user_id", name="uq_category_user"),)
+    __table_args__ = (
+        UniqueConstraint("category_name", "user_id", name="uq_category_user"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    category_name = Column(String, nullable=False)
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
 
@@ -79,7 +81,7 @@ class History(Base):
 
     @property
     def category_name(self):
-        return self.category.name if self.category else None
+        return self.category.category_name if self.category else None
 
     @property
     def exercise_name(self):

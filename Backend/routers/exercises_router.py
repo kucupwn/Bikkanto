@@ -34,7 +34,7 @@ async def create_category(
     existing = (
         db.query(Categories)
         .filter(
-            Categories.name == category_create.name,
+            Categories.category_name == category_create.category_name,
             Categories.user_id == user.get("id"),
         )
         .first()
