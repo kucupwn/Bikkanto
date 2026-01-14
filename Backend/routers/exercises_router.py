@@ -22,8 +22,6 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
     "/categories", response_model=List[CategoryRead], status_code=status.HTTP_200_OK
 )
 async def read_all_categories(user: user_dependency, db: db_dependency):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
 
     return db.query(Categories).filter(Categories.user_id == user.get("id")).all()
 
@@ -32,8 +30,6 @@ async def read_all_categories(user: user_dependency, db: db_dependency):
 async def create_category(
     user: user_dependency, db: db_dependency, category_create: CategoryCreate
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
 
     existing = (
         db.query(Categories)
@@ -60,8 +56,6 @@ async def create_category(
 
 @router.get("/", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
 async def read_all_exercises(user: user_dependency, db: db_dependency):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
 
     exercises = (
         db.query(Exercises)
@@ -76,8 +70,6 @@ async def read_all_exercises(user: user_dependency, db: db_dependency):
 async def create_exercise(
     user: user_dependency, db: db_dependency, exercise_create: ExerciseCreate
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
 
     existing = (
         db.query(Exercises)
@@ -120,8 +112,6 @@ async def update_exercise(
     exercise_update: ExerciseUpdate,
     exercise_id: int = Path(gt=0),
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
 
     exercise_model = (
         db.query(Exercises)
@@ -165,8 +155,6 @@ async def update_exercise(
 async def delete_exercise(
     user: user_dependency, db: db_dependency, exercise_id: int = Path(gt=0)
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
 
     exercise_model = (
         db.query(Exercises)
