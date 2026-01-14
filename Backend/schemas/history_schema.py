@@ -9,8 +9,6 @@ class HistoryBase(BaseModel):
     cycles: int
     repetitions: int
     sum_repetitions: int
-    exercise_id: int
-    category_id: int
 
 
 class HistoryRead(HistoryBase):

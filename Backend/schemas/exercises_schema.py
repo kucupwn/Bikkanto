@@ -29,7 +29,6 @@ class ExerciseBase(BaseModel):
     medium_max: int
     hard_min: int
     hard_max: int
-    category_id: int
 
 
 class ExerciseRead(ExerciseBase):
