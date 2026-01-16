@@ -1,19 +1,14 @@
-import { apiRequest } from "../api/apiRequest";
+import { apiRequest, authHeaders } from "../api/apiRequest";
 import { showFeedback } from "../ribbon/feedbackRibbon";
 import type { WorkoutHistory } from "../types/history.types";
 
 export async function fetchAllHistory(
   apiUrl: string
 ): Promise<WorkoutHistory[]> {
-  const token = localStorage.getItem("token");
-
   try {
     const data = await apiRequest<WorkoutHistory[]>(apiUrl, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders(),
     });
 
     return data;
@@ -29,15 +24,10 @@ export async function postBatchHistory(
   historyEntries: Record<string, any>[],
   apiUrl: string
 ): Promise<void> {
-  const token = localStorage.getItem("token");
-
   try {
     await apiRequest(apiUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders(),
       body: JSON.stringify(historyEntries),
     });
     showFeedback("History record(s) added successfully", "success");
@@ -52,7 +42,6 @@ export async function fetchHistoryRange(
   startDate: string,
   endDate: string
 ) {
-  const token = localStorage.getItem("token");
   const params = new URLSearchParams({
     start_date: startDate,
     end_date: endDate,
@@ -63,10 +52,7 @@ export async function fetchHistoryRange(
       `${apiUrl}?${params.toString()}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: authHeaders(),
       }
     );
 

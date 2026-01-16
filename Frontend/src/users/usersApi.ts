@@ -1,4 +1,4 @@
-import { apiRequest } from "../api/apiRequest";
+import { apiRequest, authHeaders } from "../api/apiRequest";
 import {
   type AuthResponse,
   type AuthUser,
@@ -55,16 +55,10 @@ export async function getCurrentUserAllDetails(
   if (!currentUser) {
     return null;
   }
-
-  const token = localStorage.getItem("token");
-
   try {
     const res = await fetch(USERS_API_URL, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders(),
     });
 
     const data: User = await res.json();
@@ -82,7 +76,6 @@ export async function submitEditedUserData(
   data: Record<string, string>,
   editData: UserDataChange
 ): Promise<void> {
-  const token = localStorage.getItem("token");
   const endpoint =
     editData === UserDataChange.UserData
       ? USERS_API_URL
@@ -91,10 +84,7 @@ export async function submitEditedUserData(
   try {
     await apiRequest(endpoint, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: authHeaders(),
       body: JSON.stringify(data),
     });
     window.location.reload();
