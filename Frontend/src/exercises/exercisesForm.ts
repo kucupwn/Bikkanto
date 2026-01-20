@@ -52,12 +52,12 @@ export function handleFormSubmit(
       await postNewExercise(formData, apiUrl);
       await onSuccess();
     } else if (operation === EXERCISE_OPERATIONS.MODIFY) {
-      const { exercise_id: exerciseId, ...updateData } = formData;
-      if (!exerciseId) {
+      const { exercise_id, ...updateData } = formData;
+      if (!exercise_id) {
         alert("Please select an exercise to modify.");
         return;
       }
-      await updateExercise(exerciseId, updateData, apiUrl);
+      await updateExercise(exercise_id, updateData, apiUrl);
       await onSuccess();
     } else if (operation === EXERCISE_OPERATIONS.DELETE) {
       const exerciseId = formData.exercise_id;
