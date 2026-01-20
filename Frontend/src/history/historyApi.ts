@@ -3,7 +3,7 @@ import { showFeedback } from "../ribbon/feedbackRibbon";
 import type { WorkoutHistory } from "../types/history.types";
 
 export async function fetchAllHistory(
-  apiUrl: string
+  apiUrl: string,
 ): Promise<WorkoutHistory[]> {
   try {
     const data = await apiRequest<WorkoutHistory[]>(apiUrl, {
@@ -22,10 +22,10 @@ export async function fetchAllHistory(
 
 export async function postBatchHistory(
   historyEntries: Record<string, any>[],
-  apiUrl: string
+  apiUrl: string,
 ): Promise<void> {
   try {
-    await apiRequest(apiUrl, {
+    await apiRequest<WorkoutHistory[]>(apiUrl, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(historyEntries),
@@ -40,7 +40,7 @@ export async function postBatchHistory(
 export async function fetchHistoryRange(
   apiUrl: string,
   startDate: string,
-  endDate: string
+  endDate: string,
 ) {
   const params = new URLSearchParams({
     start_date: startDate,
@@ -53,7 +53,7 @@ export async function fetchHistoryRange(
       {
         method: "GET",
         headers: authHeaders(),
-      }
+      },
     );
 
     return data;
