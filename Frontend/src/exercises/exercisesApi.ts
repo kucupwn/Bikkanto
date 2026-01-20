@@ -19,7 +19,7 @@ export async function fetchAllExercises(apiUrl: string): Promise<Exercises[]> {
 
 export async function fetchCategories(apiUrl: string): Promise<Category[]> {
   try {
-    const data = await apiRequest(apiUrl, {
+    const data = await apiRequest<Category[]>(apiUrl, {
       headers: authHeaders(),
     });
 
@@ -34,10 +34,10 @@ export async function fetchCategories(apiUrl: string): Promise<Category[]> {
 
 export async function postNewExercise(
   newExercise: Record<string, any>,
-  apiUrl: string
+  apiUrl: string,
 ): Promise<void> {
   try {
-    await apiRequest(apiUrl, {
+    await apiRequest<Exercises>(apiUrl, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(newExercise),
@@ -52,10 +52,10 @@ export async function postNewExercise(
 export async function updateExercise(
   exerciseId: number,
   update: Record<string, any>,
-  apiUrl: string
+  apiUrl: string,
 ): Promise<void> {
   try {
-    await apiRequest(`${apiUrl}/${exerciseId}`, {
+    await apiRequest<Exercises>(`${apiUrl}/${exerciseId}`, {
       method: "PUT",
       headers: authHeaders(),
       body: JSON.stringify(update),
@@ -69,10 +69,10 @@ export async function updateExercise(
 
 export async function deleteExercise(
   exerciseId: number,
-  apiUrl: string
+  apiUrl: string,
 ): Promise<void> {
   try {
-    await apiRequest(`${apiUrl}/${exerciseId}`, {
+    await apiRequest<Exercises>(`${apiUrl}/${exerciseId}`, {
       method: "DELETE",
       headers: authHeaders(),
     });

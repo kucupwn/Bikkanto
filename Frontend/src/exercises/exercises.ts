@@ -25,7 +25,7 @@ export class ExercisesTable {
   private allCategories: Category[] = [];
   private readonly apiUrl = EXERCISES_API_URL;
   private tableContainer: HTMLDivElement = document.getElementById(
-    "exercises-table"
+    "exercises-table",
   ) as HTMLDivElement;
 
   constructor() {
@@ -42,7 +42,7 @@ export class ExercisesTable {
         this.tableContainer,
         this.allExercises,
         EXERCISE_COLUMNS_ORDER,
-        EXERCISE_COLUMN_LABELS
+        EXERCISE_COLUMN_LABELS,
       );
     } catch (err: any) {
       showFeedback("Error initializing exercises table", "error");
@@ -70,7 +70,7 @@ export class ExercisesTable {
       modalBody,
       operation,
       this.allExercises,
-      this.allCategories
+      this.allCategories,
     );
 
     const modalEl = document.getElementById("exercise-modal");
@@ -84,7 +84,7 @@ export class ExercisesTable {
       operation,
       this.allExercises,
       this.apiUrl,
-      () => this.refresh()
+      () => this.refresh(),
     );
   }
 }

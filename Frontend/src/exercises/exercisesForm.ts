@@ -12,7 +12,7 @@ import {
 
 function getFormData(
   form: HTMLFormElement,
-  allExercises: Exercises[]
+  allExercises: Exercises[],
 ): Record<string, any> {
   const formData = new FormData(form);
   const data: Record<string, any> = {};
@@ -38,7 +38,7 @@ export function handleFormSubmit(
   operation: ExerciseOperation,
   allExercises: Exercises[],
   apiUrl: string,
-  onSuccess: () => Promise<void>
+  onSuccess: () => Promise<void>,
 ): void {
   const form = document.getElementById("exercise-form") as HTMLFormElement;
   if (!form) return;

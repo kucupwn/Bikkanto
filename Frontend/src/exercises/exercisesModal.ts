@@ -23,7 +23,7 @@ function getCategoryOptions(categories: Category[]): string {
   const options = categories
     .map(
       (opt) =>
-        `<option value="${opt.id}">${opt.category_name.toUpperCase()}</option>`
+        `<option value="${opt.id}">${opt.category_name.toUpperCase()}</option>`,
     )
     .join("");
 
@@ -32,7 +32,7 @@ function getCategoryOptions(categories: Category[]): string {
 
 function getDifficultyOptions(): string {
   const options = DIFFICULTY.map(
-    (opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`
+    (opt) => `<option value="${opt}">${opt.toUpperCase()}</option>`,
   ).join("");
 
   return options;
@@ -42,7 +42,7 @@ function getExerciseOptions(allExercises: Exercises[]) {
   const options = allExercises
     .map(
       (opt) =>
-        `<option value="${opt.id}">${opt.exercise_name.toUpperCase()}</option>`
+        `<option value="${opt.id}">${opt.exercise_name.toUpperCase()}</option>`,
     )
     .join("");
 
@@ -53,7 +53,7 @@ export function getModalForExercisesOperation(
   modalBody: HTMLElement,
   operation: ExerciseOperation,
   allExercises: Exercises[],
-  allCategories: Category[]
+  allCategories: Category[],
 ): void {
   if (operation === EXERCISE_OPERATIONS.ADD) {
     modalBody.innerHTML = generateAddModalInput(allCategories);
@@ -61,7 +61,7 @@ export function getModalForExercisesOperation(
     modalBody.innerHTML = generateModifyModalInput(allExercises, allCategories);
 
     const selectEl = document.getElementById(
-      "select-exercise"
+      "select-exercise",
     ) as HTMLSelectElement | null;
     if (selectEl) {
       selectEl.addEventListener("change", (e) => {
@@ -78,20 +78,20 @@ export function getModalForExercisesOperation(
 
 function fillModifyModalDefaultValues(
   exercises: Exercises[],
-  selectedId: number
+  selectedId: number,
 ) {
   const selectedExercises = exercises.find((ex) => ex.id === selectedId);
   if (!selectedExercises) return;
 
   const categorySelect = document.getElementById(
-    "select-category"
+    "select-category",
   ) as HTMLSelectElement | null;
   if (categorySelect) {
     categorySelect.value = String(selectedExercises.category_id);
   }
 
   const difficultySelect = document.getElementById(
-    "select-difficulty"
+    "select-difficulty",
   ) as HTMLSelectElement | null;
   if (difficultySelect) {
     difficultySelect.value = selectedExercises.difficulty;
@@ -153,7 +153,7 @@ function generateAddModalInput(allCategories: Category[]): string {
 
 function generateModifyModalInput(
   exercises: Exercises[],
-  allCategories: Category[]
+  allCategories: Category[],
 ) {
   const exerciseOptions = getExerciseOptions(exercises);
   const categoryOptions = getCategoryOptions(allCategories);
