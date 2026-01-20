@@ -41,7 +41,7 @@ class ExerciseRead(ExerciseBase):
 
 
 class ExerciseCreate(ExerciseBase):
-    exercise_name: str = Field(..., min_length=1)
+    exercise_name: str = Field(min_length=1)
     difficulty: Difficulty
     easy_min: int = Field(gt=0)
     easy_max: int = Field(gt=0)
@@ -49,11 +49,12 @@ class ExerciseCreate(ExerciseBase):
     medium_max: int = Field(gt=0)
     hard_min: int = Field(gt=0)
     hard_max: int = Field(gt=0)
-    category_id: int = Field(..., gt=0)
+    category_id: int = Field(gt=0)
 
 
 class ExerciseUpdate(BaseModel):
     exercise_name: str = Field(min_length=1)
+    difficulty: Difficulty
     easy_min: int = Field(gt=0)
     easy_max: int = Field(gt=0)
     medium_min: int = Field(gt=0)
