@@ -3,6 +3,7 @@ import {
   type AuthResponse,
   type AuthUser,
   type User,
+  type UserCreate,
   UserDataChange,
 } from "../types/user.types";
 import {
@@ -36,7 +37,7 @@ export async function addNewUser(formData: HTMLFormElement): Promise<void> {
   if (!data) return;
 
   try {
-    await apiRequest(REGISTER_API_URL, {
+    await apiRequest<UserCreate>(REGISTER_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/JSON" },
       body: JSON.stringify(data),
@@ -50,18 +51,16 @@ export async function addNewUser(formData: HTMLFormElement): Promise<void> {
 }
 
 export async function getCurrentUserAllDetails(
-  currentUser: AuthUser
+  currentUser: AuthUser,
 ): Promise<User | null> {
   if (!currentUser) {
     return null;
   }
   try {
-    const res = await fetch(USERS_API_URL, {
+    const data = await apiRequest<User>(USERS_API_URL, {
       method: "GET",
       headers: authHeaders(),
     });
-
-    const data: User = await res.json();
 
     return data;
   } catch (err: any) {
@@ -74,7 +73,7 @@ export async function getCurrentUserAllDetails(
 
 export async function submitEditedUserData(
   data: Record<string, string>,
-  editData: UserDataChange
+  editData: UserDataChange,
 ): Promise<void> {
   const endpoint =
     editData === UserDataChange.UserData
@@ -82,12 +81,12 @@ export async function submitEditedUserData(
       : CHANGE_PASSWORD_API_URL;
 
   try {
-    await apiRequest(endpoint, {
+    await apiRequest<UserCreate>(endpoint, {
       method: "PATCH",
       headers: authHeaders(),
       body: JSON.stringify(data),
     });
-    window.location.reload();
+    showFeedback("Successful user data update", "success");
   } catch (err: any) {
     showFeedback("Failed to update user data", "error");
     console.error(err.message);

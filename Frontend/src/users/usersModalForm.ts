@@ -1,12 +1,16 @@
 import { Modal } from "bootstrap";
-import { UserDataChange } from "../types/user.types";
+import { UserDataChange, type AuthUser } from "../types/user.types";
 import { submitEditedUserData } from "./usersApi";
+import { fillProfilePageWithCurrentData } from "./usersProfie";
 
 export function openEditModal(
   editKey: string,
   headerLabel: string,
-  sourceParagraphId: string
+  sourceParagraphId: string,
+  currentUser: AuthUser | null,
 ): void {
+  if (!currentUser) return;
+
   const modalEl = document.getElementById("profile-modal");
   if (!modalEl) return;
 
@@ -23,7 +27,7 @@ export function openEditModal(
   const bootstrapModal = new Modal(modalEl);
   bootstrapModal.show();
 
-  handleEditFormSubmit(bootstrapModal);
+  handleEditFormSubmit(bootstrapModal, currentUser);
 }
 
 function getEditInput(editKey: string, currentValue: string): string {
@@ -37,7 +41,10 @@ function setModalHeaderTitle(editData: string) {
   title.textContent = `Change ${editData}`;
 }
 
-function handleEditFormSubmit(modal: bootstrap.Modal): void {
+function handleEditFormSubmit(
+  modal: bootstrap.Modal,
+  currentUser: AuthUser | null,
+): void {
   const form = document.getElementById("profile-form") as HTMLFormElement;
   if (!form) return;
 
@@ -51,23 +58,29 @@ function handleEditFormSubmit(modal: bootstrap.Modal): void {
     });
 
     await submitEditedUserData(data, UserDataChange.UserData);
+    fillProfilePageWithCurrentData(currentUser);
 
     modal.hide();
     form.reset();
   };
 }
 
-export function openPasswordChangeModal(): void {
+export function openPasswordChangeModal(currentUser: AuthUser | null): void {
+  if (!currentUser) return;
+
   const modalEl = document.getElementById("password-modal");
   if (!modalEl) return;
 
   const bootstrapModal = new Modal(modalEl);
   bootstrapModal.show();
 
-  handlePasswordChangeFormSubmit(bootstrapModal);
+  handlePasswordChangeFormSubmit(bootstrapModal, currentUser);
 }
 
-function handlePasswordChangeFormSubmit(modal: bootstrap.Modal): void {
+function handlePasswordChangeFormSubmit(
+  modal: bootstrap.Modal,
+  currentUser: AuthUser,
+): void {
   const form = document.getElementById("password-form") as HTMLFormElement;
   if (!form) return;
 
@@ -83,6 +96,7 @@ function handlePasswordChangeFormSubmit(modal: bootstrap.Modal): void {
     if (data["new_password"] === data["new_password_verify"]) {
       delete data["new_password_verify"];
       submitEditedUserData(data, UserDataChange.Password);
+      fillProfilePageWithCurrentData(currentUser);
     } else {
       alert("New passwords are not matching!");
       return;
