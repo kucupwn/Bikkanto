@@ -1,11 +1,13 @@
+import type { Difficulty } from "./exercises.types";
+
 export interface WorkoutHistory {
   id?: number;
   date_complete: string;
   exercise_id: number;
-  exercise_name: string;
+  exercise_name?: string;
   category_id: number;
-  category_name: string;
-  difficulty: string;
+  category_name?: string;
+  difficulty: Difficulty;
   cycles: number;
   repetitions: number;
   sum_repetitions: number;
