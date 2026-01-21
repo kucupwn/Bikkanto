@@ -105,6 +105,10 @@ a {
   background-color: rgba(244, 67, 67, 0.7);
 }
 
+.form-select.category {
+  margin-right: 0.5rem;
+}
+
 #title-text {
   font-family: "Courier New", Courier, monospace;
   color: black;
