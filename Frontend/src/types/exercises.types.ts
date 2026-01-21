@@ -1,5 +1,5 @@
 export interface Exercises {
-  id?: number;
+  id: number;
   exercise_name: string;
   difficulty: Difficulty;
   easy_min: number;
@@ -9,7 +9,7 @@ export interface Exercises {
   hard_min: number;
   hard_max: number;
   category_id: number;
-  category_name?: string;
+  category_name: string;
 }
 
 export interface WorkoutEntry {
@@ -27,7 +27,7 @@ export interface ExerciseSelection {
 }
 
 export interface Category {
-  id?: number;
+  id: number;
   category_name: string;
 }
 

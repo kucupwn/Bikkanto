@@ -2,6 +2,7 @@ import { showFeedback } from "../ribbon/feedbackRibbon";
 import {
   DIFFICULTY,
   type Category,
+  type Difficulty,
   type Exercises,
   type ExerciseSelection,
   type WorkoutEntry,
@@ -9,10 +10,10 @@ import {
 
 export function getExerciseSelectionRows(
   count: number,
-  allCategories: Category[]
+  allCategories: Category[],
 ): void {
   const container = document.getElementById(
-    "exercise-categories-container"
+    "exercise-categories-container",
   ) as HTMLDivElement;
   if (!container) return;
 
@@ -24,7 +25,7 @@ export function getExerciseSelectionRows(
     allCategories,
     rows,
     count,
-    existingCount
+    existingCount,
   );
 }
 
@@ -32,7 +33,7 @@ export function getRandomExercise(
   exercises: Exercises[],
   category: number,
   exercisecDifficulty: string,
-  repsDifficulty: string
+  repsDifficulty: string,
 ): WorkoutEntry | null {
   const filtered = exercises
     .filter((ex) => ex.category_id === category)
@@ -66,7 +67,7 @@ function createCategorySelectionDropdowns(
   start: number,
   end: number,
   categories: Category[],
-  container: HTMLDivElement
+  container: HTMLDivElement,
 ): void {
   for (let i = start; i <= end; i++) {
     const row = document.createElement("div");
@@ -123,14 +124,14 @@ function handleExerciseSelectionRowsDisplay(
   categories: Category[],
   rows: any,
   count: number,
-  existingCount: number
+  existingCount: number,
 ): void {
   if (count > existingCount) {
     createCategorySelectionDropdowns(
       existingCount + 1,
       count,
       categories,
-      container
+      container,
     );
   }
 
@@ -151,15 +152,15 @@ export function getSelectedCategories(): ExerciseSelection[] {
 
   rows.forEach((row) => {
     const categorySelect = row.querySelector(
-      "select.category"
+      "select.category",
     ) as HTMLSelectElement | null;
 
     const difficultySelect = row.querySelector(
-      "select.difficulty"
+      "select.difficulty",
     ) as HTMLSelectElement | null;
 
     const category_id = Number(categorySelect?.value);
-    const difficulty = difficultySelect?.value;
+    const difficulty = difficultySelect?.value as Difficulty;
 
     if (!category_id) {
       showFeedback("Please select category", "error");
