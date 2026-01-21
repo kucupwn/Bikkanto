@@ -11,6 +11,38 @@ import {
   DIFFICULTY,
   type Category,
 } from "../types/exercises.types";
+import { handleFormSubmit } from "./exercisesForm";
+import { Modal } from "bootstrap";
+
+export function openModal(
+  apiUrl: string,
+  operation: ExerciseOperation,
+  allExercises: Exercises[],
+  allCategories: Category[],
+  onSuccess: () => Promise<void>,
+) {
+  const modalBody = document.getElementById("exercise-form-body");
+  if (!modalBody) return;
+
+  setExercisesModalHeaderTitle(operation);
+
+  getModalForExercisesOperation(
+    modalBody,
+    operation,
+    allExercises,
+    allCategories,
+  );
+
+  const modalEl = document.getElementById("exercise-modal");
+  if (!modalEl) return;
+
+  const bootstrapModal = new Modal(modalEl);
+  bootstrapModal.show();
+
+  handleFormSubmit(bootstrapModal, operation, allExercises, apiUrl, () =>
+    onSuccess(),
+  );
+}
 
 export function setExercisesModalHeaderTitle(operation: string) {
   const title = document.getElementById("exercise-modal-label");

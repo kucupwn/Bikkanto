@@ -2,21 +2,15 @@ import Handsontable from "handsontable/base";
 import { renderTable } from "../table/handsontable";
 import {
   type Category,
-  type ExerciseOperation,
   type ExerciseTableRow,
   type Exercises,
   EXERCISE_COLUMNS_ORDER,
   EXERCISE_COLUMN_LABELS,
 } from "../types/exercises.types";
 import { fetchAllExercises, fetchCategories } from "./exercisesApi";
-import {
-  setExercisesModalHeaderTitle,
-  getModalForExercisesOperation,
-} from "./exercisesModal";
+import { openModal } from "./exercisesModal";
 import { attachExercisesEventListeners } from "./exercisesEvents";
-import { handleFormSubmit } from "./exercisesForm";
 import { EXERCISES_API_URL } from "../api/urls";
-import { Modal } from "bootstrap";
 import { showFeedback } from "../ribbon/feedbackRibbon";
 
 export class ExercisesTable {
@@ -30,7 +24,14 @@ export class ExercisesTable {
 
   constructor() {
     attachExercisesEventListeners({
-      onOpenOperation: (operation) => this.openModal(operation),
+      onOpenOperation: (operation) =>
+        openModal(
+          this.apiUrl,
+          operation,
+          this.allExercises,
+          this.allCategories,
+          () => this.refresh(),
+        ),
     });
   }
 
@@ -58,34 +59,6 @@ export class ExercisesTable {
       showFeedback("Error refreshing exercises table", "error");
       console.error(err.message);
     }
-  }
-
-  private openModal(operation: ExerciseOperation) {
-    const modalBody = document.getElementById("exercise-form-body");
-    if (!modalBody) return;
-
-    setExercisesModalHeaderTitle(operation);
-
-    getModalForExercisesOperation(
-      modalBody,
-      operation,
-      this.allExercises,
-      this.allCategories,
-    );
-
-    const modalEl = document.getElementById("exercise-modal");
-    if (!modalEl) return;
-
-    const bootstrapModal = new Modal(modalEl);
-    bootstrapModal.show();
-
-    handleFormSubmit(
-      bootstrapModal,
-      operation,
-      this.allExercises,
-      this.apiUrl,
-      () => this.refresh(),
-    );
   }
 }
 
