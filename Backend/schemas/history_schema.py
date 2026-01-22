@@ -21,10 +21,8 @@ class HistoryRead(HistoryBase):
 
 
 class HistoryCreate(HistoryBase):
-    date_complete: date = Field(...)
-    difficulty: Difficulty
-    cycles: int = Field(..., gt=0)
-    repetitions: int = Field(..., gt=0)
-    sum_repetitions: int = Field(..., gt=0)
-    exercise_id: int = Field(..., gt=0)
-    category_id: int = Field(..., gt=0)
+    cycles: int = Field(gt=0)
+    repetitions: int = Field(gt=0)
+    sum_repetitions: int = Field(gt=0)
+    exercise_id: int = Field(gt=0)
+    category_id: int = Field(gt=0)
