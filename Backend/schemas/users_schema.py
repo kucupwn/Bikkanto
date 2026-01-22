@@ -23,12 +23,8 @@ class UserRead(UserBase):
 
 
 class UserCreate(UserBase):
-    username: str = Field(..., min_length=1)
-    email: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    role: UserRole = UserRole.user
-    password: str = Field(..., min_length=5)
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=5)
 
 
 class UserUpdate(BaseModel):

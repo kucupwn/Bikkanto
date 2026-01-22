@@ -5,7 +5,13 @@ from starlette import status
 from passlib.context import CryptContext
 from ..database import get_db
 from ..models import Users
-from ..schemas.users_schema import UserRead, UserCreate, UserUpdate, UserVerification
+from ..schemas.users_schema import (
+    UserRead,
+    UserCreate,
+    UserUpdate,
+    UserVerification,
+    UserRole,
+)
 from .auth import get_current_user
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -63,6 +69,7 @@ async def create_user(user_create: UserCreate, db: db_dependency):
     create_user_model = Users(
         **user_data,
         hashed_password=bcrypt_context.hash(user_create.password),
+        role=UserRole.user
     )
     db.add(create_user_model)
     db.commit()
