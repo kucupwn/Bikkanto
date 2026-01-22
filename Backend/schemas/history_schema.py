@@ -6,9 +6,9 @@ from .exercises_schema import Difficulty
 class HistoryBase(BaseModel):
     date_complete: date
     difficulty: Difficulty
-    cycles: int
-    repetitions: int
-    sum_repetitions: int
+    cycles: int = Field(gt=0)
+    repetitions: int = Field(gt=0)
+    sum_repetitions: int = Field(gt=0)
 
 
 class HistoryRead(HistoryBase):
@@ -21,8 +21,5 @@ class HistoryRead(HistoryBase):
 
 
 class HistoryCreate(HistoryBase):
-    cycles: int = Field(gt=0)
-    repetitions: int = Field(gt=0)
-    sum_repetitions: int = Field(gt=0)
     exercise_id: int = Field(gt=0)
     category_id: int = Field(gt=0)
