@@ -8,7 +8,7 @@ import type { WorkoutEntry } from "../types/exercises.types";
 function getHistoryEntries(
   workout: WorkoutEntry[],
   today: string,
-  cycles: number
+  cycles: number,
 ): WorkoutHistory[] {
   return workout.map((entry) => ({
     date_complete: today,
@@ -25,7 +25,7 @@ function getHistoryEntries(
 
 function getWorkoutCycles(): number {
   const cyclesInput = document.getElementById(
-    "cycles-input"
+    "cycles-input",
   ) as HTMLInputElement;
   const cycles = Number(cyclesInput.value);
 
@@ -40,7 +40,7 @@ function getWorkoutCycles(): number {
 export async function saveWorkoutHistory(
   currentWorkout: WorkoutEntry[],
   overviewContainer: HTMLElement | null,
-  finishedRollContainer: HTMLElement | null
+  finishedRollContainer: HTMLElement | null,
 ): Promise<void> {
   const today = new Date().toISOString().split("T")[0];
 

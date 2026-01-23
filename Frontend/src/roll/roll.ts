@@ -35,16 +35,16 @@ export class Roll {
 
   constructor() {
     this.overviewTableButtonsContainer = document.getElementById(
-      "roll-table-buttons-container"
+      "roll-table-buttons-container",
     );
     this.rollSubmitContainer = document.getElementById("roll-submit-container");
     this.settingsContainer = document.getElementById("roll-settings-container");
     this.overviewContainer = document.getElementById("overview-container");
     this.pendingRollContainer = document.getElementById(
-      "pending-roll-container"
+      "pending-roll-container",
     );
     this.finishedRollContainer = document.getElementById(
-      "finished-roll-container"
+      "finished-roll-container",
     );
 
     attachRollEventListeners({
@@ -60,7 +60,7 @@ export class Roll {
         if (this.settingsContainer && this.overviewContainer) {
           toggleRollSettingsOverview(
             this.settingsContainer,
-            this.overviewContainer
+            this.overviewContainer,
           );
         }
       },
@@ -69,7 +69,7 @@ export class Roll {
         if (this.overviewTableButtonsContainer && this.rollSubmitContainer) {
           toggleRollOverviewSubmit(
             this.overviewTableButtonsContainer,
-            this.rollSubmitContainer
+            this.rollSubmitContainer,
           );
         }
       },
@@ -78,7 +78,7 @@ export class Roll {
         if (this.overviewContainer) {
           localStorage.setItem(
             "pendingTable",
-            this.overviewContainer.innerHTML
+            this.overviewContainer.innerHTML,
           );
         }
       },
@@ -87,19 +87,19 @@ export class Roll {
         await saveWorkoutHistory(
           this.currentWorkout,
           this.overviewContainer,
-          this.finishedRollContainer
+          this.finishedRollContainer,
         ),
       onTogglePendingRollOptions: () =>
         togglePendingRollOptions(
           this.pendingRollContainer,
-          this.settingsContainer
+          this.settingsContainer,
         ),
       onLoadUnsubmittedTable: () =>
         loadUnsubmittedTable(
           this.overviewContainer,
           this.overviewTableButtonsContainer,
           this.rollSubmitContainer,
-          this.pendingRollContainer
+          this.pendingRollContainer,
         ),
     });
 
@@ -133,8 +133,8 @@ export class Roll {
           this.allExercises,
           selection.category_id,
           selection.difficulty,
-          repsDifficulty
-        )
+          repsDifficulty,
+        ),
       )
       .filter((entry): entry is WorkoutEntry => entry !== null);
 

@@ -38,7 +38,7 @@ export function loadUnsubmittedTable(
   overviewContainer: HTMLElement | null,
   overviewTableButtonsContainer: HTMLElement | null,
   rollSubmitContainer: HTMLElement | null,
-  pendingRollContainer: HTMLElement | null
+  pendingRollContainer: HTMLElement | null,
 ): void {
   const table = localStorage.getItem("pendingTable");
 
@@ -56,7 +56,7 @@ export function loadUnsubmittedTable(
       overviewContainer,
       overviewTableButtonsContainer,
       rollSubmitContainer,
-      pendingRollContainer
+      pendingRollContainer,
     );
   }
 }
