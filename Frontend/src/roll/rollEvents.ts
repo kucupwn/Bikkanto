@@ -2,7 +2,7 @@ import { type RollCallbacks } from "../types/roll.types";
 
 export function attachRollEventListeners(callback: RollCallbacks): void {
   const exerciseCountInput = document.getElementById(
-    "exercise-count-input"
+    "exercise-count-input",
   ) as HTMLInputElement;
   if (exerciseCountInput)
     exerciseCountInput.addEventListener("change", () => {
@@ -14,13 +14,15 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
   if (getButton)
     getButton.addEventListener("click", () => {
       const workout = callback.onGetWorkout();
-      callback.onFillOverviewTable(workout);
-      callback.onToggleRollSettingsOverview();
-      localStorage.removeItem("pendingTable");
+      if (workout.length === Number(exerciseCountInput.value)) {
+        callback.onFillOverviewTable(workout);
+        callback.onToggleRollSettingsOverview();
+        localStorage.removeItem("pendingTable");
+      }
     });
 
   const restartRollButton = document.getElementById(
-    "btn-restart-roll"
+    "btn-restart-roll",
   ) as HTMLButtonElement;
   if (restartRollButton)
     restartRollButton.addEventListener("click", () => {
@@ -28,7 +30,7 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
     });
 
   const applyRollButton = document.getElementById(
-    "btn-apply-roll"
+    "btn-apply-roll",
   ) as HTMLButtonElement;
   if (applyRollButton)
     applyRollButton.addEventListener("click", () => {
@@ -37,7 +39,7 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
     });
 
   const finishRollButton = document.getElementById(
-    "btn-finish-roll"
+    "btn-finish-roll",
   ) as HTMLButtonElement;
   if (finishRollButton)
     finishRollButton.addEventListener("click", async () => {
@@ -51,7 +53,7 @@ export function attachRollEventListeners(callback: RollCallbacks): void {
     });
 
   const discardButton = document.getElementById(
-    "discard-roll"
+    "discard-roll",
   ) as HTMLButtonElement;
   if (discardButton)
     discardButton.addEventListener("click", () => {
