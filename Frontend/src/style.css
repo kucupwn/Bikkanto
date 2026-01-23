@@ -21,13 +21,11 @@ a {
 
 .exercise-row {
   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   justify-self: center;
   align-items: center;
-  margin: 20px;
-}
-
-.exercise-label {
-  margin-right: 20px;
+  margin-bottom: 1rem;
 }
 
 .user-profile {
@@ -104,10 +102,6 @@ a {
   background-color: rgba(244, 67, 67, 0.7);
 }
 
-.form-select.category {
-  margin-right: 0.5rem;
-}
-
 #title-text {
   font-family: "Courier New", Courier, monospace;
   color: black;
@@ -182,4 +176,12 @@ a {
   justify-self: center;
   justify-content: center;
   align-items: center;
+}
+
+@media (min-width: 768px) {
+  .exercise-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
 }
