@@ -75,17 +75,12 @@ function createCategorySelectionDropdowns(
 
     const label = document.createElement("label");
     label.textContent = `Exercise ${i}`;
-    label.classList = "exercise-label";
 
     const selectCategory = document.createElement("select");
-    selectCategory.id = `exercise-category-select-${i}`;
     selectCategory.classList = "form-select category";
-    selectCategory.style = "width: auto";
 
     const selectDifficulty = document.createElement("select");
-    selectDifficulty.id = `exercise-difficulty-select-${i}`;
     selectDifficulty.classList = "form-select difficulty";
-    selectDifficulty.style = "width: auto";
 
     const optionCategory = document.createElement("option");
     optionCategory.value = "";

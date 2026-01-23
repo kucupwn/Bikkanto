@@ -102,6 +102,11 @@ a {
   background-color: rgba(244, 67, 67, 0.7);
 }
 
+.form-select.category,
+.form-select.difficulty {
+  width: auto;
+}
+
 #title-text {
   font-family: "Courier New", Courier, monospace;
   color: black;
