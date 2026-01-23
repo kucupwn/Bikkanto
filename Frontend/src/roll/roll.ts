@@ -131,6 +131,7 @@ export class Roll {
       .map((selection) =>
         getRandomExercise(
           this.allExercises,
+          this.allCategories,
           selection.category_id,
           selection.difficulty,
           repsDifficulty,

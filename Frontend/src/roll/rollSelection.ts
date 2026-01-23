@@ -31,15 +31,21 @@ export function getExerciseSelectionRows(
 
 export function getRandomExercise(
   exercises: Exercises[],
+  categories: Category[],
   category: number,
-  exercisecDifficulty: string,
+  exerciseDifficulty: string,
   repsDifficulty: string,
 ): WorkoutEntry | null {
   const filtered = exercises
     .filter((ex) => ex.category_id === category)
-    .filter((ex) => ex.difficulty === exercisecDifficulty);
+    .filter((ex) => ex.difficulty === exerciseDifficulty);
 
   if (filtered.length === 0) {
+    const [missingCategory] = categories.filter((cat) => cat.id === category);
+    showFeedback(
+      `There is no ${exerciseDifficulty.toUpperCase()} ${missingCategory.category_name.toUpperCase()}`,
+      "error",
+    );
     return null;
   }
 
