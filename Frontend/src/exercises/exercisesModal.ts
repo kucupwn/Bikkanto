@@ -51,7 +51,7 @@ export function setExercisesModalHeaderTitle(operation: string) {
   title.textContent = `${operation} exercise`;
 }
 
-function getCategoryOptions(categories: Category[]): string {
+export function getCategoryOptions(categories: Category[]): string {
   const options = categories
     .map(
       (opt) =>
