@@ -32,6 +32,39 @@ export async function fetchCategories(apiUrl: string): Promise<Category[]> {
   }
 }
 
+export async function createCategory(
+  newCategory: Category,
+  apiUrl: string,
+): Promise<void> {
+  try {
+    await apiRequest<Category>(apiUrl, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(newCategory),
+    });
+    showFeedback("New category added successfully", "success");
+  } catch (err: any) {
+    showFeedback("Failed to create category", "error");
+    console.error(err.message);
+  }
+}
+
+export async function deleteCategory(
+  categiryId: number,
+  apiUrl: string,
+): Promise<void> {
+  try {
+    await apiRequest<Category>(`${apiUrl}/${categiryId}`, {
+      method: "DELETE",
+      headers: authHeaders(),
+    });
+    showFeedback("Category deleted successfully", "success");
+  } catch (err: any) {
+    showFeedback("Failed to delete category", "error");
+    console.error(err.message);
+  }
+}
+
 export async function postNewExercise(
   newExercise: Record<string, any>,
   apiUrl: string,
