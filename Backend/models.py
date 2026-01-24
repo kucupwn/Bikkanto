@@ -97,7 +97,7 @@ class Users(Base):
     email = Column(String, unique=True)
     first_name = Column(String)
     last_name = Column(String)
-    role = Column(String, default="user")
+    role = Column(String)
     hashed_password = Column(String)
 
     history = relationship(
