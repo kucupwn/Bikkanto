@@ -54,6 +54,31 @@ async def create_category(
     return category_model
 
 
+@router.delete(
+    "/{category_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_category(
+    user: user_dependency, db: db_dependency, category_id: int = Path(gt=0)
+):
+
+    category_model = (
+        db.query(Categories)
+        .filter(
+            Categories.id == category_id,
+            Categories.user_id == user.get("id"),
+        )
+        .first()
+    )
+
+    if not category_model:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+
+    db.delete(category_model)
+
+    db.commit()
+
+
 @router.get("/", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
 async def read_all_exercises(user: user_dependency, db: db_dependency):
 
