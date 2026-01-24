@@ -1,3 +1,5 @@
+import type { RepsDifficulty } from "./history.types";
+
 export interface Exercises {
   id: number;
   exercise_name: string;
@@ -18,6 +20,7 @@ export interface WorkoutEntry {
   category_id: number;
   category_name: string;
   difficulty: Difficulty;
+  reps_difficulty: RepsDifficulty;
   reps: number;
 }
 

@@ -21,6 +21,7 @@ import { fetchCategories, fetchAllExercises } from "../exercises/exercisesApi";
 
 import { EXERCISES_API_URL, EXERCISES_CATEGORY_API_URL } from "../api/urls";
 import { showFeedback } from "../ribbon/feedbackRibbon";
+import type { RepsDifficulty } from "../types/history.types";
 
 export class Roll {
   private allExercises: Exercises[] = [];
@@ -119,7 +120,7 @@ export class Roll {
   private getWorkout(): WorkoutEntry[] {
     const repsDifficulty = (
       document.getElementById("exercise-reps-difficulty") as HTMLSelectElement
-    ).value;
+    ).value as RepsDifficulty;
 
     const selectedCategories = getSelectedCategories();
 

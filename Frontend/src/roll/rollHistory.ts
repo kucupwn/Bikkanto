@@ -17,6 +17,7 @@ function getHistoryEntries(
     category_id: entry.category_id,
     category_name: entry.category_name,
     difficulty: entry.difficulty,
+    reps_difficulty: entry.reps_difficulty,
     cycles,
     repetitions: entry.reps,
     sum_repetitions: entry.reps * cycles,
@@ -48,6 +49,7 @@ export async function saveWorkoutHistory(
   if (cycles < 1) return;
 
   const historyEntries = getHistoryEntries(currentWorkout, today, cycles);
+  console.log(historyEntries);
 
   await postBatchHistory(historyEntries, HISTORY_API_URL);
   toggleFinishedWorkoutDisplay(overviewContainer, finishedRollContainer);

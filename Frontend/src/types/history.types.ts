@@ -1,5 +1,8 @@
 import type { Difficulty } from "./exercises.types";
 
+export const REPS_DIFFICULTY = ["easy", "medium", "hard"] as const;
+export type RepsDifficulty = (typeof REPS_DIFFICULTY)[number];
+
 export interface WorkoutHistory {
   id?: number;
   date_complete: string;
@@ -8,6 +11,7 @@ export interface WorkoutHistory {
   category_id: number;
   category_name?: string;
   difficulty: Difficulty;
+  reps_difficulty: RepsDifficulty;
   cycles: number;
   repetitions: number;
   sum_repetitions: number;
@@ -18,6 +22,7 @@ export const HISTORY_COLUMN_ORDER = [
   "exercise_name",
   "category_name",
   "difficulty",
+  "reps_difficulty",
   "cycles",
   "repetitions",
   "sum_repetitions",
@@ -31,6 +36,7 @@ export const HISTORY_COLUMN_LABELS = {
   exercise_name: "Exercise",
   category_name: "Category",
   difficulty: "Difficulty",
+  reps_difficulty: "Reps difficulty",
   cycles: "Cycles",
   repetitions: "Repetitions",
   sum_repetitions: "Total Reps",

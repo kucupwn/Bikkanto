@@ -7,6 +7,7 @@ import {
   type ExerciseSelection,
   type WorkoutEntry,
 } from "../types/exercises.types";
+import type { RepsDifficulty } from "../types/history.types";
 
 export function getExerciseSelectionRows(
   count: number,
@@ -34,7 +35,7 @@ export function getRandomExercise(
   categories: Category[],
   category: number,
   exerciseDifficulty: string,
-  repsDifficulty: string,
+  repsDifficulty: RepsDifficulty,
 ): WorkoutEntry | null {
   const filtered = exercises
     .filter((ex) => ex.category_id === category)
@@ -65,6 +66,7 @@ export function getRandomExercise(
     category_id: exercise.category_id,
     category_name: exercise.category_name,
     difficulty: exercise.difficulty,
+    reps_difficulty: repsDifficulty,
     reps,
   };
 }
