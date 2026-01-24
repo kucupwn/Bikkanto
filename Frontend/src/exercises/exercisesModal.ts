@@ -11,6 +11,7 @@ import {
   DIFFICULTY,
   type Category,
 } from "../types/exercises.types";
+import { getCategoryOptions } from "./exercisesCategory";
 import { handleFormSubmit } from "./exercisesForm";
 import { Modal } from "bootstrap";
 
@@ -49,17 +50,6 @@ export function setExercisesModalHeaderTitle(operation: string) {
   if (!title) return;
 
   title.textContent = `${operation} exercise`;
-}
-
-export function getCategoryOptions(categories: Category[]): string {
-  const options = categories
-    .map(
-      (opt) =>
-        `<option value="${opt.id}">${opt.category_name.toUpperCase()}</option>`,
-    )
-    .join("");
-
-  return options;
 }
 
 function getDifficultyOptions(): string {

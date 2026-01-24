@@ -1,7 +1,17 @@
 import { Modal } from "bootstrap";
 import { CATEGORY_OPERATIONS, type Category } from "../types/exercises.types";
-import { getCategoryOptions } from "./exercisesModal";
 import { deleteCategory, postNewCategory } from "./exercisesApi";
+
+export function getCategoryOptions(categories: Category[]): string {
+  const options = categories
+    .map(
+      (opt) =>
+        `<option value="${opt.id}">${opt.category_name.toUpperCase()}</option>`,
+    )
+    .join("");
+
+  return options;
+}
 
 export function openCategoryModal(
   apiUrl: string,
