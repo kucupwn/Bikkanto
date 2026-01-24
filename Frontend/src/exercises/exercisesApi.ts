@@ -50,11 +50,11 @@ export async function createCategory(
 }
 
 export async function deleteCategory(
-  categiryId: number,
+  categoryId: number,
   apiUrl: string,
 ): Promise<void> {
   try {
-    await apiRequest<Category>(`${apiUrl}/${categiryId}`, {
+    await apiRequest<Category>(`${apiUrl}/${categoryId}`, {
       method: "DELETE",
       headers: authHeaders(),
     });
