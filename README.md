@@ -6,20 +6,20 @@ This webapp's primary purpose is creating workouts, based on the exercises uploa
 
 At first, the user must create an account.
 
-Once done, on Exercises page categories must be created, like push up, pull up, handstand etc. After this, new exercises can be added on the same page, like diamond push up, archer puch up etc. Added exercises can be modified and deleted too (be careful with both addition and deletion, since exercise name cannot be modified after created, and deleted exercise's rows is ereased from history table, if exists already).
+Once done, on Exercises page categories must be created, like push up, pull up, handstand etc. After this, new exercises can be added on the same page, like diamond push up, archer push up etc. Added exercises can be modified or deleted too (be careful with both addition and deletion, since exercise name cannot be modified after created, and deleted exercise's rows is ereased from history table, if already exists).
 
-Workout can be created on Roll page. Input exercise count, and pick exercise repetition count difficulty (difficulty intervals based on exercises table repetiton counts). The user can pick category and difficulty for each row, based on their current needs. Get button shows a summary table of the workout, which the user can accept or restart the roll. If user logs out, or navigates to other page, the applied workout can be called back for save. After user finished their workout, the user must provide the count of finished cycles.
+Workout can be created on Roll page. Input exercise count, and pick exercise repetition count difficulty (difficulty intervals based on exercises table repetiton counts). The user need to pick category and difficulty for each row, based on their current needs. Random exercises will be rolled from exercises table, based on input category and difficulty. Get button shows a summary table of the workout, which the user can accept or restart the roll. If user logs out, or navigates to other page, the applied workout can be called back for save. After the workout is done, the user can input the finished cycles count.
 
-Previous workouts are saved to history table, which located on History page.
+Finished workouts are saved to history table, which is located on History page.
 
 ## Unfinished features
 
-- Comments
-- Tests
 - Help page
 - Forgot password
 - History statistics
 - Deploy on home server
+- Code comments
+- Code tests
 
 ## Developer notes
 
