@@ -64,6 +64,7 @@ class History(Base):
     date_complete = Column(Date, nullable=False)
     cycles = Column(Integer)
     difficulty = Column(String)
+    reps_difficulty = Column(String)
     repetitions = Column(Integer)
     sum_repetitions = Column(Integer)
 

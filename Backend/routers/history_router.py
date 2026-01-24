@@ -77,6 +77,7 @@ async def create_history_batch(
             exercise_id=entry.exercise_id,
             category_id=entry.category_id,
             difficulty=entry.difficulty,
+            reps_difficulty=entry.reps_difficulty,
             cycles=entry.cycles,
             repetitions=entry.repetitions,
             sum_repetitions=entry.sum_repetitions,
