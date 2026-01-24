@@ -5,7 +5,7 @@ import {
 import { EXERCISE_OPERATIONS } from "../types/exercises.types";
 
 export function attachExercisesEventListeners(
-  callback: ExercisesCallbacks
+  callback: ExercisesCallbacks,
 ): void {
   const bindOperation = (buttonId: string, operation: ExerciseOperation) => {
     const el = document.getElementById(buttonId) as HTMLButtonElement;
@@ -16,4 +16,10 @@ export function attachExercisesEventListeners(
   bindOperation("add-ex-btn", EXERCISE_OPERATIONS.ADD);
   bindOperation("modify-ex-btn", EXERCISE_OPERATIONS.MODIFY);
   bindOperation("delete-ex-btn", EXERCISE_OPERATIONS.DELETE);
+
+  const categoryButton = document.getElementById(
+    "category-btn",
+  ) as HTMLButtonElement;
+  if (categoryButton)
+    categoryButton.addEventListener("click", () => callback.onOpenCategory());
 }

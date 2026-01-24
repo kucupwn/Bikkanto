@@ -87,6 +87,7 @@ export const NUMERIC_COLUMNS_SET = new Set<string>(NUMERIC_COLUMNS);
 
 export type ExercisesCallbacks = {
   onOpenOperation: (operation: ExerciseOperation) => void;
+  onOpenCategory: () => void;
 };
 
 export const EXERCISE_OPERATIONS = {

@@ -12,6 +12,7 @@ import { openModal } from "./exercisesModal";
 import { attachExercisesEventListeners } from "./exercisesEvents";
 import { EXERCISES_API_URL } from "../api/urls";
 import { showFeedback } from "../ribbon/feedbackRibbon";
+import { openCategoryModal } from "./exercisesCategory";
 
 export class ExercisesTable {
   private hotInstance: Handsontable | null = null;
@@ -32,6 +33,7 @@ export class ExercisesTable {
           this.allCategories,
           () => this.refresh(),
         ),
+      onOpenCategory: () => openCategoryModal(this.allCategories),
     });
   }
 
