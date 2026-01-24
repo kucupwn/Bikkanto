@@ -98,5 +98,12 @@ export const EXERCISE_OPERATIONS = {
 export type ExerciseOperation =
   (typeof EXERCISE_OPERATIONS)[keyof typeof EXERCISE_OPERATIONS];
 
+export const CATEGORY_OPERATIONS = {
+  ADD: "add",
+  DELETE: "delete",
+} as const;
+export type CategoryOperation =
+  (typeof CATEGORY_OPERATIONS)[keyof typeof CATEGORY_OPERATIONS];
+
 export const DIFFICULTY = ["beginner", "advanced", "pro"] as const;
 export type Difficulty = (typeof DIFFICULTY)[number];

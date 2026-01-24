@@ -32,8 +32,8 @@ export async function fetchCategories(apiUrl: string): Promise<Category[]> {
   }
 }
 
-export async function createCategory(
-  newCategory: Category,
+export async function postNewCategory(
+  newCategory: Record<string, string>,
   apiUrl: string,
 ): Promise<void> {
   try {

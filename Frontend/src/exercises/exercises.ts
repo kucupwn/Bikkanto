@@ -10,7 +10,7 @@ import {
 import { fetchAllExercises, fetchCategories } from "./exercisesApi";
 import { openModal } from "./exercisesModal";
 import { attachExercisesEventListeners } from "./exercisesEvents";
-import { EXERCISES_API_URL } from "../api/urls";
+import { EXERCISES_API_URL, EXERCISES_CATEGORY_API_URL } from "../api/urls";
 import { showFeedback } from "../ribbon/feedbackRibbon";
 import { openCategoryModal } from "./exercisesCategory";
 
@@ -19,6 +19,7 @@ export class ExercisesTable {
   private allExercises: Exercises[] = [];
   private allCategories: Category[] = [];
   private readonly apiUrl = EXERCISES_API_URL;
+  private readonly apiUrlCategory = EXERCISES_CATEGORY_API_URL;
   private tableContainer: HTMLDivElement = document.getElementById(
     "exercises-table",
   ) as HTMLDivElement;
@@ -33,7 +34,10 @@ export class ExercisesTable {
           this.allCategories,
           () => this.refresh(),
         ),
-      onOpenCategory: () => openCategoryModal(this.allCategories),
+      onOpenCategory: () =>
+        openCategoryModal(this.apiUrlCategory, this.allCategories, () =>
+          this.refresh(),
+        ),
     });
   }
 
@@ -56,6 +60,7 @@ export class ExercisesTable {
   public async refresh(): Promise<void> {
     try {
       this.allExercises = await fetchAllExercises(this.apiUrl);
+      this.allCategories = await fetchCategories(this.apiUrlCategory);
       this.hotInstance?.loadData(this.allExercises);
     } catch (err: any) {
       showFeedback("Error refreshing exercises table", "error");

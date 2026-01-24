@@ -1,8 +1,13 @@
 import { Modal } from "bootstrap";
-import type { Category } from "../types/exercises.types";
+import { CATEGORY_OPERATIONS, type Category } from "../types/exercises.types";
 import { getCategoryOptions } from "./exercisesModal";
+import { deleteCategory, postNewCategory } from "./exercisesApi";
 
-export function openCategoryModal(categories: Category[]): void {
+export function openCategoryModal(
+  apiUrl: string,
+  categories: Category[],
+  onSuccess: () => Promise<void>,
+): void {
   const modalBody = document.getElementById("exercise-form-body");
   if (!modalBody) return;
 
@@ -15,6 +20,50 @@ export function openCategoryModal(categories: Category[]): void {
 
   const bootstrapModal = new Modal(modalEl);
   bootstrapModal.show();
+
+  handleCategoryFormSubmit(bootstrapModal, apiUrl, onSuccess);
+}
+
+function handleCategoryFormSubmit(
+  modal: bootstrap.Modal,
+  apiUrl: string,
+  onSuccess: () => Promise<void>,
+): void {
+  const form = document.getElementById("exercise-form") as HTMLFormElement;
+  if (!form) return;
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const submitBtn = e.submitter as HTMLButtonElement;
+    const operation = submitBtn.dataset.action;
+
+    if (!operation) return;
+
+    if (operation === CATEGORY_OPERATIONS.ADD) {
+      const input = form.querySelector<HTMLInputElement>(
+        "#category-name-input",
+      );
+      if (!input?.value.trim()) return;
+
+      await postNewCategory({ category_name: input.value }, apiUrl);
+      await onSuccess();
+    }
+
+    if (operation === CATEGORY_OPERATIONS.DELETE) {
+      const select = form.querySelector<HTMLSelectElement>(
+        "#category-delete-select",
+      );
+      if (!select?.value) return;
+      console.log(select.value);
+
+      await deleteCategory(Number(select.value), apiUrl);
+      await onSuccess();
+    }
+
+    modal.hide();
+    form.reset();
+  };
 }
 
 function categoryModalController(): void {
@@ -59,7 +108,7 @@ function getCategoryModal(categories: Category[]): string {
   const title = document.getElementById("exercise-modal-label");
   if (!title) return "";
 
-  title.textContent = "Select category operation";
+  title.textContent = "Category operation";
 
   return `
     <div id="category-action-wrapper">
@@ -68,7 +117,7 @@ function getCategoryModal(categories: Category[]): string {
       <div id="category-action-buttons" class="d-flex gap-2">
         <button
           type="button"
-          class="btn btn-success w-50"
+          class="btn btn-outline-primary w-50"
           data-action="add"
         >
           Add
@@ -76,7 +125,7 @@ function getCategoryModal(categories: Category[]): string {
 
         <button
           type="button"
-          class="btn btn-danger w-50"
+          class="btn btn-outline-primary w-50"
           data-action="delete"
         >
           Delete
