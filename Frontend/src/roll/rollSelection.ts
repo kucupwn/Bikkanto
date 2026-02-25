@@ -36,10 +36,14 @@ export function getRandomExercise(
   category: number,
   exerciseDifficulty: string,
   repsDifficulty: RepsDifficulty,
+  usedExerciseIds: Set<Number>,
 ): WorkoutEntry | null {
-  const filtered = exercises
-    .filter((ex) => ex.category_id === category)
-    .filter((ex) => ex.difficulty === exerciseDifficulty);
+  const filtered = exercises.filter(
+    (ex) =>
+      ex.category_id === category &&
+      ex.difficulty === exerciseDifficulty &&
+      !usedExerciseIds.has(ex.id),
+  );
 
   if (filtered.length === 0) {
     const [missingCategory] = categories.filter((cat) => cat.id === category);

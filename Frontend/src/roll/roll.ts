@@ -128,16 +128,25 @@ export class Roll {
       return [];
     }
 
+    const usedExerciseIds = new Set<number>();
+
     this.currentWorkout = selectedCategories
-      .map((selection) =>
-        getRandomExercise(
+      .map((selection) => {
+        const exercise = getRandomExercise(
           this.allExercises,
           this.allCategories,
           selection.category_id,
           selection.difficulty,
           repsDifficulty,
-        ),
-      )
+          usedExerciseIds,
+        );
+
+        if (exercise) {
+          usedExerciseIds.add(exercise.exercise_id);
+        }
+
+        return exercise;
+      })
       .filter((entry): entry is WorkoutEntry => entry !== null);
 
     return this.currentWorkout;
