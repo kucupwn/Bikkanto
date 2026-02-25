@@ -48,7 +48,7 @@ export function getRandomExercise(
   if (filtered.length === 0) {
     const [missingCategory] = categories.filter((cat) => cat.id === category);
     showFeedback(
-      `There is no ${exerciseDifficulty.toUpperCase()} ${missingCategory.category_name.toUpperCase()}`,
+      `There is no or not enough ${exerciseDifficulty.toUpperCase()} ${missingCategory.category_name.toUpperCase()}`,
       "error",
     );
     return null;
