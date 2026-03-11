@@ -18,3 +18,5 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   document.documentElement.style.visibility = "visible";
 });
+
+// Call it the first working version
