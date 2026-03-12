@@ -22,23 +22,22 @@ const NavLink = styled.a`
   text-decoration: none;
 `;
 
+const links = [
+  { name: "Home", path: "/" },
+  { name: "Roll", path: "/roll" },
+  { name: "Exercises", path: "/exercises" },
+  { name: "History", path: "/history" },
+];
 export function Navbar() {
   return (
     <>
       <Nav>
         <NavList>
-          <li>
-            <NavLink href="/">Home</NavLink>
-          </li>
-          <li>
-            <NavLink href="/roll">Roll</NavLink>
-          </li>
-          <li>
-            <NavLink href="/exercises">Exercises</NavLink>
-          </li>
-          <li>
-            <NavLink href="/history">History</NavLink>
-          </li>
+          {links.map((link) => (
+            <li key={link.path}>
+              <NavLink href={link.path}>{link.name}</NavLink>
+            </li>
+          ))}
         </NavList>
       </Nav>
     </>
