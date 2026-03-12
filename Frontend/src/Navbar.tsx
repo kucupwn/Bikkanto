@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-const Title = styled.h1`
-  font-size: 48px;
-  justify-self: center;
-  margin: 0;
-`;
-
 const Nav = styled.nav`
   display: flex;
   justify-content: center;
@@ -14,30 +8,38 @@ const Nav = styled.nav`
   background-color: #aaa;
 `;
 
-const NavbarLinks = styled.ul`
-  list-style-type: none;
+const NavList = styled.ul`
+  list-style: none;
   display: flex;
+  gap: 1rem;
   margin: 0;
   padding: 0;
 `;
 
-const NavbarLink = styled.li`
+const NavLink = styled.a`
+  color: #000;
   font-size: 24px;
-  margin-right: 1rem;
-  cursor: pointer;
+  text-decoration: none;
 `;
 
 export function Navbar() {
   return (
     <>
-      <Title>Bikkanto</Title>
       <Nav>
-        <NavbarLinks>
-          <NavbarLink>Home</NavbarLink>
-          <NavbarLink>Roll</NavbarLink>
-          <NavbarLink>Exercises</NavbarLink>
-          <NavbarLink>History</NavbarLink>
-        </NavbarLinks>
+        <NavList>
+          <li>
+            <NavLink href="/">Home</NavLink>
+          </li>
+          <li>
+            <NavLink href="/roll">Roll</NavLink>
+          </li>
+          <li>
+            <NavLink href="/exercises">Exercises</NavLink>
+          </li>
+          <li>
+            <NavLink href="/history">History</NavLink>
+          </li>
+        </NavList>
       </Nav>
     </>
   );
