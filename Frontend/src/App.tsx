@@ -1,3 +1,5 @@
+import { Navbar } from "./Navbar";
+
 export function App() {
-  return <h1>Bikkanto</h1>;
+  return <Navbar></Navbar>;
 }
