@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Nav = styled.nav`
   display: flex;
@@ -17,10 +17,15 @@ const NavList = styled.ul`
   padding: 0;
 `;
 
-const NavLink = styled(Link)`
+const StyledNavLink = styled(NavLink)`
   color: #000;
   font-size: 24px;
   text-decoration: none;
+
+  &.active {
+    font-weight: bold;
+    border-bottom: 2px solid black;
+  }
 `;
 
 const links = [
@@ -36,7 +41,7 @@ export function Navbar() {
         <NavList>
           {links.map((link) => (
             <li key={link.path}>
-              <NavLink to={link.path}>{link.name}</NavLink>
+              <StyledNavLink to={link.path}>{link.name}</StyledNavLink>
             </li>
           ))}
         </NavList>
