@@ -34,6 +34,7 @@ const links = [
   { name: "Exercises", path: "/exercises" },
   { name: "History", path: "/history" },
 ];
+
 export function Navbar() {
   return (
     <>
