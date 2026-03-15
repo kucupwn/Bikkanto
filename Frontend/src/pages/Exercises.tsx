@@ -17,7 +17,10 @@ export function Exercises() {
         if (exercises.length > 0) {
           const cols = Object.keys(exercises[0]).map((key) => ({
             data: key,
-            title: key.charAt(0).toUpperCase() + key.slice(1),
+            title: (key.charAt(0).toUpperCase() + key.slice(1)).replace(
+              "_",
+              " ",
+            ),
           }));
           setColumns(cols);
         }
