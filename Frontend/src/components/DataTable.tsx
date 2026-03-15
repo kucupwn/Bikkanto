@@ -22,6 +22,7 @@ export function DataTable({ data, colHeaders, columns }: Props) {
         width="100%"
         height="auto"
         stretchH="all"
+        readOnly={true}
         licenseKey="non-commercial-and-evaluation"
       />
     </div>
