@@ -11,6 +11,7 @@ export function DataTable({ data }: Prop) {
     <HotTable
       data={data}
       colHeaders={true}
+      rowHeaders={true}
       licenseKey="non-commercial-and-evaluation"
     />
   );
