@@ -1,5 +1,6 @@
 import { HotTable } from "@handsontable/react";
-import "handsontable/dist/handsontable.full.min.css";
+import "handsontable/styles/handsontable.min.css";
+import "handsontable/styles/ht-theme-main.min.css";
 
 interface Prop {
   data: any;
