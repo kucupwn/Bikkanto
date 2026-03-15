@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { DataTable } from "../components/DataTable";
 import { api } from "../api/api";
+import { EXERCISE_COLUMNS_ORDER } from "../types/exerciseTypes";
 
 export function Exercises() {
   const [data, setData] = useState<any[]>([]);
@@ -15,7 +16,7 @@ export function Exercises() {
         setData(exercises);
 
         if (exercises.length > 0) {
-          const cols = Object.keys(exercises[0]).map((key) => ({
+          const cols = EXERCISE_COLUMNS_ORDER.map((key) => ({
             data: key,
             title: (key.charAt(0).toUpperCase() + key.slice(1)).replace(
               "_",
@@ -35,7 +36,7 @@ export function Exercises() {
   return (
     <>
       <h1>Exercises</h1>
-      <DataTable data={data} colHeaders={columns} columns={columns} />
+      <DataTable data={data} columns={columns} />
     </>
   );
 }
