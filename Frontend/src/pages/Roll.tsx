@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 const WorkoutBasePropertiesWrapper = styled.div`
@@ -18,7 +19,13 @@ const ExerciseCountDifficultyWrapper = styled.div`
   gap: 1rem;
 `;
 
+type exerciseCountDifficulty = "easy" | "medium" | "hard";
+
 export function Roll() {
+  const [exerciseCount, setExerciseCount] = useState<number>(0);
+  const [exerciseCountDifficulty, setExerciseCountDifficulty] =
+    useState<exerciseCountDifficulty>("easy");
+
   return (
     <>
       <WorkoutBasePropertiesWrapper>
