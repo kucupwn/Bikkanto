@@ -19,6 +19,7 @@ const ExerciseCountDifficultyWrapper = styled.div`
   gap: 1rem;
 `;
 
+const exerciseCountDifficultyOptions = ["easy", "medium", "hard"] as const;
 type exerciseCountDifficulty = "easy" | "medium" | "hard";
 
 export function Roll() {
@@ -36,9 +37,11 @@ export function Roll() {
         <ExerciseCountDifficultyWrapper>
           <span>Exercise Count Difficulty:</span>
           <select name="exercise-count-difficulty">
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            {exerciseCountDifficultyOptions.map((diff) => (
+              <option value={diff}>
+                {diff.charAt(0).toUpperCase() + diff.slice(1)}
+              </option>
+            ))}
           </select>
         </ExerciseCountDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
