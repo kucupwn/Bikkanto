@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import styled from "styled-components";
 
 const WorkoutBasePropertiesWrapper = styled.div`
@@ -27,12 +27,22 @@ export function Roll() {
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
     useState<exerciseCountDifficulty>("easy");
 
+  function updateValue(e: ChangeEvent<HTMLInputElement>) {
+    const currentValue = Number(e.target.value);
+
+    if (currentValue < 0) {
+      setExerciseCount(0);
+    } else {
+      setExerciseCount(Number(currentValue));
+    }
+  }
+
   return (
     <>
       <WorkoutBasePropertiesWrapper>
         <ExerciseCountWrapper>
           <span>Exercise Count:</span>
-          <input type="number" />
+          <input type="number" value={exerciseCount} onChange={updateValue} />
         </ExerciseCountWrapper>
         <ExerciseCountDifficultyWrapper>
           <span>Exercise Count Difficulty:</span>
