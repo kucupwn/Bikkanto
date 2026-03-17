@@ -4,6 +4,7 @@ import { api } from "../api/api";
 import { CategorySelection } from "../components/roll/CategorySelection";
 import {
   exerciseCountDifficultyOptions,
+  type Category,
   type ExerciseCountDifficulty,
 } from "../types/exerciseTypes";
 
@@ -29,6 +30,7 @@ export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number>(0);
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
     useState<ExerciseCountDifficulty>("easy");
+  const [categories, setCategories] = useState<Category[]>([]);
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
@@ -39,6 +41,21 @@ export function Roll() {
       setExerciseCount(Number(currentValue));
     }
   }
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await api("/exercises/categories");
+        const categories = res.data;
+
+        setCategories(categories);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchCategories();
+  }, []);
 
   return (
     <>
@@ -63,7 +80,11 @@ export function Roll() {
         </ExerciseCountDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
       {Array.from({ length: exerciseCount }).map((_, idx) => (
-        <CategorySelection key={idx} currentCount={idx + 1} />
+        <CategorySelection
+          key={idx}
+          currentCount={idx + 1}
+          categories={categories}
+        />
       ))}
     </>
   );
