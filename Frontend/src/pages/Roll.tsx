@@ -1,5 +1,6 @@
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import styled from "styled-components";
+import { CategorySelection } from "../components/roll/CategorySelection";
 
 const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
@@ -19,37 +20,8 @@ const ExerciseCountDifficultyWrapper = styled.div`
   gap: 1rem;
 `;
 
-const CategorySelectionContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  justify-self: center;
-`;
-
 const exerciseCountDifficultyOptions = ["easy", "medium", "hard"] as const;
 type exerciseCountDifficulty = (typeof exerciseCountDifficultyOptions)[number];
-
-const difficultyOptions = ["beginner", "advanced", "pro"] as const;
-type difficulty = (typeof difficultyOptions)[number];
-
-interface Props {
-  currentCount: number;
-}
-
-function CategorySelection({ currentCount }: Props) {
-  return (
-    <CategorySelectionContainer>
-      <span>Exercise {currentCount}:</span>
-      <select name="category-select"></select>
-      <select name="difficulty-select">
-        {difficultyOptions.map((diff) => (
-          <option value={diff}>
-            {diff.charAt(0).toUpperCase() + diff.slice(1)}
-          </option>
-        ))}
-      </select>
-    </CategorySelectionContainer>
-  );
-}
 
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number>(0);
