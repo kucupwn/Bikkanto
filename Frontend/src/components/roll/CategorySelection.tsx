@@ -7,6 +7,8 @@ interface Props {
 const CategorySelectionContainer = styled.div`
   display: flex;
   justify-content: space-around;
+  gap: 1rem;
+  margin: 1rem;
   justify-self: center;
 `;
 
