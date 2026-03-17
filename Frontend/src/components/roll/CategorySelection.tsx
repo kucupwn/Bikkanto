@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { difficultyOptions } from "../../types/exerciseTypes";
 
 interface Props {
   currentCount: number;
@@ -12,9 +13,6 @@ const CategorySelectionContainer = styled.div`
   justify-self: center;
 `;
 
-const difficultyOptions = ["beginner", "advanced", "pro"] as const;
-type difficulty = (typeof difficultyOptions)[number];
-
 export function CategorySelection({ currentCount }: Props) {
   return (
     <CategorySelectionContainer>
@@ -22,7 +20,7 @@ export function CategorySelection({ currentCount }: Props) {
       <select name="category-select"></select>
       <select name="difficulty-select">
         {difficultyOptions.map((diff) => (
-          <option value={diff}>
+          <option key={diff} value={diff}>
             {diff.charAt(0).toUpperCase() + diff.slice(1)}
           </option>
         ))}

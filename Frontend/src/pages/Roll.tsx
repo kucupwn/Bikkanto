@@ -1,6 +1,11 @@
-import { useState, type ChangeEvent } from "react";
 import styled from "styled-components";
+import { useEffect, useState, type ChangeEvent } from "react";
+import { api } from "../api/api";
 import { CategorySelection } from "../components/roll/CategorySelection";
+import {
+  exerciseCountDifficultyOptions,
+  type ExerciseCountDifficulty,
+} from "../types/exerciseTypes";
 
 const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
@@ -20,13 +25,10 @@ const ExerciseCountDifficultyWrapper = styled.div`
   gap: 1rem;
 `;
 
-const exerciseCountDifficultyOptions = ["easy", "medium", "hard"] as const;
-type exerciseCountDifficulty = (typeof exerciseCountDifficultyOptions)[number];
-
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number>(0);
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
-    useState<exerciseCountDifficulty>("easy");
+    useState<ExerciseCountDifficulty>("easy");
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
@@ -53,7 +55,7 @@ export function Roll() {
           <span>Exercise Count Difficulty:</span>
           <select name="exercise-count-difficulty">
             {exerciseCountDifficultyOptions.map((diff) => (
-              <option value={diff}>
+              <option key={diff} value={diff}>
                 {diff.charAt(0).toUpperCase() + diff.slice(1)}
               </option>
             ))}
@@ -61,7 +63,7 @@ export function Roll() {
         </ExerciseCountDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
       {Array.from({ length: exerciseCount }).map((_, idx) => (
-        <CategorySelection currentCount={idx + 1} />
+        <CategorySelection key={idx} currentCount={idx + 1} />
       ))}
     </>
   );
