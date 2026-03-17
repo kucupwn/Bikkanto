@@ -20,14 +20,17 @@ const ExerciseCountDifficultyWrapper = styled.div`
 `;
 
 const exerciseCountDifficultyOptions = ["easy", "medium", "hard"] as const;
-type exerciseCountDifficulty = "easy" | "medium" | "hard";
+type exerciseCountDifficulty = (typeof exerciseCountDifficultyOptions)[number];
+
+const difficultyOptions = ["beginner", "advanced", "pro"] as const;
+type difficulty = (typeof difficultyOptions)[number];
 
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number>(0);
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
     useState<exerciseCountDifficulty>("easy");
 
-  function updateValue(e: ChangeEvent<HTMLInputElement>) {
+  function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
 
     if (currentValue < 0) {
@@ -42,7 +45,11 @@ export function Roll() {
       <WorkoutBasePropertiesWrapper>
         <ExerciseCountWrapper>
           <span>Exercise Count:</span>
-          <input type="number" value={exerciseCount} onChange={updateValue} />
+          <input
+            type="number"
+            value={exerciseCount}
+            onChange={handleExerciseCountChange}
+          />
         </ExerciseCountWrapper>
         <ExerciseCountDifficultyWrapper>
           <span>Exercise Count Difficulty:</span>
