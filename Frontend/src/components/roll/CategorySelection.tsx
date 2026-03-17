@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { difficultyOptions } from "../../types/exerciseTypes";
+import { difficultyOptions, type Category } from "../../types/exerciseTypes";
 
 interface Props {
   currentCount: number;
+  categories: Category[];
 }
 
 const CategorySelectionContainer = styled.div`
@@ -13,11 +14,17 @@ const CategorySelectionContainer = styled.div`
   justify-self: center;
 `;
 
-export function CategorySelection({ currentCount }: Props) {
+export function CategorySelection({ currentCount, categories }: Props) {
   return (
     <CategorySelectionContainer>
       <span>Exercise {currentCount}:</span>
-      <select name="category-select"></select>
+      <select name="category-select">
+        {categories.map((cat) => (
+          <option key={cat.category_name} value={cat.category_name}>
+            {cat.category_name}
+          </option>
+        ))}
+      </select>
       <select name="difficulty-select">
         {difficultyOptions.map((diff) => (
           <option key={diff} value={diff}>
