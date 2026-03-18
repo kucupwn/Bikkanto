@@ -4,7 +4,7 @@ import { api } from "../api/api";
 import {
   type Category,
   type ExerciseRepetitionDifficulty,
-  type Exercises,
+  type Exercise,
 } from "../types/exerciseTypes";
 import { WorkoutSettings } from "../components/roll/WorkoutSettings";
 
@@ -20,7 +20,7 @@ export function Roll() {
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
     useState<ExerciseRepetitionDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
-  const [exercises, setExercises] = useState<Exercises[]>([]);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
 
   useEffect(() => {
     async function fetchCategories() {

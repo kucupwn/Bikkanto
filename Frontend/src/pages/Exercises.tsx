@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { DataTable } from "../components/DataTable";
 import { api } from "../api/api";
-import { EXERCISE_COLUMNS_ORDER, type Exercises } from "../types/exerciseTypes";
+import { EXERCISE_COLUMNS_ORDER, type Exercise } from "../types/exerciseTypes";
 import { capitalize } from "../utils";
 
 export function Exercises() {
-  const [data, setData] = useState<Exercises[]>([]);
+  const [data, setData] = useState<Exercise[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
 
   useEffect(() => {
