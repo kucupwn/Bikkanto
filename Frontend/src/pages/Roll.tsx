@@ -3,9 +3,9 @@ import { useEffect, useState, type ChangeEvent } from "react";
 import { api } from "../api/api";
 import { CategorySelection } from "../components/roll/CategorySelection";
 import {
-  exerciseCountDifficultyOptions,
+  exerciseRepetitionDifficultyOptions,
   type Category,
-  type ExerciseCountDifficulty,
+  type ExerciseRepetitionDifficulty,
   type Exercises,
 } from "../types/exerciseTypes";
 import { capitalize } from "../utils";
@@ -44,7 +44,7 @@ const GetButton = styled.button`
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
-    useState<ExerciseCountDifficulty>("easy");
+    useState<ExerciseRepetitionDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercises[]>([]);
 
@@ -105,7 +105,7 @@ export function Roll() {
           <ExerciseCountDifficultyWrapper>
             <span>Exercise Repetitions Difficulty:</span>
             <select name="exercise-count-difficulty">
-              {exerciseCountDifficultyOptions.map((diff) => (
+              {exerciseRepetitionDifficultyOptions.map((diff) => (
                 <option key={diff} value={diff}>
                   {capitalize(diff)}
                 </option>

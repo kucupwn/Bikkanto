@@ -17,13 +17,13 @@ export interface Category {
   category_name: string;
 }
 
-export const exerciseCountDifficultyOptions = [
+export const exerciseRepetitionDifficultyOptions = [
   "easy",
   "medium",
   "hard",
 ] as const;
-export type ExerciseCountDifficulty =
-  (typeof exerciseCountDifficultyOptions)[number];
+export type ExerciseRepetitionDifficulty =
+  (typeof exerciseRepetitionDifficultyOptions)[number];
 
 export const difficultyOptions = ["beginner", "advanced", "pro"] as const;
 export type Difficulty = (typeof difficultyOptions)[number];
