@@ -27,6 +27,12 @@ const ExerciseCountDifficultyWrapper = styled.div`
   gap: 1rem;
 `;
 
+const GetButton = styled.button`
+  font-size: 20px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+`;
+
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
@@ -89,6 +95,7 @@ export function Roll() {
           categories={categories}
         />
       ))}
+      {safeCount > 0 && <GetButton>Get</GetButton>}
     </>
   );
 }
