@@ -27,18 +27,20 @@ const ExerciseCountDifficultyWrapper = styled.div`
 `;
 
 export function Roll() {
-  const [exerciseCount, setExerciseCount] = useState<number>(0);
+  const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
     useState<ExerciseCountDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
+
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
 
-    if (currentValue < 0) {
-      setExerciseCount(0);
+    if (currentValue <= 0) {
+      setExerciseCount("");
     } else {
-      setExerciseCount(Number(currentValue));
+      setExerciseCount(currentValue);
     }
   }
 
@@ -79,7 +81,7 @@ export function Roll() {
           </select>
         </ExerciseCountDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
-      {Array.from({ length: exerciseCount }).map((_, idx) => (
+      {Array.from({ length: safeCount }).map((_, idx) => (
         <CategorySelection
           key={idx}
           currentCount={idx + 1}
