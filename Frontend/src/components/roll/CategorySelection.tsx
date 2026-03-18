@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { difficultyOptions, type Category } from "../../types/exerciseTypes";
+import { capitalize } from "../../utils";
 
 interface Props {
   currentCount: number;
@@ -28,7 +29,7 @@ export function CategorySelection({ currentCount, categories }: Props) {
       <select name="difficulty-select">
         {difficultyOptions.map((diff) => (
           <option key={diff} value={diff}>
-            {diff.charAt(0).toUpperCase() + diff.slice(1)}
+            {capitalize(diff)}
           </option>
         ))}
       </select>

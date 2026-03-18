@@ -7,6 +7,7 @@ import {
   type Category,
   type ExerciseCountDifficulty,
 } from "../types/exerciseTypes";
+import { capitalize } from "../utils";
 
 const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
@@ -75,7 +76,7 @@ export function Roll() {
           <select name="exercise-count-difficulty">
             {exerciseCountDifficultyOptions.map((diff) => (
               <option key={diff} value={diff}>
-                {diff.charAt(0).toUpperCase() + diff.slice(1)}
+                {capitalize(diff)}
               </option>
             ))}
           </select>

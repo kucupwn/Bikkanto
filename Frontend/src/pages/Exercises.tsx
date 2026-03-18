@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DataTable } from "../components/DataTable";
 import { api } from "../api/api";
 import { EXERCISE_COLUMNS_ORDER, type Exercises } from "../types/exerciseTypes";
+import { capitalize } from "../utils";
 
 export function Exercises() {
   const [data, setData] = useState<Exercises[]>([]);
@@ -18,10 +19,7 @@ export function Exercises() {
         if (exercises.length > 0) {
           const cols = EXERCISE_COLUMNS_ORDER.map((key) => ({
             data: key,
-            title: (key.charAt(0).toUpperCase() + key.slice(1)).replace(
-              "_",
-              " ",
-            ),
+            title: capitalize(key).replace("_", " "),
           }));
           setColumns(cols);
         }
