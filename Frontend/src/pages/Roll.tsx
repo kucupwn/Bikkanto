@@ -6,6 +6,7 @@ import {
   exerciseCountDifficultyOptions,
   type Category,
   type ExerciseCountDifficulty,
+  type Exercises,
 } from "../types/exerciseTypes";
 import { capitalize } from "../utils";
 
@@ -45,6 +46,7 @@ export function Roll() {
   const [exerciseCountDifficulty, setExerciseCountDifficulty] =
     useState<ExerciseCountDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
+  const [exercises, setExercises] = useState<Exercises[]>([]);
 
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
 
@@ -71,6 +73,21 @@ export function Roll() {
     }
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    async function fetchExercises() {
+      try {
+        const res = await api("/exercises");
+        const exercises = res.data;
+
+        setExercises(exercises);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchExercises();
   }, []);
 
   return (
