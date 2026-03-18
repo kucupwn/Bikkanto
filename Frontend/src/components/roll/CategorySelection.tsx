@@ -12,7 +12,6 @@ const CategorySelectionContainer = styled.div`
   justify-content: space-around;
   gap: 1rem;
   margin: 1rem;
-  justify-self: center;
 `;
 
 export function CategorySelection({ currentCount, categories }: Props) {

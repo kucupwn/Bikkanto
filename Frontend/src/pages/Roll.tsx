@@ -9,10 +9,16 @@ import {
 } from "../types/exerciseTypes";
 import { capitalize } from "../utils";
 
+const RollContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
 const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
   justify-content: space-around;
-  justify-self: center;
   margin: 1rem;
   width: 60vw;
 `;
@@ -30,6 +36,7 @@ const ExerciseCountDifficultyWrapper = styled.div`
 const GetButton = styled.button`
   font-size: 20px;
   padding: 0.3rem 0.5rem;
+  margin: 1rem;
   cursor: pointer;
 `;
 
@@ -68,34 +75,36 @@ export function Roll() {
 
   return (
     <>
-      <WorkoutBasePropertiesWrapper>
-        <ExerciseCountWrapper>
-          <span>Exercise Count:</span>
-          <input
-            type="number"
-            value={exerciseCount}
-            onChange={handleExerciseCountChange}
+      <RollContainer>
+        <WorkoutBasePropertiesWrapper>
+          <ExerciseCountWrapper>
+            <span>Exercise Count:</span>
+            <input
+              type="number"
+              value={exerciseCount}
+              onChange={handleExerciseCountChange}
+            />
+          </ExerciseCountWrapper>
+          <ExerciseCountDifficultyWrapper>
+            <span>Exercise Count Difficulty:</span>
+            <select name="exercise-count-difficulty">
+              {exerciseCountDifficultyOptions.map((diff) => (
+                <option key={diff} value={diff}>
+                  {capitalize(diff)}
+                </option>
+              ))}
+            </select>
+          </ExerciseCountDifficultyWrapper>
+        </WorkoutBasePropertiesWrapper>
+        {Array.from({ length: safeCount }).map((_, idx) => (
+          <CategorySelection
+            key={idx}
+            currentCount={idx + 1}
+            categories={categories}
           />
-        </ExerciseCountWrapper>
-        <ExerciseCountDifficultyWrapper>
-          <span>Exercise Count Difficulty:</span>
-          <select name="exercise-count-difficulty">
-            {exerciseCountDifficultyOptions.map((diff) => (
-              <option key={diff} value={diff}>
-                {capitalize(diff)}
-              </option>
-            ))}
-          </select>
-        </ExerciseCountDifficultyWrapper>
-      </WorkoutBasePropertiesWrapper>
-      {Array.from({ length: safeCount }).map((_, idx) => (
-        <CategorySelection
-          key={idx}
-          currentCount={idx + 1}
-          categories={categories}
-        />
-      ))}
-      {safeCount > 0 && <GetButton>Get</GetButton>}
+        ))}
+        {safeCount > 0 && <GetButton>Get</GetButton>}
+      </RollContainer>
     </>
   );
 }
