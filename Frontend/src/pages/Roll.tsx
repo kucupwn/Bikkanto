@@ -86,7 +86,7 @@ export function Roll() {
             />
           </ExerciseCountWrapper>
           <ExerciseCountDifficultyWrapper>
-            <span>Exercise Count Difficulty:</span>
+            <span>Exercise Repetitions Difficulty:</span>
             <select name="exercise-count-difficulty">
               {exerciseCountDifficultyOptions.map((diff) => (
                 <option key={diff} value={diff}>
