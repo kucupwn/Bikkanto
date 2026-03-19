@@ -57,20 +57,27 @@ export function WorkoutSettings({
 
   const [selectedProperties, setSelectedPropterties] = useState<
     ProperySelection[]
-  >(
-    Array.from({ length: safeCount }, () => ({
-      categoryId: categories[0]?.id ?? 0,
-      difficulty: "beginner",
-    })),
-  );
+  >([]);
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
 
     if (currentValue <= 0) {
       setExerciseCount("");
+      setSelectedPropterties([]);
     } else {
       setExerciseCount(currentValue);
+      setSelectedPropterties((prev) => {
+        const newArray = Array.from({ length: currentValue }, (_, index) => {
+          return (
+            prev[index] ?? {
+              categoryId: categories[0]?.id ?? 0,
+              difficulty: "beginner",
+            }
+          );
+        });
+        return newArray;
+      });
     }
   }
 
@@ -80,6 +87,10 @@ export function WorkoutSettings({
       copy[index] = newValue;
       return copy;
     });
+  }
+
+  function getWorkout() {
+    console.log(selectedProperties);
   }
 
   return (
@@ -113,7 +124,7 @@ export function WorkoutSettings({
           onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
         />
       ))}
-      {safeCount > 0 && <GetButton>Get</GetButton>}
+      {safeCount > 0 && <GetButton onClick={getWorkout}>Get</GetButton>}
     </>
   );
 }
