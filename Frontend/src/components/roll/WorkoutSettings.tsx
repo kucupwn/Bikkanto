@@ -53,11 +53,16 @@ export function WorkoutSettings({
   setExerciseCount,
   categories,
 }: Props) {
+  const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
+
   const [selectedProperties, setSelectedPropterties] = useState<
     ProperySelection[]
-  >([]);
-
-  const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
+  >(
+    Array.from({ length: safeCount }, () => ({
+      categoryId: categories[0]?.id ?? 0,
+      difficulty: "beginner",
+    })),
+  );
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
