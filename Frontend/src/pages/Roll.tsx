@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api/api";
 import {
   type Category,
-  type ExerciseRepetitionDifficulty,
+  type ExerciseRepsDifficulty,
   type Exercise,
 } from "../types/exerciseTypes";
 import { WorkoutSettings } from "../components/roll/WorkoutSettings";
@@ -17,8 +17,8 @@ const RollContainer = styled.div`
 
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
-  const [exerciseCountDifficulty, setExerciseCountDifficulty] =
-    useState<ExerciseRepetitionDifficulty>("easy");
+  const [exerciseRepsDifficulty, setExerciseRepsDifficulty] =
+    useState<ExerciseRepsDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
 

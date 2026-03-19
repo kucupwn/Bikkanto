@@ -1,7 +1,7 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
 import {
-  exerciseRepetitionDifficultyOptions,
+  exerciseRepsDifficultyOptions,
   type Category,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
@@ -68,7 +68,7 @@ export function WorkoutSettings({
         <ExerciseCountDifficultyWrapper>
           <span>Exercise Repetitions Difficulty:</span>
           <select name="exercise-count-difficulty">
-            {exerciseRepetitionDifficultyOptions.map((diff) => (
+            {exerciseRepsDifficultyOptions.map((diff) => (
               <option key={diff} value={diff}>
                 {capitalize(diff)}
               </option>
