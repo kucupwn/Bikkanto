@@ -1,8 +1,14 @@
-import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
+import {
+  useState,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import styled from "styled-components";
 import {
   exerciseRepsDifficultyOptions,
   type Category,
+  type Difficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
@@ -37,11 +43,20 @@ const GetButton = styled.button`
   cursor: pointer;
 `;
 
+export interface ProperySelection {
+  categoryId: number;
+  difficulty: Difficulty;
+}
+
 export function WorkoutSettings({
   exerciseCount,
   setExerciseCount,
   categories,
 }: Props) {
+  const [selectedProperties, setSelectedPropterties] = useState<
+    ProperySelection[]
+  >([]);
+
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
@@ -52,6 +67,14 @@ export function WorkoutSettings({
     } else {
       setExerciseCount(currentValue);
     }
+  }
+
+  function updatePropertyAtIndex(index: number, newValue: ProperySelection) {
+    setSelectedPropterties((prev) => {
+      const copy = [...prev];
+      copy[index] = newValue;
+      return copy;
+    });
   }
 
   return (
@@ -76,11 +99,13 @@ export function WorkoutSettings({
           </select>
         </ExerciseCountDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
-      {Array.from({ length: safeCount }).map((_, idx) => (
+      {Array.from({ length: safeCount }).map((_, index) => (
         <CategorySelection
-          key={idx}
-          currentCount={idx + 1}
+          key={index}
+          currentCount={index + 1}
           categories={categories}
+          value={selectedProperties[index]}
+          onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
         />
       ))}
       {safeCount > 0 && <GetButton>Get</GetButton>}
