@@ -1,7 +1,7 @@
 export interface Exercise {
   id: number;
   exercise_name: string;
-  difficulty: Difficulty;
+  difficulty: ExerciseDifficulty;
   easy_min: number;
   easy_max: number;
   medium_min: number;
@@ -17,16 +17,15 @@ export interface Category {
   category_name: string;
 }
 
-export const exerciseRepsDifficultyOptions = [
-  "easy",
-  "medium",
-  "hard",
-] as const;
-export type ExerciseRepsDifficulty =
-  (typeof exerciseRepsDifficultyOptions)[number];
+export const repsDifficultyOptions = ["easy", "medium", "hard"] as const;
+export type repsDifficulty = (typeof repsDifficultyOptions)[number];
 
-export const difficultyOptions = ["beginner", "advanced", "pro"] as const;
-export type Difficulty = (typeof difficultyOptions)[number];
+export const exerciseDifficultyOptions = [
+  "beginner",
+  "advanced",
+  "pro",
+] as const;
+export type ExerciseDifficulty = (typeof exerciseDifficultyOptions)[number];
 
 export const NUMERIC_COLUMNS = [
   "easy_min",

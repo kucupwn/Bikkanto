@@ -6,9 +6,9 @@ import {
 } from "react";
 import styled from "styled-components";
 import {
-  exerciseRepsDifficultyOptions,
+  repsDifficultyOptions,
   type Category,
-  type Difficulty,
+  type ExerciseDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
@@ -45,7 +45,7 @@ const GetButton = styled.button`
 
 export interface ProperySelection {
   categoryId: number;
-  difficulty: Difficulty;
+  difficulty: ExerciseDifficulty;
 }
 
 export function WorkoutSettings({
@@ -107,7 +107,7 @@ export function WorkoutSettings({
         <ExerciseCountDifficultyWrapper>
           <span>Exercise Repetitions Difficulty:</span>
           <select name="exercise-count-difficulty">
-            {exerciseRepsDifficultyOptions.map((diff) => (
+            {repsDifficultyOptions.map((diff) => (
               <option key={diff} value={diff}>
                 {capitalize(diff)}
               </option>
