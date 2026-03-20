@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import {
-  difficultyOptions,
+  exerciseDifficultyOptions,
   type Category,
-  type Difficulty,
+  type ExerciseDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import type { ProperySelection } from "./WorkoutSettings";
@@ -33,7 +33,10 @@ export function CategorySelection({
   }
 
   function handleDifficultyChange(e: ChangeEvent<HTMLSelectElement>) {
-    onChange({ ...value, difficulty: e.target.value as Difficulty });
+    onChange({
+      ...value,
+      difficulty: e.target.value as ExerciseDifficulty,
+    });
   }
 
   return (
@@ -47,7 +50,7 @@ export function CategorySelection({
         ))}
       </select>
       <select name="difficulty-select" onChange={handleDifficultyChange}>
-        {difficultyOptions.map((diff) => (
+        {exerciseDifficultyOptions.map((diff) => (
           <option key={diff} value={diff}>
             {capitalize(diff)}
           </option>
