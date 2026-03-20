@@ -1,9 +1,4 @@
-import {
-  useState,
-  type ChangeEvent,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
 import {
   repsDifficultyOptions,
@@ -17,6 +12,9 @@ interface Props {
   exerciseCount: number | "";
   setExerciseCount: Dispatch<SetStateAction<number | "">>;
   categories: Category[];
+  selectedProperties: ProperySelection[];
+  setSelectedProperties: Dispatch<SetStateAction<ProperySelection[]>>;
+  onGetWorkout: () => void;
 }
 
 const WorkoutBasePropertiesWrapper = styled.div`
@@ -52,22 +50,21 @@ export function WorkoutSettings({
   exerciseCount,
   setExerciseCount,
   categories,
+  selectedProperties,
+  setSelectedProperties,
+  onGetWorkout,
 }: Props) {
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
-
-  const [selectedProperties, setSelectedPropterties] = useState<
-    ProperySelection[]
-  >([]);
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
 
     if (currentValue <= 0) {
       setExerciseCount("");
-      setSelectedPropterties([]);
+      setSelectedProperties([]);
     } else {
       setExerciseCount(currentValue);
-      setSelectedPropterties((prev) => {
+      setSelectedProperties((prev) => {
         const newArray = Array.from({ length: currentValue }, (_, index) => {
           return (
             prev[index] ?? {
@@ -82,15 +79,11 @@ export function WorkoutSettings({
   }
 
   function updatePropertyAtIndex(index: number, newValue: ProperySelection) {
-    setSelectedPropterties((prev) => {
+    setSelectedProperties((prev) => {
       const copy = [...prev];
       copy[index] = newValue;
       return copy;
     });
-  }
-
-  function getWorkout() {
-    console.log(selectedProperties);
   }
 
   return (
@@ -124,7 +117,7 @@ export function WorkoutSettings({
           onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
         />
       ))}
-      {safeCount > 0 && <GetButton onClick={getWorkout}>Get</GetButton>}
+      {safeCount > 0 && <GetButton onClick={onGetWorkout}>Get</GetButton>}
     </>
   );
 }

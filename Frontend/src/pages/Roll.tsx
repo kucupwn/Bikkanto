@@ -6,7 +6,10 @@ import {
   type repsDifficulty,
   type Exercise,
 } from "../types/exerciseTypes";
-import { WorkoutSettings } from "../components/roll/WorkoutSettings";
+import {
+  WorkoutSettings,
+  type ProperySelection,
+} from "../components/roll/WorkoutSettings";
 
 const RollContainer = styled.div`
   display: flex;
@@ -21,6 +24,14 @@ export function Roll() {
     useState<repsDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
+
+  const [selectedProperties, setSelectedPropterties] = useState<
+    ProperySelection[]
+  >([]);
+
+  function getWorkout() {
+    console.log(selectedProperties);
+  }
 
   useEffect(() => {
     async function fetchCategories() {
@@ -59,6 +70,9 @@ export function Roll() {
           exerciseCount={exerciseCount}
           setExerciseCount={setExerciseCount}
           categories={categories}
+          selectedProperties={selectedProperties}
+          setSelectedProperties={setSelectedPropterties}
+          onGetWorkout={getWorkout}
         />
       </RollContainer>
     </>
