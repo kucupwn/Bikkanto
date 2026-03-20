@@ -1,11 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import {
-  type Category,
-  type repsDifficulty,
-  type Exercise,
-} from "../types/exerciseTypes";
+import { type Category, type Exercise } from "../types/exerciseTypes";
 import {
   WorkoutSettings,
   type ProperySelection,
@@ -20,8 +16,6 @@ const RollContainer = styled.div`
 
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
-  const [exerciseRepsDifficulty, setExerciseRepsDifficulty] =
-    useState<repsDifficulty>("easy");
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
 

@@ -1,6 +1,7 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
 import {
+  exerciseDifficultyOptions,
   repsDifficultyOptions,
   type Category,
   type ExerciseDifficulty,
@@ -27,9 +28,15 @@ const WorkoutBasePropertiesWrapper = styled.div`
 const ExerciseCountWrapper = styled.div`
   display: flex;
   gap: 1rem;
+  margin-top: 1rem;
 `;
 
-const ExerciseCountDifficultyWrapper = styled.div`
+const RepsDifficultyWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const ExerciseDifficultyWrapper = styled.div`
   display: flex;
   gap: 1rem;
 `;
@@ -88,25 +95,35 @@ export function WorkoutSettings({
 
   return (
     <>
+      <ExerciseCountWrapper>
+        <span>Exercise Count:</span>
+        <input
+          type="number"
+          value={exerciseCount}
+          onChange={handleExerciseCountChange}
+        />
+      </ExerciseCountWrapper>
       <WorkoutBasePropertiesWrapper>
-        <ExerciseCountWrapper>
-          <span>Exercise Count:</span>
-          <input
-            type="number"
-            value={exerciseCount}
-            onChange={handleExerciseCountChange}
-          />
-        </ExerciseCountWrapper>
-        <ExerciseCountDifficultyWrapper>
-          <span>Exercise Repetitions Difficulty:</span>
-          <select name="exercise-count-difficulty">
+        <ExerciseDifficultyWrapper>
+          <span>Global Exercise Difficulty:</span>
+          <select name="exercise-difficulty">
+            {exerciseDifficultyOptions.map((diff) => (
+              <option key={diff} value={diff}>
+                {capitalize(diff)}
+              </option>
+            ))}
+          </select>
+        </ExerciseDifficultyWrapper>
+        <RepsDifficultyWrapper>
+          <span>Global Repetitions Difficulty:</span>
+          <select name="reps-difficulty">
             {repsDifficultyOptions.map((diff) => (
               <option key={diff} value={diff}>
                 {capitalize(diff)}
               </option>
             ))}
           </select>
-        </ExerciseCountDifficultyWrapper>
+        </RepsDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
       {Array.from({ length: safeCount }).map((_, index) => (
         <CategorySelection
