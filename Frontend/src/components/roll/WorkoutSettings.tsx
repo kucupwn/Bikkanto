@@ -5,6 +5,7 @@ import {
   repsDifficultyOptions,
   type Category,
   type ExerciseDifficulty,
+  type RepsDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
@@ -50,7 +51,8 @@ const GetButton = styled.button`
 
 export interface ProperySelection {
   categoryId: number;
-  difficulty: ExerciseDifficulty;
+  exerciseDifficulty: ExerciseDifficulty;
+  repsDifficulty: RepsDifficulty;
 }
 
 export function WorkoutSettings({
@@ -76,7 +78,8 @@ export function WorkoutSettings({
           return (
             prev[index] ?? {
               categoryId: categories[0]?.id ?? 0,
-              difficulty: "beginner",
+              exerciseDifficulty: "beginner",
+              repsDifficulty: "easy",
             }
           );
         });

@@ -18,7 +18,7 @@ export interface Category {
 }
 
 export const repsDifficultyOptions = ["easy", "medium", "hard"] as const;
-export type repsDifficulty = (typeof repsDifficultyOptions)[number];
+export type RepsDifficulty = (typeof repsDifficultyOptions)[number];
 
 export const exerciseDifficultyOptions = [
   "beginner",

@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import {
   exerciseDifficultyOptions,
+  repsDifficultyOptions,
   type Category,
   type ExerciseDifficulty,
+  type RepsDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import type { ProperySelection } from "./WorkoutSettings";
@@ -32,10 +34,17 @@ export function CategorySelection({
     onChange({ ...value, categoryId: Number(e.target.value) });
   }
 
-  function handleDifficultyChange(e: ChangeEvent<HTMLSelectElement>) {
+  function handleExerciseDifficultyChange(e: ChangeEvent<HTMLSelectElement>) {
     onChange({
       ...value,
-      difficulty: e.target.value as ExerciseDifficulty,
+      exerciseDifficulty: e.target.value as ExerciseDifficulty,
+    });
+  }
+
+  function handleRepsDifficultyChange(e: ChangeEvent<HTMLSelectElement>) {
+    onChange({
+      ...value,
+      repsDifficulty: e.target.value as RepsDifficulty,
     });
   }
 
@@ -49,8 +58,21 @@ export function CategorySelection({
           </option>
         ))}
       </select>
-      <select name="difficulty-select" onChange={handleDifficultyChange}>
+      <select
+        name="exercise-difficulty-select"
+        onChange={handleExerciseDifficultyChange}
+      >
         {exerciseDifficultyOptions.map((diff) => (
+          <option key={diff} value={diff}>
+            {capitalize(diff)}
+          </option>
+        ))}
+      </select>
+      <select
+        name="reps-difficulty-select"
+        onChange={handleRepsDifficultyChange}
+      >
+        {repsDifficultyOptions.map((diff) => (
           <option key={diff} value={diff}>
             {capitalize(diff)}
           </option>
