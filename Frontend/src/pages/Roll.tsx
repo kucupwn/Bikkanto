@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import { type Category, type Exercise } from "../types/exerciseTypes";
+import {
+  type Category,
+  type Exercise,
+  type ExerciseDifficulty,
+  type RepsDifficulty,
+} from "../types/exerciseTypes";
 import {
   WorkoutSettings,
   type ProperySelection,
@@ -14,6 +19,8 @@ const RollContainer = styled.div`
   flex-direction: column;
 `;
 
+export type GlobalPropertyType = "exercise" | "reps";
+
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -25,6 +32,20 @@ export function Roll() {
 
   function getWorkout() {
     console.log(selectedProperties);
+  }
+
+  function setGlobalPropertySettings(
+    type: GlobalPropertyType,
+    value: ExerciseDifficulty | RepsDifficulty,
+  ) {
+    setSelectedPropterties((prev) =>
+      prev.map((item) => ({
+        ...item,
+        ...(type === "exercise"
+          ? { exerciseDifficulty: value as ExerciseDifficulty }
+          : { repsDifficulty: value as RepsDifficulty }),
+      })),
+    );
   }
 
   useEffect(() => {
@@ -66,6 +87,7 @@ export function Roll() {
           categories={categories}
           selectedProperties={selectedProperties}
           setSelectedProperties={setSelectedPropterties}
+          onSetGlobalPropertySettings={setGlobalPropertySettings}
           onGetWorkout={getWorkout}
         />
       </RollContainer>

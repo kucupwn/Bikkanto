@@ -9,6 +9,7 @@ import {
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
+import type { GlobalPropertyType } from "../../pages/Roll";
 
 interface Props {
   exerciseCount: number | "";
@@ -16,6 +17,10 @@ interface Props {
   categories: Category[];
   selectedProperties: ProperySelection[];
   setSelectedProperties: Dispatch<SetStateAction<ProperySelection[]>>;
+  onSetGlobalPropertySettings: (
+    type: GlobalPropertyType,
+    value: ExerciseDifficulty | RepsDifficulty,
+  ) => void;
   onGetWorkout: () => void;
 }
 
@@ -32,12 +37,12 @@ const ExerciseCountWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const RepsDifficultyWrapper = styled.div`
+const GlobalRepsDifficultyWrapper = styled.div`
   display: flex;
   gap: 1rem;
 `;
 
-const ExerciseDifficultyWrapper = styled.div`
+const GlobalExerciseDifficultyWrapper = styled.div`
   display: flex;
   gap: 1rem;
 `;
@@ -61,6 +66,7 @@ export function WorkoutSettings({
   categories,
   selectedProperties,
   setSelectedProperties,
+  onSetGlobalPropertySettings,
   onGetWorkout,
 }: Props) {
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
@@ -107,26 +113,42 @@ export function WorkoutSettings({
         />
       </ExerciseCountWrapper>
       <WorkoutBasePropertiesWrapper>
-        <ExerciseDifficultyWrapper>
+        <GlobalExerciseDifficultyWrapper>
           <span>Global Exercise Difficulty:</span>
-          <select name="exercise-difficulty">
+          <select
+            name="exercise-difficulty"
+            onChange={(e) =>
+              onSetGlobalPropertySettings(
+                "exercise",
+                e.target.value as ExerciseDifficulty,
+              )
+            }
+          >
             {exerciseDifficultyOptions.map((diff) => (
               <option key={diff} value={diff}>
                 {capitalize(diff)}
               </option>
             ))}
           </select>
-        </ExerciseDifficultyWrapper>
-        <RepsDifficultyWrapper>
+        </GlobalExerciseDifficultyWrapper>
+        <GlobalRepsDifficultyWrapper>
           <span>Global Repetitions Difficulty:</span>
-          <select name="reps-difficulty">
+          <select
+            name="reps-difficulty"
+            onChange={(e) =>
+              onSetGlobalPropertySettings(
+                "reps",
+                e.target.value as RepsDifficulty,
+              )
+            }
+          >
             {repsDifficultyOptions.map((diff) => (
               <option key={diff} value={diff}>
                 {capitalize(diff)}
               </option>
             ))}
           </select>
-        </RepsDifficultyWrapper>
+        </GlobalRepsDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
       {Array.from({ length: safeCount }).map((_, index) => (
         <CategorySelection
