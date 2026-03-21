@@ -1,12 +1,7 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import {
-  type Category,
-  type Exercise,
-  type ExerciseDifficulty,
-  type RepsDifficulty,
-} from "../types/exerciseTypes";
+import { type Category, type Exercise } from "../types/exerciseTypes";
 import {
   WorkoutSettings,
   type ProperySelection,
@@ -18,8 +13,6 @@ const RollContainer = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-
-export type GlobalPropertyType = "exercise" | "reps";
 
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");

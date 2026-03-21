@@ -9,7 +9,6 @@ import {
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
-import type { GlobalPropertyType } from "../../pages/Roll";
 
 interface Props {
   exerciseCount: number | "";
@@ -55,6 +54,8 @@ export interface ProperySelection {
   exerciseDifficulty: ExerciseDifficulty;
   repsDifficulty: RepsDifficulty;
 }
+
+type GlobalPropertyType = "exercise" | "reps";
 
 export function WorkoutSettings({
   exerciseCount,
