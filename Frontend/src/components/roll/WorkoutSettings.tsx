@@ -17,10 +17,6 @@ interface Props {
   categories: Category[];
   selectedProperties: ProperySelection[];
   setSelectedProperties: Dispatch<SetStateAction<ProperySelection[]>>;
-  onSetGlobalPropertySettings: (
-    type: GlobalPropertyType,
-    value: ExerciseDifficulty | RepsDifficulty,
-  ) => void;
   onGetWorkout: () => void;
 }
 
@@ -66,7 +62,6 @@ export function WorkoutSettings({
   categories,
   selectedProperties,
   setSelectedProperties,
-  onSetGlobalPropertySettings,
   onGetWorkout,
 }: Props) {
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
@@ -102,6 +97,20 @@ export function WorkoutSettings({
     });
   }
 
+  function setGlobalPropertySettings(
+    type: GlobalPropertyType,
+    value: ExerciseDifficulty | RepsDifficulty,
+  ) {
+    setSelectedProperties((prev) =>
+      prev.map((item) => ({
+        ...item,
+        ...(type === "exercise"
+          ? { exerciseDifficulty: value as ExerciseDifficulty }
+          : { repsDifficulty: value as RepsDifficulty }),
+      })),
+    );
+  }
+
   return (
     <>
       <ExerciseCountWrapper>
@@ -118,7 +127,7 @@ export function WorkoutSettings({
           <select
             name="exercise-difficulty"
             onChange={(e) =>
-              onSetGlobalPropertySettings(
+              setGlobalPropertySettings(
                 "exercise",
                 e.target.value as ExerciseDifficulty,
               )
@@ -136,7 +145,7 @@ export function WorkoutSettings({
           <select
             name="reps-difficulty"
             onChange={(e) =>
-              onSetGlobalPropertySettings(
+              setGlobalPropertySettings(
                 "reps",
                 e.target.value as RepsDifficulty,
               )

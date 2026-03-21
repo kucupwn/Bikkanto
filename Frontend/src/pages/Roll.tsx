@@ -26,26 +26,12 @@ export function Roll() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
 
-  const [selectedProperties, setSelectedPropterties] = useState<
+  const [selectedProperties, setSelectedProperties] = useState<
     ProperySelection[]
   >([]);
 
   function getWorkout() {
     console.log(selectedProperties);
-  }
-
-  function setGlobalPropertySettings(
-    type: GlobalPropertyType,
-    value: ExerciseDifficulty | RepsDifficulty,
-  ) {
-    setSelectedPropterties((prev) =>
-      prev.map((item) => ({
-        ...item,
-        ...(type === "exercise"
-          ? { exerciseDifficulty: value as ExerciseDifficulty }
-          : { repsDifficulty: value as RepsDifficulty }),
-      })),
-    );
   }
 
   useEffect(() => {
@@ -86,8 +72,7 @@ export function Roll() {
           setExerciseCount={setExerciseCount}
           categories={categories}
           selectedProperties={selectedProperties}
-          setSelectedProperties={setSelectedPropterties}
-          onSetGlobalPropertySettings={setGlobalPropertySettings}
+          setSelectedProperties={setSelectedProperties}
           onGetWorkout={getWorkout}
         />
       </RollContainer>
