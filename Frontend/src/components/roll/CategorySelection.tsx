@@ -51,7 +51,11 @@ export function CategorySelection({
   return (
     <CategorySelectionContainer>
       <span>Exercise {currentCount}:</span>
-      <select name="category-select" onChange={handleCategoryChange}>
+      <select
+        name="category-select"
+        value={value.categoryId}
+        onChange={handleCategoryChange}
+      >
         {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
             {cat.category_name}
@@ -60,6 +64,7 @@ export function CategorySelection({
       </select>
       <select
         name="exercise-difficulty-select"
+        value={value.exerciseDifficulty}
         onChange={handleExerciseDifficultyChange}
       >
         {exerciseDifficultyOptions.map((diff) => (
@@ -70,6 +75,7 @@ export function CategorySelection({
       </select>
       <select
         name="reps-difficulty-select"
+        value={value.repsDifficulty}
         onChange={handleRepsDifficultyChange}
       >
         {repsDifficultyOptions.map((diff) => (
