@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import { type Category, type Exercise } from "../types/exerciseTypes";
+import {
+  type Category,
+  type Exercise,
+  type WorkoutEntry,
+} from "../types/exerciseTypes";
 import {
   WorkoutSettings,
   type ProperySelection,
@@ -23,8 +27,36 @@ export function Roll() {
     ProperySelection[]
   >([]);
 
+  function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
+    const filtered = exercises.filter(
+      (ex) => ex.category_id === selectedProp.categoryId,
+    );
+
+    const exercise = filtered[Math.floor(Math.random() * filtered.length)];
+
+    const minKey = `${selectedProp.repsDifficulty}_min` as keyof Exercise;
+    const maxKey = `${selectedProp.repsDifficulty}_max` as keyof Exercise;
+
+    const minRep = exercise[minKey] as number;
+    const maxRep = exercise[maxKey] as number;
+
+    const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
+
+    return {
+      exercise_id: exercise.id,
+      exercise_name: exercise.exercise_name,
+      category_id: exercise.category_id,
+      category_name: exercise.category_name,
+      difficulty: exercise.difficulty,
+      reps_difficulty: selectedProp.repsDifficulty,
+      reps,
+    };
+  }
+
   function getWorkout() {
-    console.log(selectedProperties);
+    const workout = selectedProperties.map((exc) => getRandomExercise(exc));
+
+    console.log(workout);
   }
 
   useEffect(() => {
