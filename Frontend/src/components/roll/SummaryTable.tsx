@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
+import type { Dispatch, SetStateAction } from "react";
 
 interface Props {
   workout: WorkoutEntry[];
+  setWorkout: Dispatch<SetStateAction<WorkoutEntry[]>>;
 }
 
 const WorkoutTable = styled.table`
@@ -24,28 +26,47 @@ const Cell = styled.td`
   vertical-align: center;
 `;
 
-export function SummaryTable({ workout }: Props) {
-  return (
-    <WorkoutTable>
-      <thead>
-        <tr>
-          <TableHeader>Exercise Name</TableHeader>
-          <TableHeader>Exercise Difficulty</TableHeader>
-          <TableHeader>Reps Difficulty</TableHeader>
-          <TableHeader>Reps</TableHeader>
-        </tr>
-      </thead>
+const ButtonWrapper = styled.div`
+  display: flex;
+`;
 
-      <tbody>
-        {workout.map((entry, index) => (
-          <tr key={index}>
-            <Cell>{entry.exercise_name}</Cell>
-            <Cell>{entry.difficulty}</Cell>
-            <Cell>{entry.reps_difficulty}</Cell>
-            <Cell>{entry.reps}</Cell>
+const Button = styled.button`
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+`;
+
+export function SummaryTable({ workout, setWorkout }: Props) {
+  function resetWorkout() {}
+
+  function acceptWorkout() {}
+
+  return (
+    <>
+      <WorkoutTable>
+        <thead>
+          <tr>
+            <TableHeader>Exercise Name</TableHeader>
+            <TableHeader>Exercise Difficulty</TableHeader>
+            <TableHeader>Reps Difficulty</TableHeader>
+            <TableHeader>Reps</TableHeader>
           </tr>
-        ))}
-      </tbody>
-    </WorkoutTable>
+        </thead>
+
+        <tbody>
+          {workout.map((entry, index) => (
+            <tr key={index}>
+              <Cell>{entry.exercise_name}</Cell>
+              <Cell>{entry.difficulty}</Cell>
+              <Cell>{entry.reps_difficulty}</Cell>
+              <Cell>{entry.reps}</Cell>
+            </tr>
+          ))}
+        </tbody>
+      </WorkoutTable>
+      <ButtonWrapper>
+        <Button onClick={resetWorkout}>Restart</Button>
+        <Button onClick={acceptWorkout}>Accept</Button>
+      </ButtonWrapper>
+    </>
   );
 }

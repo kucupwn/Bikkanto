@@ -107,7 +107,9 @@ export function Roll() {
             onGetWorkout={getWorkout}
           />
         )}
-        {workout.length > 0 && <SummaryTable workout={workout} />}
+        {workout.length > 0 && (
+          <SummaryTable workout={workout} setWorkout={setWorkout} />
+        )}
       </RollContainer>
     </>
   );
