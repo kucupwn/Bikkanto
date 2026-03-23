@@ -10,6 +10,7 @@ import {
   WorkoutSettings,
   type ProperySelection,
 } from "../components/roll/WorkoutSettings";
+import { SummaryTable } from "../components/roll/SummaryTable";
 
 const RollContainer = styled.div`
   display: flex;
@@ -55,7 +56,7 @@ export function Roll() {
   }
 
   function getWorkout() {
-    const rolledWorkout = selectedProperties.map((exc) =>
+    const rolledWorkout: WorkoutEntry[] = selectedProperties.map((exc) =>
       getRandomExercise(exc),
     );
     setWorkout(rolledWorkout);
@@ -96,14 +97,17 @@ export function Roll() {
   return (
     <>
       <RollContainer>
-        <WorkoutSettings
-          exerciseCount={exerciseCount}
-          setExerciseCount={setExerciseCount}
-          categories={categories}
-          selectedProperties={selectedProperties}
-          setSelectedProperties={setSelectedProperties}
-          onGetWorkout={getWorkout}
-        />
+        {workout.length === 0 && (
+          <WorkoutSettings
+            exerciseCount={exerciseCount}
+            setExerciseCount={setExerciseCount}
+            categories={categories}
+            selectedProperties={selectedProperties}
+            setSelectedProperties={setSelectedProperties}
+            onGetWorkout={getWorkout}
+          />
+        )}
+        {workout.length > 0 && <SummaryTable workout={workout} />}
       </RollContainer>
     </>
   );
