@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import type { Dispatch, SetStateAction } from "react";
+import type { ViewModes } from "../../pages/Roll";
 
 interface Props {
   workout: WorkoutEntry[] | null;
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
+  setMode: Dispatch<SetStateAction<ViewModes>>;
 }
 
 const WorkoutTable = styled.table`
@@ -35,9 +37,10 @@ const Button = styled.button`
   padding: 0.5rem 1rem;
 `;
 
-export function SummaryTable({ workout, setWorkout }: Props) {
+export function SummaryTable({ workout, setWorkout, setMode }: Props) {
   function resetWorkout() {
     setWorkout(null);
+    setMode("settings");
   }
 
   function acceptWorkout() {

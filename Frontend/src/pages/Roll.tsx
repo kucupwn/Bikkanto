@@ -11,6 +11,7 @@ import {
   type ProperySelection,
 } from "../components/roll/WorkoutSettings";
 import { SummaryTable } from "../components/roll/SummaryTable";
+import { StoredWorkout } from "../components/roll/StoredWorkout";
 
 const RollContainer = styled.div`
   display: flex;
@@ -18,6 +19,8 @@ const RollContainer = styled.div`
   align-items: center;
   flex-direction: column;
 `;
+
+export type ViewModes = "settings" | "preview" | "stored";
 
 export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
@@ -27,9 +30,14 @@ export function Roll() {
   const [selectedProperties, setSelectedProperties] = useState<
     ProperySelection[]
   >([]);
-  const [workout, setWorkout] = useState<WorkoutEntry[] | null>(null);
-
-  const hasAcceptedWorkout = workout !== null;
+  const [workout, setWorkout] = useState<WorkoutEntry[] | null>(() => {
+    const stored = localStorage.getItem("workout");
+    return stored ? JSON.parse(stored) : null;
+  });
+  const [mode, setMode] = useState<ViewModes>(() => {
+    const stored = localStorage.getItem("workout");
+    return stored ? "stored" : "settings";
+  });
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(
@@ -62,8 +70,7 @@ export function Roll() {
       getRandomExercise(exc),
     );
     setWorkout(rolledWorkout);
-
-    console.log(workout);
+    setMode("preview");
   }
 
   useEffect(() => {
@@ -99,7 +106,7 @@ export function Roll() {
   return (
     <>
       <RollContainer>
-        {!workout && (
+        {mode === "settings" && (
           <WorkoutSettings
             exerciseCount={exerciseCount}
             setExerciseCount={setExerciseCount}
@@ -109,7 +116,17 @@ export function Roll() {
             onGetWorkout={getWorkout}
           />
         )}
-        {workout && <SummaryTable workout={workout} setWorkout={setWorkout} />}
+        {mode === "preview" && (
+          <SummaryTable
+            workout={workout}
+            setWorkout={setWorkout}
+            setMode={setMode}
+          />
+        )}
+
+        {mode === "stored" && (
+          <StoredWorkout setWorkout={setWorkout} setMode={setMode} />
+        )}
       </RollContainer>
     </>
   );
