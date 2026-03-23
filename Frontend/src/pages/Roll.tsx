@@ -27,7 +27,9 @@ export function Roll() {
   const [selectedProperties, setSelectedProperties] = useState<
     ProperySelection[]
   >([]);
-  const [workout, setWorkout] = useState<WorkoutEntry[]>([]);
+  const [workout, setWorkout] = useState<WorkoutEntry[] | null>(null);
+
+  const hasAcceptedWorkout = workout !== null;
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(
@@ -97,7 +99,7 @@ export function Roll() {
   return (
     <>
       <RollContainer>
-        {workout.length === 0 && (
+        {!workout && (
           <WorkoutSettings
             exerciseCount={exerciseCount}
             setExerciseCount={setExerciseCount}
@@ -107,9 +109,7 @@ export function Roll() {
             onGetWorkout={getWorkout}
           />
         )}
-        {workout.length > 0 && (
-          <SummaryTable workout={workout} setWorkout={setWorkout} />
-        )}
+        {workout && <SummaryTable workout={workout} setWorkout={setWorkout} />}
       </RollContainer>
     </>
   );

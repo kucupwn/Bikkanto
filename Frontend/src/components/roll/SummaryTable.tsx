@@ -3,8 +3,8 @@ import type { WorkoutEntry } from "../../types/exerciseTypes";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Props {
-  workout: WorkoutEntry[];
-  setWorkout: Dispatch<SetStateAction<WorkoutEntry[]>>;
+  workout: WorkoutEntry[] | null;
+  setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
 }
 
 const WorkoutTable = styled.table`
@@ -36,9 +36,13 @@ const Button = styled.button`
 `;
 
 export function SummaryTable({ workout, setWorkout }: Props) {
-  function resetWorkout() {}
+  function resetWorkout() {
+    setWorkout(null);
+  }
 
-  function acceptWorkout() {}
+  function acceptWorkout() {
+    localStorage.setItem("workout", JSON.stringify(workout));
+  }
 
   return (
     <>
@@ -53,7 +57,7 @@ export function SummaryTable({ workout, setWorkout }: Props) {
         </thead>
 
         <tbody>
-          {workout.map((entry, index) => (
+          {workout!.map((entry, index) => (
             <tr key={index}>
               <Cell>{entry.exercise_name}</Cell>
               <Cell>{entry.difficulty}</Cell>
