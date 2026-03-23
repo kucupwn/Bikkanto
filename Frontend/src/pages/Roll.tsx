@@ -26,6 +26,7 @@ export function Roll() {
   const [selectedProperties, setSelectedProperties] = useState<
     ProperySelection[]
   >([]);
+  const [workout, setWorkout] = useState<WorkoutEntry[]>([]);
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(
@@ -54,7 +55,10 @@ export function Roll() {
   }
 
   function getWorkout() {
-    const workout = selectedProperties.map((exc) => getRandomExercise(exc));
+    const rolledWorkout = selectedProperties.map((exc) =>
+      getRandomExercise(exc),
+    );
+    setWorkout(rolledWorkout);
 
     console.log(workout);
   }
