@@ -42,7 +42,9 @@ export function Roll() {
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(
-      (ex) => ex.category_id === selectedProp.categoryId,
+      (ex) =>
+        ex.category_id === selectedProp.categoryId &&
+        ex.difficulty === selectedProp.exerciseDifficulty,
     );
 
     const exercise = filtered[Math.floor(Math.random() * filtered.length)];
