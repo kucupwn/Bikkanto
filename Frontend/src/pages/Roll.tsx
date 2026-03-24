@@ -34,6 +34,10 @@ export function Roll() {
     const stored = localStorage.getItem("workout");
     return stored ? JSON.parse(stored) : null;
   });
+  const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(() => {
+    const stored = localStorage.getItem("workout");
+    return stored !== null;
+  });
   const [mode, setMode] = useState<ViewModes>(() => {
     const stored = localStorage.getItem("workout");
     return stored ? "stored" : "settings";
@@ -121,11 +125,17 @@ export function Roll() {
             workout={workout}
             setWorkout={setWorkout}
             setMode={setMode}
+            hasAcceptedWorkout={hasAcceptedWorkout}
+            setHasAcceptedWorkout={setHasAcceptedWorkout}
           />
         )}
 
         {mode === "stored" && (
-          <StoredWorkout setWorkout={setWorkout} setMode={setMode} />
+          <StoredWorkout
+            setWorkout={setWorkout}
+            setMode={setMode}
+            setHasAcceptedWorkout={setHasAcceptedWorkout}
+          />
         )}
       </RollContainer>
     </>

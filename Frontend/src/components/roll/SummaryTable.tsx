@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 
 interface Props {
   workout: WorkoutEntry[] | null;
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
   setMode: Dispatch<SetStateAction<ViewModes>>;
+  hasAcceptedWorkout: boolean;
+  setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
 }
 
 const WorkoutTable = styled.table`
@@ -37,14 +39,22 @@ const Button = styled.button`
   padding: 0.5rem 1rem;
 `;
 
-export function SummaryTable({ workout, setWorkout, setMode }: Props) {
+export function SummaryTable({
+  workout,
+  setWorkout,
+  setMode,
+  hasAcceptedWorkout,
+  setHasAcceptedWorkout,
+}: Props) {
   function resetWorkout() {
     setWorkout(null);
     setMode("settings");
+    setHasAcceptedWorkout(false);
   }
 
   function acceptWorkout() {
     localStorage.setItem("workout", JSON.stringify(workout));
+    setHasAcceptedWorkout(true);
   }
 
   return (
@@ -70,10 +80,12 @@ export function SummaryTable({ workout, setWorkout, setMode }: Props) {
           ))}
         </tbody>
       </WorkoutTable>
-      <ButtonWrapper>
-        <Button onClick={resetWorkout}>Restart</Button>
-        <Button onClick={acceptWorkout}>Accept</Button>
-      </ButtonWrapper>
+      {!hasAcceptedWorkout && (
+        <ButtonWrapper>
+          <Button onClick={resetWorkout}>Restart</Button>
+          <Button onClick={acceptWorkout}>Accept</Button>
+        </ButtonWrapper>
+      )}
     </>
   );
 }

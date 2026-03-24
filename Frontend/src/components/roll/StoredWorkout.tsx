@@ -5,13 +5,19 @@ import type { WorkoutEntry } from "../../types/exerciseTypes";
 interface Props {
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
   setMode: Dispatch<SetStateAction<ViewModes>>;
+  setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
 }
 
-export function StoredWorkout({ setWorkout, setMode }: Props) {
+export function StoredWorkout({
+  setWorkout,
+  setMode,
+  setHasAcceptedWorkout,
+}: Props) {
   function discardWorkout() {
     localStorage.removeItem("workout");
     setWorkout(null);
     setMode("settings");
+    setHasAcceptedWorkout(false);
   }
 
   function recallWorkout() {
