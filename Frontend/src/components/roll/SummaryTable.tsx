@@ -104,7 +104,7 @@ export function SummaryTable({
         <CyclesWrapper>
           <input
             type="number"
-            placeholder="Done cycles"
+            placeholder="Finished cycles"
             onChange={handleCyclesInputChange}
           />
           <Button onClick={onPostFinishedWorkout}>Finish</Button>
