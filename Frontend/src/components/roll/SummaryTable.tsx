@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
-import { type Dispatch, type SetStateAction } from "react";
+import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
   setMode: Dispatch<SetStateAction<ViewModes>>;
   hasAcceptedWorkout: boolean;
   setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
+  setCycles: Dispatch<SetStateAction<number | "">>;
+  onPostFinishedWorkout: () => void;
 }
 
 const WorkoutTable = styled.table`
@@ -39,12 +41,20 @@ const Button = styled.button`
   padding: 0.5rem 1rem;
 `;
 
+const CyclesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
 export function SummaryTable({
   workout,
   setWorkout,
   setMode,
   hasAcceptedWorkout,
   setHasAcceptedWorkout,
+  setCycles,
+  onPostFinishedWorkout,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
@@ -55,6 +65,10 @@ export function SummaryTable({
   function acceptWorkout() {
     localStorage.setItem("workout", JSON.stringify(workout));
     setHasAcceptedWorkout(true);
+  }
+
+  function handleCyclesInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setCycles(Number(e.target.value));
   }
 
   return (
@@ -85,6 +99,16 @@ export function SummaryTable({
           <Button onClick={resetWorkout}>Restart</Button>
           <Button onClick={acceptWorkout}>Accept</Button>
         </ButtonWrapper>
+      )}
+      {hasAcceptedWorkout && (
+        <CyclesWrapper>
+          <input
+            type="number"
+            placeholder="Done cycles"
+            onChange={handleCyclesInputChange}
+          />
+          <Button onClick={onPostFinishedWorkout}>Finish</Button>
+        </CyclesWrapper>
       )}
     </>
   );

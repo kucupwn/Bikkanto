@@ -38,6 +38,7 @@ export function Roll() {
     workout !== null,
   );
   const [mode, setMode] = useState<ViewModes>(workout ? "stored" : "settings");
+  const [cycles, setCycles] = useState<number | "">("");
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(
@@ -71,6 +72,10 @@ export function Roll() {
     );
     setWorkout(rolledWorkout);
     setMode("preview");
+  }
+
+  function postFinishedWorkout() {
+    console.log("saved");
   }
 
   useEffect(() => {
@@ -123,6 +128,8 @@ export function Roll() {
             setMode={setMode}
             hasAcceptedWorkout={hasAcceptedWorkout}
             setHasAcceptedWorkout={setHasAcceptedWorkout}
+            setCycles={setCycles}
+            onPostFinishedWorkout={postFinishedWorkout}
           />
         )}
 
