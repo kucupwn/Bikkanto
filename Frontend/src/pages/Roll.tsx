@@ -34,14 +34,10 @@ export function Roll() {
     const stored = localStorage.getItem("workout");
     return stored ? JSON.parse(stored) : null;
   });
-  const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(() => {
-    const stored = localStorage.getItem("workout");
-    return stored !== null;
-  });
-  const [mode, setMode] = useState<ViewModes>(() => {
-    const stored = localStorage.getItem("workout");
-    return stored ? "stored" : "settings";
-  });
+  const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(
+    workout !== null,
+  );
+  const [mode, setMode] = useState<ViewModes>(workout ? "stored" : "settings");
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 
 interface Props {
