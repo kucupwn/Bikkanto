@@ -1,6 +1,17 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
+import styled from "styled-components";
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin: 1rem;
+`;
+
+const TextWrapper = styled.div`
+  margin: 1rem;
+`;
 
 interface Props {
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
@@ -30,10 +41,14 @@ export function StoredWorkout({
 
   return (
     <>
-      <p>You have accepted, but not saved workout.</p>
-      <p>Do you want to Discard it, or Recall it?</p>
-      <button onClick={discardWorkout}>Discard</button>
-      <button onClick={recallWorkout}>Recall</button>
+      <TextWrapper>
+        <p>You have accepted, but not saved workout.</p>
+        <p>Do you want to Discard it, or Recall it?</p>
+      </TextWrapper>
+      <ButtonWrapper>
+        <button onClick={discardWorkout}>Discard</button>
+        <button onClick={recallWorkout}>Recall</button>
+      </ButtonWrapper>
     </>
   );
 }
