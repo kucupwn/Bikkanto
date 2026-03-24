@@ -66,6 +66,8 @@ export function WorkoutSettings({
   onGetWorkout,
 }: Props) {
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
+  const globalExerciseDifficulty = getGlobalDifficulty("exercise");
+  const globalRepsDifficulty = getGlobalDifficulty("reps");
 
   function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
     const currentValue = Number(e.target.value);
@@ -98,6 +100,23 @@ export function WorkoutSettings({
     });
   }
 
+  function getGlobalDifficulty(type: GlobalPropertyType) {
+    const first =
+      type === "exercise"
+        ? selectedProperties[0]?.exerciseDifficulty
+        : selectedProperties[0]?.repsDifficulty;
+
+    const allSame = selectedProperties.every((item) => {
+      if (type === "exercise") {
+        return item.exerciseDifficulty === first;
+      } else {
+        return item.repsDifficulty === first;
+      }
+    });
+
+    return allSame ? first : "custom";
+  }
+
   function setGlobalPropertySettings(
     type: GlobalPropertyType,
     value: ExerciseDifficulty | RepsDifficulty,
@@ -127,6 +146,7 @@ export function WorkoutSettings({
           <span>Global Exercise Difficulty:</span>
           <select
             name="exercise-difficulty"
+            value={globalExerciseDifficulty}
             onChange={(e) =>
               setGlobalPropertySettings(
                 "exercise",
@@ -139,12 +159,16 @@ export function WorkoutSettings({
                 {capitalize(diff)}
               </option>
             ))}
+            <option key="custom" value="custom">
+              Custom
+            </option>
           </select>
         </GlobalExerciseDifficultyWrapper>
         <GlobalRepsDifficultyWrapper>
           <span>Global Repetitions Difficulty:</span>
           <select
             name="reps-difficulty"
+            value={globalRepsDifficulty}
             onChange={(e) =>
               setGlobalPropertySettings(
                 "reps",
@@ -157,6 +181,9 @@ export function WorkoutSettings({
                 {capitalize(diff)}
               </option>
             ))}
+            <option key="custom" value="custom">
+              Custom
+            </option>
           </select>
         </GlobalRepsDifficultyWrapper>
       </WorkoutBasePropertiesWrapper>
