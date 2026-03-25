@@ -40,6 +40,7 @@ export function Roll() {
   );
   const [mode, setMode] = useState<ViewModes>(workout ? "stored" : "settings");
   const [cycles, setCycles] = useState<number | "">("");
+  const [isFinished, setIsFinished] = useState<boolean>(false);
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
 
@@ -99,9 +100,14 @@ export function Roll() {
   }
 
   function postFinishedWorkout() {
+    if (safeCycles <= 0) return;
+
     const historyEntries = getHistoryEntries();
     console.log(historyEntries);
     console.log("saved");
+
+    setIsFinished(true);
+    localStorage.removeItem("workout");
   }
 
   useEffect(() => {
@@ -156,6 +162,7 @@ export function Roll() {
             setHasAcceptedWorkout={setHasAcceptedWorkout}
             setCycles={setCycles}
             onPostFinishedWorkout={postFinishedWorkout}
+            isFinished={isFinished}
           />
         )}
 

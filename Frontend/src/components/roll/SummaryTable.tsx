@@ -11,6 +11,7 @@ interface Props {
   setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
   setCycles: Dispatch<SetStateAction<number | "">>;
   onPostFinishedWorkout: () => void;
+  isFinished: boolean;
 }
 
 const WorkoutTable = styled.table`
@@ -55,6 +56,7 @@ export function SummaryTable({
   setHasAcceptedWorkout,
   setCycles,
   onPostFinishedWorkout,
+  isFinished,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
@@ -100,7 +102,7 @@ export function SummaryTable({
           <Button onClick={acceptWorkout}>Accept</Button>
         </ButtonWrapper>
       )}
-      {hasAcceptedWorkout && (
+      {hasAcceptedWorkout && !isFinished && (
         <CyclesWrapper>
           <input
             type="number"
