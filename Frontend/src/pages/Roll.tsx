@@ -5,6 +5,7 @@ import {
   type Category,
   type Exercise,
   type WorkoutEntry,
+  type WorkoutHistory,
 } from "../types/exerciseTypes";
 import {
   WorkoutSettings,
@@ -39,6 +40,8 @@ export function Roll() {
   );
   const [mode, setMode] = useState<ViewModes>(workout ? "stored" : "settings");
   const [cycles, setCycles] = useState<number | "">("");
+
+  const safeCycles = typeof cycles == "number" ? cycles : 0;
 
   function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
     const filtered = exercises.filter(
@@ -76,7 +79,28 @@ export function Roll() {
     setMode("preview");
   }
 
+  function getHistoryEntries(): WorkoutHistory[] {
+    const today = new Date().toISOString().split("T")[0];
+
+    if (workout === null) return [];
+
+    return workout.map((entry) => ({
+      date_complete: today,
+      exercise_id: entry.exercise_id,
+      exercise_name: entry.exercise_name,
+      category_id: entry.category_id,
+      category_name: entry.category_name,
+      difficulty: entry.difficulty,
+      reps_difficulty: entry.reps_difficulty,
+      cycles: safeCycles,
+      repetitions: entry.reps,
+      sum_repetitions: entry.reps * safeCycles,
+    }));
+  }
+
   function postFinishedWorkout() {
+    const historyEntries = getHistoryEntries();
+    console.log(historyEntries);
     console.log("saved");
   }
 
