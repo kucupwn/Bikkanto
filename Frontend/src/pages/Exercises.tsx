@@ -17,9 +17,12 @@ const Button = styled.button`
   width: 80px;
 `;
 
+type ModalType = "category" | "add" | "edit" | "delete" | null;
+
 export function Exercises() {
   const [data, setData] = useState<Exercise[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
 
   useEffect(() => {
     async function fetchExercises() {
@@ -47,10 +50,10 @@ export function Exercises() {
   return (
     <>
       <ButtonWrapper>
-        <Button>Category</Button>
-        <Button>Add</Button>
-        <Button>Edit</Button>
-        <Button>Delete</Button>
+        <Button onClick={() => setActiveModal("category")}>Category</Button>
+        <Button onClick={() => setActiveModal("add")}>Add</Button>
+        <Button onClick={() => setActiveModal("edit")}>Edit</Button>
+        <Button onClick={() => setActiveModal("delete")}>Delete</Button>
       </ButtonWrapper>
       <DataTable data={data} columns={columns} />
     </>
