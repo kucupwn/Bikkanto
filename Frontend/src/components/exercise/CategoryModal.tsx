@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 interface Props {
@@ -22,15 +23,43 @@ const ModalBox = styled.div`
   min-width: 300px;
 `;
 
+const Button = styled.button`
+  cursor: pointer;
+  width: 100px;
+  margin-top: 1rem;
+`;
+
+const InitialOperations = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+type Operations = "add" | "remove" | null;
+
 export function CategoryModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
+
+  const [operation, setOperation] = useState<Operations>(null);
 
   return (
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
-        <h2>Add Category</h2>
-        <input type="text" />
-        <button>Add</button>
+        {!operation && (
+          <InitialOperations>
+            <h2>Choose category operation</h2>
+            <ButtonWrapper>
+              <Button onClick={() => setOperation("add")}>Add</Button>
+              <Button onClick={() => setOperation("remove")}>Remove</Button>
+            </ButtonWrapper>
+          </InitialOperations>
+        )}
       </ModalBox>
     </Overlay>
   );
