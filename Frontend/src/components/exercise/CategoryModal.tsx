@@ -29,7 +29,11 @@ const Button = styled.button`
   margin-top: 1rem;
 `;
 
-const InitialOperations = styled.div`
+const Title = styled.h2`
+  margin-bottom: 1rem;
+`;
+
+const OperationsContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,13 +56,20 @@ export function CategoryModal({ isOpen, onClose }: Props) {
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
         {!operation && (
-          <InitialOperations>
-            <h2>Choose category operation</h2>
+          <OperationsContainer>
+            <Title>Choose category operation</Title>
             <ButtonWrapper>
               <Button onClick={() => setOperation("add")}>Add</Button>
               <Button onClick={() => setOperation("remove")}>Remove</Button>
             </ButtonWrapper>
-          </InitialOperations>
+          </OperationsContainer>
+        )}
+        {operation === "add" && (
+          <OperationsContainer>
+            <Title>New category name</Title>
+            <input type="text" placeholder="Category name..." />
+            <Button>Add</Button>
+          </OperationsContainer>
         )}
       </ModalBox>
     </Overlay>
