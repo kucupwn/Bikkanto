@@ -1,9 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
+import type { Category } from "../../types/exerciseTypes";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  categories: Category[];
 }
 
 const Overlay = styled.div`
@@ -47,7 +49,7 @@ const ButtonWrapper = styled.div`
 
 type Operations = "add" | "remove" | null;
 
-export function CategoryModal({ isOpen, onClose }: Props) {
+export function CategoryModal({ isOpen, onClose, categories }: Props) {
   if (!isOpen) return null;
 
   const [operation, setOperation] = useState<Operations>(null);
@@ -66,9 +68,22 @@ export function CategoryModal({ isOpen, onClose }: Props) {
         )}
         {operation === "add" && (
           <OperationsContainer>
-            <Title>New category name</Title>
+            <Title>Add new category name</Title>
             <input type="text" placeholder="Category name..." />
             <Button>Add</Button>
+          </OperationsContainer>
+        )}
+        {operation === "remove" && (
+          <OperationsContainer>
+            <Title>Select category to remove</Title>
+            <select name="category-select">
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.category_name}
+                </option>
+              ))}
+            </select>
+            <Button>Remove</Button>
           </OperationsContainer>
         )}
       </ModalBox>
