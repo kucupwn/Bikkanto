@@ -4,6 +4,7 @@ import { api } from "../api/api";
 import { EXERCISE_COLUMNS_ORDER, type Exercise } from "../types/exerciseTypes";
 import { capitalize } from "../utils";
 import styled from "styled-components";
+import { CategoryModal } from "../components/exercise/CategoryModal";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -56,6 +57,10 @@ export function Exercises() {
         <Button onClick={() => setActiveModal("delete")}>Delete</Button>
       </ButtonWrapper>
       <DataTable data={data} columns={columns} />
+      <CategoryModal
+        isOpen={activeModal === "category"}
+        onClose={() => setActiveModal(null)}
+      />
     </>
   );
 }
