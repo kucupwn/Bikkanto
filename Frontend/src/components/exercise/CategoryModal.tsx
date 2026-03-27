@@ -50,17 +50,24 @@ const ButtonWrapper = styled.div`
 type Operations = "add" | "remove" | null;
 
 export function CategoryModal({ isOpen, onClose, categories }: Props) {
+  const [operation, setOperation] = useState<Operations>(null);
+  const [newCategoryName, setNewCategoryName] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<number>(
+    categories[0].id ?? 0,
+  );
+
   if (!isOpen) return null;
 
-  const [operation, setOperation] = useState<Operations>(null);
-  const [newExerciseName, setNewExerciseName] = useState<string>("");
-
-  function handleExerciseNameInput(e: ChangeEvent<HTMLInputElement>) {
-    setNewExerciseName(e.target.value);
+  function handleCategoryNameInput(e: ChangeEvent<HTMLInputElement>) {
+    setNewCategoryName(e.target.value);
   }
 
-  function handleAddExercise() {
-    console.log(newExerciseName);
+  function handleCategoryNameSelect(e: ChangeEvent<HTMLSelectElement>) {
+    setSelectedCategory(Number(e.target.value));
+  }
+
+  function handleAddCategory() {
+    console.log(newCategoryName);
     onClose();
   }
 
@@ -82,15 +89,20 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
             <input
               type="text"
               placeholder="Category name..."
-              onChange={(e) => handleExerciseNameInput(e)}
+              value={newCategoryName}
+              onChange={handleCategoryNameInput}
             />
-            <Button onClick={handleAddExercise}>Add</Button>
+            <Button onClick={handleAddCategory}>Add</Button>
           </OperationsContainer>
         )}
         {operation === "remove" && (
           <OperationsContainer>
             <Title>Select category to remove</Title>
-            <select name="category-select">
+            <select
+              name="category-select"
+              value={selectedCategory}
+              onChange={handleCategoryNameSelect}
+            >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.category_name}
