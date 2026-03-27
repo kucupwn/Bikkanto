@@ -9,6 +9,7 @@ import {
 import { capitalize } from "../utils";
 import styled from "styled-components";
 import { CategoryModal } from "../components/exercise/CategoryModal";
+import { AddExerciseModal } from "../components/exercise/AddExerciseModal";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -80,6 +81,12 @@ export function Exercises() {
       <CategoryModal
         isOpen={activeModal === "category"}
         onClose={() => setActiveModal(null)}
+        categories={categories}
+      />
+      <AddExerciseModal
+        isOpen={activeModal === "add"}
+        onClose={() => setActiveModal(null)}
+        exercises={exercises}
         categories={categories}
       />
     </>
