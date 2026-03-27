@@ -52,7 +52,7 @@ type Operations = "add" | "remove" | null;
 export function CategoryModal({ isOpen, onClose, categories }: Props) {
   const [operation, setOperation] = useState<Operations>(null);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<number>(
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(
     categories[0].id ?? 0,
   );
 
@@ -63,7 +63,7 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
   }
 
   function handleCategoryNameSelect(e: ChangeEvent<HTMLSelectElement>) {
-    setSelectedCategory(Number(e.target.value));
+    setSelectedCategoryId(Number(e.target.value));
   }
 
   function handleAddCategory() {
@@ -72,7 +72,7 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
   }
 
   function handleRemoveCategory() {
-    console.log(selectedCategory);
+    console.log(selectedCategoryId);
     onClose();
   }
 
@@ -105,7 +105,7 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
             <Title>Select category to remove</Title>
             <select
               name="category-select"
-              value={selectedCategory}
+              value={selectedCategoryId}
               onChange={handleCategoryNameSelect}
             >
               {categories.map((cat) => (
