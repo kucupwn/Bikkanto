@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import type { Category, Exercise } from "../../types/exerciseTypes";
+import {
+  exerciseDifficultyOptions,
+  type Category,
+  type Exercise,
+} from "../../types/exerciseTypes";
+import { capitalize } from "../../utils";
 
 interface Props {
   isOpen: boolean;
@@ -23,10 +28,19 @@ const ModalBox = styled.div`
   padding: 1rem;
   border-radius: 12px;
   min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Title = styled.h2`
   margin-bottom: 1rem;
+`;
+
+const RepsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const ExercisePropsContainer = styled.div`
@@ -34,6 +48,8 @@ const ExercisePropsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 export function AddExerciseModal({
@@ -48,15 +64,50 @@ export function AddExerciseModal({
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
         <Title>Add exercise</Title>
-        <input type="text" placeholder="Exercise name..." />
+        <input
+          name="exercise-name"
+          type="text"
+          placeholder="Exercise name..."
+        />
         <ExercisePropsContainer>
           <select name="category-select">
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
-                {cat.category_name}
+                {capitalize(cat.category_name)}
               </option>
             ))}
           </select>
+          <select name="exercise-difficulty-select">
+            {exerciseDifficultyOptions.map((diff) => (
+              <option key={diff} value={diff}>
+                {capitalize(diff)}
+              </option>
+            ))}
+          </select>
+          <RepsWrapper>
+            <span>Easy min reps</span>
+            <input name="easy-min" type="number" />
+          </RepsWrapper>
+          <RepsWrapper>
+            <span>Easy max reps</span>
+            <input name="easy-max" type="number" />
+          </RepsWrapper>
+          <RepsWrapper>
+            <span>Medium min reps</span>
+            <input name="medium-min" type="number" />
+          </RepsWrapper>
+          <RepsWrapper>
+            <span>Medium max reps</span>
+            <input name="medium-max" type="number" />
+          </RepsWrapper>
+          <RepsWrapper>
+            <span>Hard min reps</span>
+            <input name="hard-min" type="number" />
+          </RepsWrapper>
+          <RepsWrapper>
+            <span>Hard max reps</span>
+            <input name="hard-max" type="number" />
+          </RepsWrapper>
         </ExercisePropsContainer>
       </ModalBox>
     </Overlay>
