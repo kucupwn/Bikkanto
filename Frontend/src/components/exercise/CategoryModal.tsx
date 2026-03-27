@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import styled from "styled-components";
 import type { Category } from "../../types/exerciseTypes";
 
@@ -53,6 +53,16 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
   if (!isOpen) return null;
 
   const [operation, setOperation] = useState<Operations>(null);
+  const [newExerciseName, setNewExerciseName] = useState<string>("");
+
+  function handleExerciseNameInput(e: ChangeEvent<HTMLInputElement>) {
+    setNewExerciseName(e.target.value);
+  }
+
+  function handleAddExercise() {
+    console.log(newExerciseName);
+    onClose();
+  }
 
   return (
     <Overlay onClick={onClose}>
@@ -69,8 +79,12 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
         {operation === "add" && (
           <OperationsContainer>
             <Title>Add new category name</Title>
-            <input type="text" placeholder="Category name..." />
-            <Button>Add</Button>
+            <input
+              type="text"
+              placeholder="Category name..."
+              onChange={(e) => handleExerciseNameInput(e)}
+            />
+            <Button onClick={handleAddExercise}>Add</Button>
           </OperationsContainer>
         )}
         {operation === "remove" && (
