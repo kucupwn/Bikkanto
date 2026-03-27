@@ -1,6 +1,7 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import styled from "styled-components";
 import type { Category } from "../../types/exerciseTypes";
+import { capitalize } from "../../utils";
 
 interface Props {
   isOpen: boolean;
@@ -50,13 +51,13 @@ const ButtonWrapper = styled.div`
 type Operations = "add" | "remove" | null;
 
 export function CategoryModal({ isOpen, onClose, categories }: Props) {
+  if (!isOpen) return null;
+
   const [operation, setOperation] = useState<Operations>(null);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(
-    categories[0].id ?? 0,
+    categories[0]?.id ?? 0,
   );
-
-  if (!isOpen) return null;
 
   function handleCategoryNameInput(e: ChangeEvent<HTMLInputElement>) {
     setNewCategoryName(e.target.value);
@@ -75,6 +76,13 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
     console.log(selectedCategoryId);
     onClose();
   }
+
+  useEffect(() => {
+    if (!isOpen) {
+      setOperation(null);
+      setNewCategoryName("");
+    }
+  }, [isOpen]);
 
   return (
     <Overlay onClick={onClose}>
@@ -110,7 +118,7 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.category_name}
+                  {capitalize(cat.category_name)}
                 </option>
               ))}
             </select>
