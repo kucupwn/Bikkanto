@@ -71,6 +71,11 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
     onClose();
   }
 
+  function handleRemoveCategory() {
+    console.log(selectedCategory);
+    onClose();
+  }
+
   return (
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
@@ -109,7 +114,7 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
                 </option>
               ))}
             </select>
-            <Button>Remove</Button>
+            <Button onClick={handleRemoveCategory}>Remove</Button>
           </OperationsContainer>
         )}
       </ModalBox>
