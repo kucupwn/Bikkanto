@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Nav = styled.nav`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 1rem;
   background-color: #aaa;
@@ -28,15 +28,24 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+const AuthWrapper = styled.div``;
+
 const links = [
   { name: "Home", path: "/" },
   { name: "Roll", path: "/roll" },
   { name: "Exercises", path: "/exercises" },
   { name: "History", path: "/history" },
-  { name: "Login", path: "/login" },
 ];
 
 export function Navbar() {
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  }
+
   return (
     <>
       <Nav>
@@ -47,6 +56,15 @@ export function Navbar() {
             </li>
           ))}
         </NavList>
+        <AuthWrapper>
+          {isLoggedIn ? (
+            <button onClick={handleLogout}>Logout</button>
+          ) : (
+            <StyledNavLink to={"/login"}>
+              <button>Login</button>
+            </StyledNavLink>
+          )}
+        </AuthWrapper>
       </Nav>
     </>
   );

@@ -46,7 +46,7 @@ export function Login() {
       const data = res.data;
 
       localStorage.setItem("token", data.access_token);
-      console.log("Logged in");
+      window.location.href = "/";
     } catch (err) {
       console.error(err);
     }
