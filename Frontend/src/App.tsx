@@ -5,6 +5,7 @@ import { Home } from "./pages/Home";
 import { Roll } from "./pages/Roll";
 import { Exercises } from "./pages/Exercises";
 import { History } from "./pages/History";
+import { Login } from "./pages/Login";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -23,6 +24,7 @@ export function App() {
         <Route path="/roll" element={<Roll />} />
         <Route path="/exercises" element={<Exercises />} />
         <Route path="/history" element={<History />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </>
   );

@@ -33,6 +33,7 @@ const links = [
   { name: "Roll", path: "/roll" },
   { name: "Exercises", path: "/exercises" },
   { name: "History", path: "/history" },
+  { name: "Login", path: "/login" },
 ];
 
 export function Navbar() {
