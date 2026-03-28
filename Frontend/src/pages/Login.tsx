@@ -1,15 +1,6 @@
+import { useState } from "react";
 import styled from "styled-components";
-
-export interface AuthUser {
-  id: number;
-  username: string;
-  role: string;
-}
-
-export interface AuthResponse {
-  access_token: string;
-  token_type: string;
-}
+import { api } from "../api/api";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -25,19 +16,64 @@ const UserInputWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
+export interface AuthUser {
+  id: number;
+  username: string;
+  role: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+}
+
 export function Login() {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  async function handleLogin() {
+    try {
+      const params = new URLSearchParams();
+      params.append("username", username);
+      params.append("password", password);
+
+      const res = await api.post<AuthResponse>("/auth/token", params, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      const data = res.data;
+
+      localStorage.setItem("token", data.access_token);
+      console.log("Logged in");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <LoginContainer>
         <UserInputWrapper>
           <span>Username</span>
-          <input type="text" name="username" />
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </UserInputWrapper>
         <UserInputWrapper>
           <span>Password</span>
-          <input type="password" name="password" />
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </UserInputWrapper>
-        <button>Login</button>
+        <button onClick={handleLogin}>Login</button>
       </LoginContainer>
     </>
   );
