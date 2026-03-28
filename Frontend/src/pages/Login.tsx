@@ -11,24 +11,34 @@ export interface AuthResponse {
   token_type: string;
 }
 
+const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const UserInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-self: center;
   max-width: 300px;
+  margin-bottom: 1rem;
 `;
 
 export function Login() {
   return (
     <>
-      <UserInputWrapper>
-        <span>Username</span>
-        <input type="text" name="username" />
-      </UserInputWrapper>
-      <UserInputWrapper>
-        <span>Password</span>
-        <input type="password" name="password" />
-      </UserInputWrapper>
+      <LoginContainer>
+        <UserInputWrapper>
+          <span>Username</span>
+          <input type="text" name="username" />
+        </UserInputWrapper>
+        <UserInputWrapper>
+          <span>Password</span>
+          <input type="password" name="password" />
+        </UserInputWrapper>
+        <button>Login</button>
+      </LoginContainer>
     </>
   );
 }
