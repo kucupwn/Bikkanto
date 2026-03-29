@@ -98,7 +98,18 @@ export function AddExerciseModal({
     });
   }
 
-  function handleAddExercise() {}
+  function handleAddExercise() {
+    const existing = exercises.find(
+      (ex) => ex.exercise_name === newExercise.exercise_name.toLowerCase(),
+    );
+
+    if (existing) {
+      console.error(`${newExercise.exercise_name} already exists.`);
+    } else {
+      console.log(newExercise);
+      onClose();
+    }
+  }
 
   return (
     <Overlay onClick={onClose}>
@@ -195,7 +206,7 @@ export function AddExerciseModal({
             />
           </InputWrapper>
         </ExercisePropsContainer>
-        <Button>Add</Button>
+        <Button onClick={handleAddExercise}>Add</Button>
       </ModalBox>
     </Overlay>
   );
