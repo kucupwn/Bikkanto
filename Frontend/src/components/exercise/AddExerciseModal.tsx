@@ -81,10 +81,21 @@ export function AddExerciseModal({
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
 
-    setNewExercise((prev) => ({
-      ...prev,
-      [name]: e.target.type === "number" ? Number(value) : value,
-    }));
+    setNewExercise((prev) => {
+      if (name === "category_id") {
+        const selected = categories.find((cat) => cat.id === Number(value));
+        return {
+          ...prev,
+          category_id: Number(value),
+          category_name: selected?.category_name ?? "",
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: e.target.type === "number" ? Number(value) : value,
+      };
+    });
   }
 
   function handleAddExercise() {}
