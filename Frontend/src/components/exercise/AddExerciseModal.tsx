@@ -5,7 +5,7 @@ import {
   type Exercise,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -78,6 +78,15 @@ export function AddExerciseModal({
     category_name: categories[0]?.category_name ?? "",
   });
 
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const { name, value } = e.target;
+
+    setNewExercise((prev) => ({
+      ...prev,
+      [name]: e.target.type === "number" ? Number(value) : value,
+    }));
+  }
+
   function handleAddExercise() {}
 
   return (
@@ -85,14 +94,20 @@ export function AddExerciseModal({
       <ModalBox onClick={(e) => e.stopPropagation()}>
         <Title>Add exercise</Title>
         <input
-          name="exercise-name"
+          name="exercise_name"
           type="text"
           placeholder="Exercise name..."
+          value={newExercise.exercise_name}
+          onChange={handleChange}
         />
         <ExercisePropsContainer>
           <InputWrapper>
             <span>Category</span>
-            <select name="category-select">
+            <select
+              name="category_id"
+              value={newExercise.category_id}
+              onChange={handleChange}
+            >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {capitalize(cat.category_name)}
@@ -102,7 +117,11 @@ export function AddExerciseModal({
           </InputWrapper>
           <InputWrapper>
             <span>Difficulty</span>
-            <select name="exercise-difficulty-select">
+            <select
+              name="difficulty"
+              value={newExercise.difficulty}
+              onChange={handleChange}
+            >
               {exerciseDifficultyOptions.map((diff) => (
                 <option key={diff} value={diff}>
                   {capitalize(diff)}
@@ -112,27 +131,57 @@ export function AddExerciseModal({
           </InputWrapper>
           <InputWrapper>
             <span>Easy min reps</span>
-            <input name="easy-min" type="number" />
+            <input
+              name="easy_min"
+              type="number"
+              value={newExercise.easy_min}
+              onChange={handleChange}
+            />
           </InputWrapper>
           <InputWrapper>
             <span>Easy max reps</span>
-            <input name="easy-max" type="number" />
+            <input
+              name="easy_max"
+              type="number"
+              value={newExercise.easy_max}
+              onChange={handleChange}
+            />
           </InputWrapper>
           <InputWrapper>
             <span>Medium min reps</span>
-            <input name="medium-min" type="number" />
+            <input
+              name="medium_min"
+              type="number"
+              value={newExercise.medium_min}
+              onChange={handleChange}
+            />
           </InputWrapper>
           <InputWrapper>
             <span>Medium max reps</span>
-            <input name="medium-max" type="number" />
+            <input
+              name="medium_max"
+              type="number"
+              value={newExercise.medium_max}
+              onChange={handleChange}
+            />
           </InputWrapper>
           <InputWrapper>
             <span>Hard min reps</span>
-            <input name="hard-min" type="number" />
+            <input
+              name="hard_min"
+              type="number"
+              value={newExercise.hard_min}
+              onChange={handleChange}
+            />
           </InputWrapper>
           <InputWrapper>
             <span>Hard max reps</span>
-            <input name="hard-max" type="number" />
+            <input
+              name="hard_max"
+              type="number"
+              value={newExercise.hard_max}
+              onChange={handleChange}
+            />
           </InputWrapper>
         </ExercisePropsContainer>
         <Button>Add</Button>
