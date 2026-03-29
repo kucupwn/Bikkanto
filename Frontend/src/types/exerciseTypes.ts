@@ -1,5 +1,5 @@
 export interface Exercise {
-  id: number;
+  id?: number;
   exercise_name: string;
   difficulty: ExerciseDifficulty;
   easy_min: number;
