@@ -38,7 +38,7 @@ const Title = styled.h2`
   margin-bottom: 1rem;
 `;
 
-const RepsWrapper = styled.div`
+const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -49,6 +49,10 @@ const ExercisePropsContainer = styled.div`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 1rem;
+  margin-top: 1rem;
+`;
+
+const Button = styled.button`
   margin-top: 1rem;
 `;
 
@@ -70,45 +74,52 @@ export function AddExerciseModal({
           placeholder="Exercise name..."
         />
         <ExercisePropsContainer>
-          <select name="category-select">
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {capitalize(cat.category_name)}
-              </option>
-            ))}
-          </select>
-          <select name="exercise-difficulty-select">
-            {exerciseDifficultyOptions.map((diff) => (
-              <option key={diff} value={diff}>
-                {capitalize(diff)}
-              </option>
-            ))}
-          </select>
-          <RepsWrapper>
+          <InputWrapper>
+            <span>Category</span>
+            <select name="category-select">
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {capitalize(cat.category_name)}
+                </option>
+              ))}
+            </select>
+          </InputWrapper>
+          <InputWrapper>
+            <span>Difficulty</span>
+            <select name="exercise-difficulty-select">
+              {exerciseDifficultyOptions.map((diff) => (
+                <option key={diff} value={diff}>
+                  {capitalize(diff)}
+                </option>
+              ))}
+            </select>
+          </InputWrapper>
+          <InputWrapper>
             <span>Easy min reps</span>
             <input name="easy-min" type="number" />
-          </RepsWrapper>
-          <RepsWrapper>
+          </InputWrapper>
+          <InputWrapper>
             <span>Easy max reps</span>
             <input name="easy-max" type="number" />
-          </RepsWrapper>
-          <RepsWrapper>
+          </InputWrapper>
+          <InputWrapper>
             <span>Medium min reps</span>
             <input name="medium-min" type="number" />
-          </RepsWrapper>
-          <RepsWrapper>
+          </InputWrapper>
+          <InputWrapper>
             <span>Medium max reps</span>
             <input name="medium-max" type="number" />
-          </RepsWrapper>
-          <RepsWrapper>
+          </InputWrapper>
+          <InputWrapper>
             <span>Hard min reps</span>
             <input name="hard-min" type="number" />
-          </RepsWrapper>
-          <RepsWrapper>
+          </InputWrapper>
+          <InputWrapper>
             <span>Hard max reps</span>
             <input name="hard-max" type="number" />
-          </RepsWrapper>
+          </InputWrapper>
         </ExercisePropsContainer>
+        <Button>Add</Button>
       </ModalBox>
     </Overlay>
   );
