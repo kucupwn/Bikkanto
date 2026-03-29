@@ -5,6 +5,7 @@ import {
   type Exercise,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
+import { useState } from "react";
 
 interface Props {
   isOpen: boolean;
@@ -63,6 +64,21 @@ export function AddExerciseModal({
   categories,
 }: Props) {
   if (!isOpen) return null;
+
+  const [newExercise, setNewExercise] = useState<Exercise>({
+    exercise_name: "",
+    difficulty: "beginner",
+    easy_min: 1,
+    easy_max: 1,
+    medium_min: 1,
+    medium_max: 1,
+    hard_min: 1,
+    hard_max: 1,
+    category_id: categories[0]?.id ?? 0,
+    category_name: categories[0]?.category_name ?? "",
+  });
+
+  function handleAddExercise() {}
 
   return (
     <Overlay onClick={onClose}>
