@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Nav = styled.nav`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 1rem;
   background-color: #aaa;
@@ -28,7 +28,10 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-const AuthWrapper = styled.div``;
+const AuthWrapper = styled.div`
+  position: absolute;
+  right: 1rem;
+`;
 
 const links = [
   { name: "Home", path: "/" },
