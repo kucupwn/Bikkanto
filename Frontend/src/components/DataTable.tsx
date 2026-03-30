@@ -22,6 +22,8 @@ export function DataTable({ data, columns }: Props) {
         height={400}
         stretchH="all"
         readOnly={true}
+        filters={true}
+        dropdownMenu={true}
         licenseKey="non-commercial-and-evaluation"
       />
     </div>
