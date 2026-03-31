@@ -113,16 +113,21 @@ export function FullExerciseModal({
   }
 
   function handleSubmitExercise() {
-    const existing = exercises.find(
-      (ex) => ex.exercise_name === exercise.exercise_name.toLowerCase(),
-    );
+    if (mode === "add") {
+      const existing = exercises.find(
+        (ex) => ex.exercise_name === exercise.exercise_name.toLowerCase(),
+      );
 
-    if (existing) {
-      console.error(`${exercise.exercise_name} already exists.`);
+      if (existing) {
+        console.error(`${exercise.exercise_name} already exists.`);
+      } else {
+        console.log(exercise);
+      }
     } else {
       console.log(exercise);
-      onClose();
     }
+
+    onClose();
   }
 
   return (
