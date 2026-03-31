@@ -1,17 +1,18 @@
 import styled from "styled-components";
 import {
-  exerciseDifficultyOptions,
-  type Category,
   type Exercise,
+  type Category,
+  exerciseDifficultyOptions,
 } from "../../types/exerciseTypes";
-import { capitalize } from "../../utils";
 import { useState, type ChangeEvent } from "react";
+import { capitalize } from "../../utils";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   exercises: Exercise[];
   categories: Category[];
+  mode: "add" | "edit";
 }
 
 const Overlay = styled.div`
@@ -57,31 +58,44 @@ const Button = styled.button`
   margin-top: 1rem;
 `;
 
-export function AddExerciseModal({
+export function FullExerciseModal({
   isOpen,
   onClose,
   exercises,
   categories,
+  mode,
 }: Props) {
   if (!isOpen) return null;
 
-  const [newExercise, setNewExercise] = useState<Exercise>({
-    exercise_name: "",
-    difficulty: "beginner",
-    easy_min: 1,
-    easy_max: 1,
-    medium_min: 1,
-    medium_max: 1,
-    hard_min: 1,
-    hard_max: 1,
-    category_id: categories[0]?.id ?? 0,
-    category_name: categories[0]?.category_name ?? "",
-  });
+  const [exercise, setExercise] = useState<Exercise>(
+    mode === "edit"
+      ? exercises[0]
+      : {
+          exercise_name: "",
+          difficulty: "beginner",
+          easy_min: 1,
+          easy_max: 1,
+          medium_min: 1,
+          medium_max: 1,
+          hard_min: 1,
+          hard_max: 1,
+          category_id: categories[0]?.id ?? 0,
+          category_name: categories[0]?.category_name ?? "",
+        },
+  );
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
 
-    setNewExercise((prev) => {
+    if (name === "exercise_id" && mode === "edit") {
+      const selected = exercises.find((ex) => ex.id === Number(value));
+      if (selected) {
+        setExercise(selected);
+      }
+      return;
+    }
+
+    setExercise((prev) => {
       if (name === "category_id") {
         const selected = categories.find((cat) => cat.id === Number(value));
         return {
@@ -98,15 +112,15 @@ export function AddExerciseModal({
     });
   }
 
-  function handleAddExercise() {
+  function handleSubmitExercise() {
     const existing = exercises.find(
-      (ex) => ex.exercise_name === newExercise.exercise_name.toLowerCase(),
+      (ex) => ex.exercise_name === exercise.exercise_name.toLowerCase(),
     );
 
     if (existing) {
-      console.error(`${newExercise.exercise_name} already exists.`);
+      console.error(`${exercise.exercise_name} already exists.`);
     } else {
-      console.log(newExercise);
+      console.log(exercise);
       onClose();
     }
   }
@@ -114,20 +128,34 @@ export function AddExerciseModal({
   return (
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
-        <Title>Add exercise</Title>
-        <input
-          name="exercise_name"
-          type="text"
-          placeholder="Exercise name..."
-          value={newExercise.exercise_name}
-          onChange={handleChange}
-        />
+        <Title>Edit exercise</Title>
+        {mode === "edit" ? (
+          <select
+            name="exercise_id"
+            value={exercise.exercise_name}
+            onChange={handleChange}
+          >
+            {exercises.map((ex) => (
+              <option key={ex.id} value={ex.id}>
+                {capitalize(ex.exercise_name)}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            name="exercise_name"
+            type="text"
+            placeholder="Exercise name..."
+            value={exercise.exercise_name}
+            onChange={handleChange}
+          />
+        )}
         <ExercisePropsContainer>
           <InputWrapper>
             <span>Category</span>
             <select
               name="category_id"
-              value={newExercise.category_id}
+              value={exercise.category_id}
               onChange={handleChange}
             >
               {categories.map((cat) => (
@@ -141,7 +169,7 @@ export function AddExerciseModal({
             <span>Difficulty</span>
             <select
               name="difficulty"
-              value={newExercise.difficulty}
+              value={exercise.difficulty}
               onChange={handleChange}
             >
               {exerciseDifficultyOptions.map((diff) => (
@@ -156,7 +184,7 @@ export function AddExerciseModal({
             <input
               name="easy_min"
               type="number"
-              value={newExercise.easy_min}
+              value={exercise.easy_min}
               onChange={handleChange}
             />
           </InputWrapper>
@@ -165,7 +193,7 @@ export function AddExerciseModal({
             <input
               name="easy_max"
               type="number"
-              value={newExercise.easy_max}
+              value={exercise.easy_max}
               onChange={handleChange}
             />
           </InputWrapper>
@@ -174,7 +202,7 @@ export function AddExerciseModal({
             <input
               name="medium_min"
               type="number"
-              value={newExercise.medium_min}
+              value={exercise.medium_min}
               onChange={handleChange}
             />
           </InputWrapper>
@@ -183,7 +211,7 @@ export function AddExerciseModal({
             <input
               name="medium_max"
               type="number"
-              value={newExercise.medium_max}
+              value={exercise.medium_max}
               onChange={handleChange}
             />
           </InputWrapper>
@@ -192,7 +220,7 @@ export function AddExerciseModal({
             <input
               name="hard_min"
               type="number"
-              value={newExercise.hard_min}
+              value={exercise.hard_min}
               onChange={handleChange}
             />
           </InputWrapper>
@@ -201,12 +229,12 @@ export function AddExerciseModal({
             <input
               name="hard_max"
               type="number"
-              value={newExercise.hard_max}
+              value={exercise.hard_max}
               onChange={handleChange}
             />
           </InputWrapper>
         </ExercisePropsContainer>
-        <Button onClick={handleAddExercise}>Add</Button>
+        <Button onClick={handleSubmitExercise}>Submit</Button>
       </ModalBox>
     </Overlay>
   );
