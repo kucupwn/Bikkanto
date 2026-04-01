@@ -97,6 +97,13 @@ export function Exercises() {
         categories={categories}
         mode={"edit"}
       />
+      <FullExerciseModal
+        isOpen={activeModal === "delete"}
+        onClose={() => setActiveModal(null)}
+        exercises={exercises}
+        categories={categories}
+        mode={"delete"}
+      />
     </>
   );
 }

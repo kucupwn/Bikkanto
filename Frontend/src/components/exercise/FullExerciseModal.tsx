@@ -9,7 +9,7 @@ interface Props {
   onClose: () => void;
   exercises: Exercise[];
   categories: Category[];
-  mode: "add" | "edit";
+  mode: "add" | "edit" | "delete";
 }
 
 const Overlay = styled.div`
@@ -51,7 +51,7 @@ export function FullExerciseModal({
   if (!isOpen) return null;
 
   const [exercise, setExercise] = useState<Exercise>(
-    mode === "edit"
+    mode === "edit" || mode === "delete"
       ? exercises[0]
       : {
           exercise_name: "",
@@ -70,7 +70,7 @@ export function FullExerciseModal({
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
 
-    if (name === "exercise_id" && mode === "edit") {
+    if (name === "exercise_id" && (mode === "edit" || mode === "delete")) {
       const selected = exercises.find((ex) => ex.id === Number(value));
       if (selected) {
         setExercise(selected);
@@ -107,8 +107,10 @@ export function FullExerciseModal({
       } else {
         console.log(exercise);
       }
-    } else {
+    } else if (mode === "edit") {
       console.log(exercise);
+    } else if (mode === "delete") {
+      console.log(exercise.id);
     }
 
     onClose();
@@ -117,8 +119,8 @@ export function FullExerciseModal({
   return (
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>
-        <Title>Edit exercise</Title>
-        {mode === "edit" ? (
+        <Title>{mode === "edit" ? "Edit" : "Delete"} exercise</Title>
+        {mode === "edit" || mode === "delete" ? (
           <select
             name="exercise_id"
             value={exercise.exercise_name}
@@ -139,11 +141,13 @@ export function FullExerciseModal({
             onChange={handleChange}
           />
         )}
-        <ExercisePropsInput
-          exercise={exercise}
-          categories={categories}
-          onHandleChange={handleChange}
-        />
+        {mode !== "delete" && (
+          <ExercisePropsInput
+            exercise={exercise}
+            categories={categories}
+            onHandleChange={handleChange}
+          />
+        )}
         <Button onClick={handleSubmitExercise}>Submit</Button>
       </ModalBox>
     </Overlay>
