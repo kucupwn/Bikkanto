@@ -11,6 +11,7 @@ interface Props {
   exercises: Exercise[];
   categories: Category[];
   mode: "add" | "edit" | "delete";
+  onSuccess: () => Promise<void>;
 }
 
 const Overlay = styled.div`
@@ -48,6 +49,7 @@ export function FullExerciseModal({
   exercises,
   categories,
   mode,
+  onSuccess,
 }: Props) {
   if (!isOpen) return null;
 
@@ -115,6 +117,7 @@ export function FullExerciseModal({
     }
 
     onClose();
+    onSuccess();
   }
 
   return (

@@ -31,41 +31,41 @@ export function Exercises() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
 
-  useEffect(() => {
-    async function fetchExercises() {
-      try {
-        const res = await api.get("/exercises");
-        const exercises = res.data;
+  async function fetchExercises() {
+    try {
+      const res = await api.get("/exercises");
+      const exercises = res.data;
 
-        setExercises(exercises);
+      setExercises(exercises);
 
-        if (exercises.length > 0) {
-          const cols = EXERCISE_COLUMNS_ORDER.map((key) => ({
-            data: key,
-            title: capitalize(key).replace("_", " "),
-          }));
-          setColumns(cols);
-        }
-      } catch (err) {
-        console.error(err);
+      if (exercises.length > 0) {
+        const cols = EXERCISE_COLUMNS_ORDER.map((key) => ({
+          data: key,
+          title: capitalize(key).replace("_", " "),
+        }));
+        setColumns(cols);
       }
+    } catch (err) {
+      console.error(err);
     }
+  }
 
+  async function fetchCategories() {
+    try {
+      const res = await api("/exercises/categories");
+      const categories = res.data;
+
+      setCategories(categories);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
     fetchExercises();
   }, []);
 
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await api("/exercises/categories");
-        const categories = res.data;
-
-        setCategories(categories);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
     fetchCategories();
   }, []);
 
@@ -89,6 +89,7 @@ export function Exercises() {
         exercises={exercises}
         categories={categories}
         mode={"add"}
+        onSuccess={fetchExercises}
       />
       <FullExerciseModal
         isOpen={activeModal === "edit"}
@@ -96,6 +97,7 @@ export function Exercises() {
         exercises={exercises}
         categories={categories}
         mode={"edit"}
+        onSuccess={fetchExercises}
       />
       <FullExerciseModal
         isOpen={activeModal === "delete"}
@@ -103,6 +105,7 @@ export function Exercises() {
         exercises={exercises}
         categories={categories}
         mode={"delete"}
+        onSuccess={fetchExercises}
       />
     </>
   );
