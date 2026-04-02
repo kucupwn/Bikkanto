@@ -13,7 +13,7 @@ export interface Exercise {
 }
 
 export interface Category {
-  id: number;
+  id?: number;
   category_name: string;
 }
 

@@ -82,6 +82,7 @@ export function Exercises() {
         isOpen={activeModal === "category"}
         onClose={() => setActiveModal(null)}
         categories={categories}
+        onSuccess={fetchCategories}
       />
       <FullExerciseModal
         isOpen={activeModal === "add"}

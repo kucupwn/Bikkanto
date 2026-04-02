@@ -2,11 +2,13 @@ import { useEffect, useState, type ChangeEvent } from "react";
 import styled from "styled-components";
 import type { Category } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
+import { api } from "../../api/api";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   categories: Category[];
+  onSuccess: () => Promise<void>;
 }
 
 const Overlay = styled.div`
@@ -48,19 +50,26 @@ const ButtonWrapper = styled.div`
   gap: 1rem;
 `;
 
-type Operations = "add" | "remove" | null;
+type Operations = "add" | "delete" | null;
 
-export function CategoryModal({ isOpen, onClose, categories }: Props) {
+export function CategoryModal({
+  isOpen,
+  onClose,
+  categories,
+  onSuccess,
+}: Props) {
   if (!isOpen) return null;
 
   const [operation, setOperation] = useState<Operations>(null);
-  const [newCategoryName, setNewCategoryName] = useState<string>("");
+  const [newCategory, setNewCategory] = useState<Category>({
+    category_name: "",
+  });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(
     categories[0]?.id ?? 0,
   );
 
   function handleCategoryNameInput(e: ChangeEvent<HTMLInputElement>) {
-    setNewCategoryName(e.target.value);
+    setNewCategory({ category_name: e.target.value });
   }
 
   function handleCategoryNameSelect(e: ChangeEvent<HTMLSelectElement>) {
@@ -68,19 +77,23 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
   }
 
   function handleAddCategory() {
-    console.log(newCategoryName);
+    api.post("/exercises/categories", newCategory);
+
     onClose();
+    onSuccess();
   }
 
   function handleRemoveCategory() {
-    console.log(selectedCategoryId);
+    api.delete(`/exercises/categories/${selectedCategoryId}`);
+
     onClose();
+    onSuccess();
   }
 
   useEffect(() => {
     if (!isOpen) {
       setOperation(null);
-      setNewCategoryName("");
+      setNewCategory({ category_name: "" });
     }
   }, [isOpen]);
 
@@ -92,7 +105,7 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
             <Title>Choose category operation</Title>
             <ButtonWrapper>
               <Button onClick={() => setOperation("add")}>Add</Button>
-              <Button onClick={() => setOperation("remove")}>Remove</Button>
+              <Button onClick={() => setOperation("delete")}>Delete</Button>
             </ButtonWrapper>
           </OperationsContainer>
         )}
@@ -101,18 +114,19 @@ export function CategoryModal({ isOpen, onClose, categories }: Props) {
             <Title>Add new category name</Title>
             <input
               type="text"
+              name="category_name"
               placeholder="Category name..."
-              value={newCategoryName}
+              value={newCategory.category_name}
               onChange={handleCategoryNameInput}
             />
             <Button onClick={handleAddCategory}>Add</Button>
           </OperationsContainer>
         )}
-        {operation === "remove" && (
+        {operation === "delete" && (
           <OperationsContainer>
-            <Title>Select category to remove</Title>
+            <Title>Select category to delete</Title>
             <select
-              name="category-select"
+              name="id"
               value={selectedCategoryId}
               onChange={handleCategoryNameSelect}
             >
