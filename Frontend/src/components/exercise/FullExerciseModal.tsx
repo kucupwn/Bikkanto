@@ -98,26 +98,30 @@ export function FullExerciseModal({
     });
   }
 
-  function handleSubmitExercise() {
-    if (mode === "add") {
-      const existing = exercises.find(
-        (ex) => ex.exercise_name === exercise.exercise_name.toLowerCase(),
-      );
+  async function handleSubmitExercise() {
+    try {
+      if (mode === "add") {
+        const existing = exercises.find(
+          (ex) => ex.exercise_name === exercise.exercise_name.toLowerCase(),
+        );
 
-      if (existing) {
-        console.error(`${exercise.exercise_name} already exists.`);
-        return;
-      } else {
-        api.post("/exercises", exercise);
+        if (existing) {
+          console.error(`${exercise.exercise_name} already exists.`);
+          return;
+        } else {
+          await api.post("/exercises", exercise);
+        }
+      } else if (mode === "edit") {
+        await api.put(`/exercises/${exercise.id}`, exercise);
+      } else if (mode === "delete") {
+        await api.delete(`/exercises/${exercise.id}`);
       }
-    } else if (mode === "edit") {
-      api.put(`/exercises/${exercise.id}`, exercise);
-    } else if (mode === "delete") {
-      api.delete(`/exercises/${exercise.id}`);
-    }
 
-    onClose();
-    onSuccess();
+      await onSuccess();
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
