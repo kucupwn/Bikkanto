@@ -3,6 +3,7 @@ import { type Exercise, type Category } from "../../types/exerciseTypes";
 import { useState, type ChangeEvent } from "react";
 import { capitalize } from "../../utils";
 import { ExercisePropsInput } from "./ExercisePropsInput";
+import { api } from "../../api/api";
 
 interface Props {
   isOpen: boolean;
@@ -105,12 +106,12 @@ export function FullExerciseModal({
         console.error(`${exercise.exercise_name} already exists.`);
         return;
       } else {
-        console.log(exercise);
+        api.post("/exercises", exercise);
       }
     } else if (mode === "edit") {
-      console.log(exercise);
+      api.patch(`/exercises/${exercise.id}`, exercise);
     } else if (mode === "delete") {
-      console.log(exercise.id);
+      api.delete(`/exercises/${exercise.id}`);
     }
 
     onClose();
@@ -123,7 +124,7 @@ export function FullExerciseModal({
         {mode === "edit" || mode === "delete" ? (
           <select
             name="exercise_id"
-            value={exercise.exercise_name}
+            value={exercise.id}
             onChange={handleChange}
           >
             {exercises.map((ex) => (
