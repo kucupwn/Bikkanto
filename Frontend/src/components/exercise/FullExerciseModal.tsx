@@ -109,7 +109,7 @@ export function FullExerciseModal({
         api.post("/exercises", exercise);
       }
     } else if (mode === "edit") {
-      api.patch(`/exercises/${exercise.id}`, exercise);
+      api.put(`/exercises/${exercise.id}`, exercise);
     } else if (mode === "delete") {
       api.delete(`/exercises/${exercise.id}`);
     }
