@@ -76,18 +76,24 @@ export function CategoryModal({
     setSelectedCategoryId(Number(e.target.value));
   }
 
-  function handleAddCategory() {
-    api.post("/exercises/categories", newCategory);
-
-    onClose();
-    onSuccess();
+  async function handleAddCategory() {
+    try {
+      await api.post("/exercises/categories", newCategory);
+      await onSuccess();
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  function handleRemoveCategory() {
-    api.delete(`/exercises/categories/${selectedCategoryId}`);
-
-    onClose();
-    onSuccess();
+  async function handleRemoveCategory() {
+    try {
+      await api.delete(`/exercises/categories/${selectedCategoryId}`);
+      await onSuccess();
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   useEffect(() => {
