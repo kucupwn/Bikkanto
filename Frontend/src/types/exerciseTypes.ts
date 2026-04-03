@@ -37,20 +37,6 @@ export interface WorkoutEntry {
   reps: number;
 }
 
-export interface WorkoutHistory {
-  id?: number;
-  date_complete: string;
-  exercise_id: number;
-  exercise_name?: string;
-  category_id: number;
-  category_name?: string;
-  difficulty: ExerciseDifficulty;
-  reps_difficulty: RepsDifficulty;
-  cycles: number;
-  repetitions: number;
-  sum_repetitions: number;
-}
-
 export const NUMERIC_COLUMNS = [
   "easy_min",
   "easy_max",

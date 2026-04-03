@@ -5,7 +5,6 @@ import {
   type Category,
   type Exercise,
   type WorkoutEntry,
-  type WorkoutHistory,
 } from "../types/exerciseTypes";
 import {
   WorkoutSettings,
@@ -13,6 +12,7 @@ import {
 } from "../components/roll/WorkoutSettings";
 import { SummaryTable } from "../components/roll/SummaryTable";
 import { StoredWorkout } from "../components/roll/StoredWorkout";
+import type { WorkoutHistory } from "../types/historyTypes";
 
 const RollContainer = styled.div`
   display: flex;

@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import { HISTORY_COLUMN_ORDER } from "../types/historyTypes";
+import {
+  HISTORY_COLUMN_ORDER,
+  type WorkoutHistory,
+} from "../types/historyTypes";
 import { capitalize } from "../utils";
 import { DataTable } from "../components/DataTable";
 
 export function History() {
-  const [history, setHistory] = useState<History[]>([]);
+  const [history, setHistory] = useState<WorkoutHistory[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
 
   async function fetchHistory() {
