@@ -103,8 +103,8 @@ export function Roll() {
     if (safeCycles <= 0) return;
 
     const historyEntries = getHistoryEntries();
-    console.log(historyEntries);
-    console.log("saved");
+
+    api.post("/history", historyEntries);
 
     setIsFinished(true);
     localStorage.removeItem("workout");
