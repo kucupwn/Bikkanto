@@ -45,7 +45,12 @@ export function Login() {
 
       const data = res.data;
 
+      const expiresIn = 6 * 60 * 60 * 1000;
+      const expiryTime = Date.now() + expiresIn;
+
       localStorage.setItem("token", data.access_token);
+      localStorage.setItem("token_expiry", expiryTime.toString());
+
       window.location.href = "/";
     } catch (err) {
       console.error(err);
