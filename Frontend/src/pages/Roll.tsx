@@ -62,7 +62,7 @@ export function Roll() {
     const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
 
     return {
-      exercise_id: exercise.id,
+      exercise_id: exercise.id!,
       exercise_name: exercise.exercise_name,
       category_id: exercise.category_id,
       category_name: exercise.category_name,
