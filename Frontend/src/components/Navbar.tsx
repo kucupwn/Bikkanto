@@ -7,6 +7,7 @@ const Nav = styled.nav`
   align-items: center;
   padding: 1rem;
   background-color: #aaa;
+  margin-bottom: 1rem;
 `;
 
 const NavList = styled.ul`
