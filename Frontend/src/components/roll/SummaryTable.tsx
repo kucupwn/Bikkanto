@@ -75,27 +75,29 @@ export function SummaryTable({
 
   return (
     <>
-      <WorkoutTable>
-        <thead>
-          <tr>
-            <TableHeader>Exercise Name</TableHeader>
-            <TableHeader>Exercise Difficulty</TableHeader>
-            <TableHeader>Reps Difficulty</TableHeader>
-            <TableHeader>Reps</TableHeader>
-          </tr>
-        </thead>
-
-        <tbody>
-          {workout!.map((entry, index) => (
-            <tr key={index}>
-              <Cell>{entry.exercise_name}</Cell>
-              <Cell>{entry.difficulty}</Cell>
-              <Cell>{entry.reps_difficulty}</Cell>
-              <Cell>{entry.reps}</Cell>
+      {!isFinished && (
+        <WorkoutTable>
+          <thead>
+            <tr>
+              <TableHeader>Exercise Name</TableHeader>
+              <TableHeader>Exercise Difficulty</TableHeader>
+              <TableHeader>Reps Difficulty</TableHeader>
+              <TableHeader>Reps</TableHeader>
             </tr>
-          ))}
-        </tbody>
-      </WorkoutTable>
+          </thead>
+
+          <tbody>
+            {workout!.map((entry, index) => (
+              <tr key={index}>
+                <Cell>{entry.exercise_name}</Cell>
+                <Cell>{entry.difficulty}</Cell>
+                <Cell>{entry.reps_difficulty}</Cell>
+                <Cell>{entry.reps}</Cell>
+              </tr>
+            ))}
+          </tbody>
+        </WorkoutTable>
+      )}
       {!hasAcceptedWorkout && (
         <ButtonWrapper>
           <Button onClick={resetWorkout}>Restart</Button>
@@ -112,6 +114,7 @@ export function SummaryTable({
           <Button onClick={onPostFinishedWorkout}>Finish</Button>
         </CyclesWrapper>
       )}
+      {isFinished && <h2>Good job! Workout saved.</h2>}
     </>
   );
 }
