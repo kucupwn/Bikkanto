@@ -193,6 +193,8 @@ export function Roll() {
             setCycles={setCycles}
             onPostFinishedWorkout={postFinishedWorkout}
             isFinished={isFinished}
+            selectedProperties={selectedProperties}
+            onGetRandomExercise={getRandomExercise}
           />
         )}
 

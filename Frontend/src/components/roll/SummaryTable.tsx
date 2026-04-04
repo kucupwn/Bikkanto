@@ -2,6 +2,7 @@ import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
+import { type ProperySelection } from "./WorkoutSettings";
 
 interface Props {
   workout: WorkoutEntry[] | null;
@@ -12,6 +13,11 @@ interface Props {
   setCycles: Dispatch<SetStateAction<number | "">>;
   onPostFinishedWorkout: () => void;
   isFinished: boolean;
+  selectedProperties: ProperySelection[];
+  onGetRandomExercise: (
+    selectedProps: ProperySelection,
+    usedIds: Set<number>,
+  ) => WorkoutEntry | null;
 }
 
 const WorkoutTable = styled.table`
@@ -31,6 +37,14 @@ const Cell = styled.td`
   padding: 8px;
   text-align: center;
   vertical-align: center;
+`;
+
+const RerollCell = styled.td`
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+  vertical-align: center;
+  cursor: pointer;
 `;
 
 const ButtonWrapper = styled.div`
@@ -57,6 +71,8 @@ export function SummaryTable({
   setCycles,
   onPostFinishedWorkout,
   isFinished,
+  selectedProperties,
+  onGetRandomExercise,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
@@ -71,6 +87,26 @@ export function SummaryTable({
 
   function handleCyclesInputChange(e: ChangeEvent<HTMLInputElement>) {
     setCycles(Number(e.target.value));
+  }
+
+  function handleReroll(index: number) {
+    if (!workout) return;
+
+    const usedIds = new Set(
+      workout.filter((_, i) => i !== index).map((entry) => entry.exercise_id),
+    );
+
+    const selectedProp = selectedProperties[index];
+    const newExercise = onGetRandomExercise(selectedProp, usedIds);
+
+    if (!newExercise) {
+      return;
+    }
+
+    const updatedWorkout = [...workout];
+    updatedWorkout[index] = newExercise;
+
+    setWorkout(updatedWorkout);
   }
 
   return (
@@ -93,6 +129,9 @@ export function SummaryTable({
                 <Cell>{entry.difficulty}</Cell>
                 <Cell>{entry.reps_difficulty}</Cell>
                 <Cell>{entry.reps}</Cell>
+                <RerollCell onClick={() => handleReroll(index)}>
+                  Reroll
+                </RerollCell>
               </tr>
             ))}
           </tbody>
