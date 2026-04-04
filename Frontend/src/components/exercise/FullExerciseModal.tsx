@@ -82,6 +82,13 @@ export function FullExerciseModal({
     }
 
     setExercise((prev) => {
+      if (name === "exercise_name") {
+        return {
+          ...prev,
+          exercise_name: value.toLowerCase(),
+        };
+      }
+
       if (name === "category_id") {
         const selected = categories.find((cat) => cat.id === Number(value));
         return {

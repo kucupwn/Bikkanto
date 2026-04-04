@@ -69,7 +69,7 @@ export function CategoryModal({
   );
 
   function handleCategoryNameInput(e: ChangeEvent<HTMLInputElement>) {
-    setNewCategory({ category_name: e.target.value });
+    setNewCategory({ category_name: e.target.value.toLowerCase() });
   }
 
   function handleCategoryNameSelect(e: ChangeEvent<HTMLSelectElement>) {
