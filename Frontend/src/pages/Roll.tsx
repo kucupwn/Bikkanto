@@ -102,8 +102,12 @@ export function Roll() {
       })
       .filter((entry): entry is WorkoutEntry => entry !== null);
 
-    setWorkout(rolledWorkout);
-    setMode("preview");
+    if (rolledWorkout.length !== selectedProperties.length) {
+      return;
+    } else {
+      setWorkout(rolledWorkout);
+      setMode("preview");
+    }
   }
 
   function getHistoryEntries(): WorkoutHistory[] {
