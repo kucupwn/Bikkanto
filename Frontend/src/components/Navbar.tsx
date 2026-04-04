@@ -1,5 +1,11 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import type { Dispatch, SetStateAction } from "react";
+
+interface Props {
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+}
 
 const Nav = styled.nav`
   display: flex;
@@ -41,13 +47,12 @@ const links = [
   { name: "History", path: "/history" },
 ];
 
-export function Navbar() {
-  const token = localStorage.getItem("token");
-  const isLoggedIn = !!token;
-
+export function Navbar({ isLoggedIn, setIsLoggedIn }: Props) {
   function handleLogout() {
     localStorage.removeItem("token");
     window.location.href = "/login";
+
+    setIsLoggedIn(false);
   }
 
   return (

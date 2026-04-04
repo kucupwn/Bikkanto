@@ -7,6 +7,7 @@ import { Exercises } from "./pages/Exercises";
 import { History } from "./pages/History";
 import { Login } from "./pages/Login";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
+import { useState } from "react";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -15,10 +16,14 @@ const Title = styled.h1`
 `;
 
 export function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
+    !!localStorage.getItem("token"),
+  );
+
   return (
     <>
       <Title>Bikkanto</Title>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
 
       <Routes>
         <Route path="/" element={<Home />} />
