@@ -92,9 +92,7 @@ export function SummaryTable({
   function handleReroll(index: number) {
     if (!workout) return;
 
-    const usedIds = new Set(
-      workout.filter((_, i) => i !== index).map((entry) => entry.exercise_id),
-    );
+    const usedIds = new Set(workout.map((entry) => entry.exercise_id));
 
     const selectedProp = selectedProperties[index];
     const newExercise = onGetRandomExercise(selectedProp, usedIds);
