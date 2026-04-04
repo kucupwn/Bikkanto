@@ -44,12 +44,27 @@ export function Roll() {
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
 
-  function getRandomExercise(selectedProp: ProperySelection): WorkoutEntry {
+  function getRandomExercise(
+    selectedProp: ProperySelection,
+    usedIds: Set<number>,
+  ): WorkoutEntry | null {
     const filtered = exercises.filter(
       (ex) =>
         ex.category_id === selectedProp.categoryId &&
-        ex.difficulty === selectedProp.exerciseDifficulty,
+        ex.difficulty === selectedProp.exerciseDifficulty &&
+        !usedIds.has(ex.id!),
     );
+
+    if (filtered.length === 0) {
+      const [missingCategory] = categories.filter(
+        (cat) => cat.id === selectedProp.categoryId,
+      );
+      console.error(
+        `There is no or not enough ${selectedProp.exerciseDifficulty.toUpperCase()} ${missingCategory.category_name.toUpperCase()}`,
+      );
+
+      return null;
+    }
 
     const exercise = filtered[Math.floor(Math.random() * filtered.length)];
 
@@ -73,9 +88,20 @@ export function Roll() {
   }
 
   function getWorkout() {
-    const rolledWorkout: WorkoutEntry[] = selectedProperties.map((exc) =>
-      getRandomExercise(exc),
-    );
+    const usedExerciseIds = new Set<number>();
+
+    const rolledWorkout: WorkoutEntry[] = selectedProperties
+      .map((exc) => {
+        const exercise = getRandomExercise(exc, usedExerciseIds);
+
+        if (exercise) {
+          usedExerciseIds.add(exercise.exercise_id);
+        }
+
+        return exercise;
+      })
+      .filter((entry): entry is WorkoutEntry => entry !== null);
+
     setWorkout(rolledWorkout);
     setMode("preview");
   }
