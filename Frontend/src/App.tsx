@@ -19,11 +19,16 @@ export function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
     !!localStorage.getItem("token"),
   );
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
 
   return (
     <>
       <Title>Bikkanto</Title>
-      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        setIsLoginOpen={setIsLoginOpen}
+      />
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -51,8 +56,8 @@ export function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} />
       </Routes>
+      {isLoginOpen && <Login onClose={() => setIsLoginOpen(false)} />}
     </>
   );
 }

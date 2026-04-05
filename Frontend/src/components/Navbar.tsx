@@ -5,6 +5,7 @@ import type { Dispatch, SetStateAction } from "react";
 interface Props {
   isLoggedIn: boolean;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  setIsLoginOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const Nav = styled.nav`
@@ -47,10 +48,9 @@ const links = [
   { name: "History", path: "/history" },
 ];
 
-export function Navbar({ isLoggedIn, setIsLoggedIn }: Props) {
+export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
   function handleLogout() {
     localStorage.removeItem("token");
-    window.location.href = "/login";
 
     setIsLoggedIn(false);
   }
@@ -69,9 +69,7 @@ export function Navbar({ isLoggedIn, setIsLoggedIn }: Props) {
           {isLoggedIn ? (
             <button onClick={handleLogout}>Logout</button>
           ) : (
-            <StyledNavLink to={"/login"}>
-              <button>Login</button>
-            </StyledNavLink>
+            <button onClick={() => setIsLoginOpen(true)}>Login</button>
           )}
         </AuthWrapper>
       </Nav>

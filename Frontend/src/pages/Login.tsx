@@ -2,7 +2,25 @@ import { useState } from "react";
 import styled from "styled-components";
 import { api } from "../api/api";
 
-const LoginContainer = styled.div`
+interface Props {
+  onClose: () => void;
+}
+
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const ModalBox = styled.div`
+  background-color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,7 +45,7 @@ export interface AuthResponse {
   token_type: string;
 }
 
-export function Login() {
+export function Login({ onClose }: Props) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -59,27 +77,29 @@ export function Login() {
 
   return (
     <>
-      <LoginContainer>
-        <UserInputWrapper>
-          <span>Username</span>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </UserInputWrapper>
-        <UserInputWrapper>
-          <span>Password</span>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </UserInputWrapper>
-        <button onClick={handleLogin}>Login</button>
-      </LoginContainer>
+      <Overlay onClick={onClose}>
+        <ModalBox onClick={(e) => e.stopPropagation()}>
+          <UserInputWrapper>
+            <span>Username</span>
+            <input
+              type="text"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </UserInputWrapper>
+          <UserInputWrapper>
+            <span>Password</span>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </UserInputWrapper>
+          <button onClick={handleLogin}>Login</button>
+        </ModalBox>
+      </Overlay>
     </>
   );
 }
