@@ -45,9 +45,16 @@ export interface AuthResponse {
   token_type: string;
 }
 
+type AuthMode = "login" | "register";
+
 export function Login({ onClose }: Props) {
+  const [mode, setMode] = useState<AuthMode>("login");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   async function handleLogin() {
     try {
@@ -75,6 +82,22 @@ export function Login({ onClose }: Props) {
     }
   }
 
+  async function handleRegister() {
+    try {
+      api.post("/users/register", {
+        username,
+        password,
+        email,
+        first_name: firstName,
+        last_name: lastName,
+      });
+
+      setMode("login");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <Overlay onClick={onClose}>
@@ -97,7 +120,64 @@ export function Login({ onClose }: Props) {
               onChange={(e) => setPassword(e.target.value)}
             />
           </UserInputWrapper>
-          <button onClick={handleLogin}>Login</button>
+
+          {mode === "register" && (
+            <>
+              <UserInputWrapper>
+                <span>Email</span>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </UserInputWrapper>
+
+              <UserInputWrapper>
+                <span>First Name</span>
+                <input
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </UserInputWrapper>
+
+              <UserInputWrapper>
+                <span>Last Name</span>
+                <input
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </UserInputWrapper>
+            </>
+          )}
+
+          {mode === "login" ? (
+            <button onClick={handleLogin}>Login</button>
+          ) : (
+            <button onClick={handleRegister}>Register</button>
+          )}
+
+          <p>
+            {mode === "login" ? (
+              <>
+                Don't have an account?{" "}
+                <span
+                  style={{ cursor: "pointer", color: "blue" }}
+                  onClick={() => setMode("register")}
+                >
+                  Register
+                </span>
+              </>
+            ) : (
+              <>
+                Already have an account?{" "}
+                <span
+                  style={{ cursor: "pointer", color: "blue" }}
+                  onClick={() => setMode("login")}
+                >
+                  Login
+                </span>
+              </>
+            )}
+          </p>
         </ModalBox>
       </Overlay>
     </>
