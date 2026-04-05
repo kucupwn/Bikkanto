@@ -34,6 +34,15 @@ const UserInputWrapper = styled.div`
   margin-bottom: 1rem;
 `;
 
+const SwitchLink = styled.span`
+  cursor: pointer;
+  color: blue;
+`;
+
+const SwitchText = styled.p`
+  margin: 1rem;
+`;
+
 export interface AuthUser {
   id: number;
   username: string;
@@ -155,29 +164,21 @@ export function Login({ onClose }: Props) {
             <button onClick={handleRegister}>Register</button>
           )}
 
-          <p>
+          <SwitchText>
             {mode === "login" ? (
               <>
                 Don't have an account?{" "}
-                <span
-                  style={{ cursor: "pointer", color: "blue" }}
-                  onClick={() => setMode("register")}
-                >
+                <SwitchLink onClick={() => setMode("register")}>
                   Register
-                </span>
+                </SwitchLink>
               </>
             ) : (
               <>
                 Already have an account?{" "}
-                <span
-                  style={{ cursor: "pointer", color: "blue" }}
-                  onClick={() => setMode("login")}
-                >
-                  Login
-                </span>
+                <SwitchLink onClick={() => setMode("login")}>Login</SwitchLink>
               </>
             )}
-          </p>
+          </SwitchText>
         </ModalBox>
       </Overlay>
     </>
