@@ -43,6 +43,10 @@ const SwitchText = styled.p`
   margin: 1rem;
 `;
 
+const ModalTitle = styled.h2`
+  margin-bottom: 1rem;
+`;
+
 export interface AuthUser {
   id: number;
   username: string;
@@ -111,6 +115,11 @@ export function Login({ onClose }: Props) {
     <>
       <Overlay onClick={onClose}>
         <ModalBox onClick={(e) => e.stopPropagation()}>
+          {mode === "login" ? (
+            <ModalTitle>Login</ModalTitle>
+          ) : (
+            <ModalTitle>Register</ModalTitle>
+          )}
           <UserInputWrapper>
             <span>Username</span>
             <input
