@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { api } from "../api/api";
+import type { AuthResponse } from "../types/userTypes";
 
 interface Props {
   onClose: () => void;
@@ -46,17 +47,6 @@ const SwitchText = styled.p`
 const ModalTitle = styled.h2`
   margin-bottom: 1rem;
 `;
-
-export interface AuthUser {
-  id: number;
-  username: string;
-  role: string;
-}
-
-export interface AuthResponse {
-  access_token: string;
-  token_type: string;
-}
 
 type AuthMode = "login" | "register";
 
