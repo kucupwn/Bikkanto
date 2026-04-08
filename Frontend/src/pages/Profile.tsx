@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import type { User } from "../types/userTypes";
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { api } from "../api/api";
 
 interface Props {
@@ -25,8 +25,7 @@ export function Profile({ currentUser }: Props) {
 
   async function submitChange(data: Record<string, string>) {
     try {
-      const res = await api.patch("/users", data);
-      console.log(res.data);
+      api.patch("/users", data);
     } catch (err) {
       console.error(err);
     }
@@ -35,6 +34,12 @@ export function Profile({ currentUser }: Props) {
   function handleChangeApply(field: string, value: string) {
     submitChange({ [field]: value });
   }
+
+  useEffect(() => {
+    setEmail(currentUser.email);
+    setFirstName(currentUser.first_name);
+    setLastName(currentUser.last_name);
+  }, [currentUser]);
 
   return (
     <ProfileContainer>
