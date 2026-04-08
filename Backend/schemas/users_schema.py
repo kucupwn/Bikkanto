@@ -8,7 +8,6 @@ class UserRole(str, Enum):
 
 
 class UserBase(BaseModel):
-    username: str = Field(min_length=1)
     email: str | None = None
     first_name: str | None = None
     last_name: str | None = None
@@ -16,6 +15,7 @@ class UserBase(BaseModel):
 
 class UserRead(UserBase):
     id: int
+    username: str = Field(min_length=1)
     role: UserRole = UserRole.user
 
     class Config:
@@ -23,10 +23,11 @@ class UserRead(UserBase):
 
 
 class UserCreate(UserBase):
+    username: str = Field(min_length=1)
     password: str = Field(min_length=5)
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(UserBase):
     password: str | None = Field(default=None, min_length=5)
 
 
