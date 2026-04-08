@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import type { User } from "../types/userTypes";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { api } from "../api/api";
 
 interface Props {
   currentUser: User;
+  setCurrentUser: Dispatch<SetStateAction<User>>;
 }
 
 const ProfileContainer = styled.div`
@@ -18,14 +19,15 @@ const DataWrapper = styled.div`
   display: flex;
 `;
 
-export function Profile({ currentUser }: Props) {
+export function Profile({ currentUser, setCurrentUser }: Props) {
   const [email, setEmail] = useState<string>(currentUser.email);
   const [firstName, setFirstName] = useState<string>(currentUser.first_name);
   const [lastName, setLastName] = useState<string>(currentUser.last_name);
 
   async function submitChange(data: Record<string, string>) {
     try {
-      api.patch("/users", data);
+      const res = await api.patch("/users", data);
+      setCurrentUser(res.data);
     } catch (err) {
       console.error(err);
     }

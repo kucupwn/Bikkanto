@@ -97,7 +97,10 @@ export function App() {
           path="/profile"
           element={
             <ProtectedRoute>
-              <Profile currentUser={currentUser} />
+              <Profile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
             </ProtectedRoute>
           }
         />
