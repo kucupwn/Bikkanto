@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import type { User } from "../types/userTypes";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
+import { api } from "../api/api";
 
 interface Props {
   currentUser: User;
@@ -22,6 +23,19 @@ export function Profile({ currentUser }: Props) {
   const [firstName, setFirstName] = useState<string>(currentUser.first_name);
   const [lastName, setLastName] = useState<string>(currentUser.last_name);
 
+  async function submitChange(data: Record<string, string>) {
+    try {
+      const res = await api.patch("/users", data);
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function handleChangeApply(field: string, value: string) {
+    submitChange({ [field]: value });
+  }
+
   return (
     <ProfileContainer>
       <span>Email</span>
@@ -32,7 +46,7 @@ export function Profile({ currentUser }: Props) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={currentUser.email}
         />
-        <button>Apply</button>
+        <button onClick={() => handleChangeApply("email", email)}>Apply</button>
       </DataWrapper>
       <span>First name</span>
       <DataWrapper>
@@ -42,7 +56,9 @@ export function Profile({ currentUser }: Props) {
           onChange={(e) => setFirstName(e.target.value)}
           placeholder={currentUser.first_name}
         />
-        <button>Apply</button>
+        <button onClick={() => handleChangeApply("first_name", firstName)}>
+          Apply
+        </button>
       </DataWrapper>
       <span>Last name</span>
       <DataWrapper>
@@ -52,7 +68,9 @@ export function Profile({ currentUser }: Props) {
           onChange={(e) => setLastName(e.target.value)}
           placeholder={currentUser.last_name}
         />
-        <button>Apply</button>
+        <button onClick={() => handleChangeApply("last_name", lastName)}>
+          Apply
+        </button>
       </DataWrapper>
       <span>Password</span>
       <button>Change</button>
