@@ -46,6 +46,7 @@ const links = [
   { name: "Roll", path: "/roll" },
   { name: "Exercises", path: "/exercises" },
   { name: "History", path: "/history" },
+  { name: "Profile", path: "/profile" },
 ];
 
 export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
