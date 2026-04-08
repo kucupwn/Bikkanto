@@ -9,6 +9,7 @@ import { Login } from "./pages/Login";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { useState } from "react";
 import { Profile } from "./pages/Profile";
+import type { User } from "./types/userTypes";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -21,6 +22,14 @@ export function App() {
     !!localStorage.getItem("token"),
   );
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User>({
+    id: 0,
+    username: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+    role: "",
+  });
 
   return (
     <>
@@ -32,7 +41,16 @@ export function App() {
       />
 
       <Routes>
-        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+        <Route
+          path="/"
+          element={
+            <Home
+              isLoggedIn={isLoggedIn}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
         <Route
           path="/roll"
           element={
@@ -61,7 +79,7 @@ export function App() {
           path="/profile"
           element={
             <ProtectedRoute>
-              <Profile />
+              <Profile currentUser={currentUser} />
             </ProtectedRoute>
           }
         />

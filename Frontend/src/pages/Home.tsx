@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { User } from "../types/userTypes";
 import { api } from "../api/api";
 import styled from "styled-components";
 
 interface Props {
   isLoggedIn: boolean;
+  currentUser: User;
+  setCurrentUser: Dispatch<SetStateAction<User>>;
 }
 
 const WelcomeContainer = styled.div`
@@ -37,16 +39,7 @@ const PageLink = styled.a`
   cursor: pointer;
 `;
 
-export function Home({ isLoggedIn }: Props) {
-  const [currentUser, setCurrentUser] = useState<User>({
-    id: 0,
-    username: "",
-    email: "",
-    first_name: "",
-    last_name: "",
-    role: "",
-  });
-
+export function Home({ isLoggedIn, currentUser, setCurrentUser }: Props) {
   async function getCurrentUser() {
     if (isLoggedIn) {
       try {
