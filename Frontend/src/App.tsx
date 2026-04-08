@@ -7,9 +7,10 @@ import { Exercises } from "./pages/Exercises";
 import { History } from "./pages/History";
 import { Login } from "./pages/Login";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Profile } from "./pages/Profile";
 import type { User } from "./types/userTypes";
+import { api } from "./api/api";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -31,6 +32,32 @@ export function App() {
     role: "",
   });
 
+  async function getCurrentUser() {
+    if (isLoggedIn) {
+      try {
+        const res = api.get<User>("/users");
+        const data = (await res).data;
+
+        setCurrentUser(data);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      setCurrentUser({
+        id: 0,
+        username: "",
+        email: "",
+        first_name: "",
+        last_name: "",
+        role: "",
+      });
+    }
+  }
+
+  useEffect(() => {
+    getCurrentUser();
+  }, [isLoggedIn]);
+
   return (
     <>
       <Title>Bikkanto</Title>
@@ -41,16 +68,7 @@ export function App() {
       />
 
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              isLoggedIn={isLoggedIn}
-              currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
-            />
-          }
-        />
+        <Route path="/" element={<Home currentUser={currentUser} />} />
         <Route
           path="/roll"
           element={
