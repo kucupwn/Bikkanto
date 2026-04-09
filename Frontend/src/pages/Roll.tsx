@@ -41,6 +41,7 @@ export function Roll() {
   const [mode, setMode] = useState<ViewModes>(workout ? "stored" : "settings");
   const [cycles, setCycles] = useState<number | "">("");
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [workoutDate, setWorkoutDate] = useState<Date | null>(new Date());
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
 
@@ -110,13 +111,11 @@ export function Roll() {
     }
   }
 
-  function getHistoryEntries(): WorkoutHistory[] {
-    const today = new Date().toISOString().split("T")[0];
-
-    if (workout === null) return [];
+  function getHistoryEntries(): WorkoutHistory[] | null {
+    if (workout === null || workoutDate === null) return null;
 
     return workout.map((entry) => ({
-      date_complete: today,
+      date_complete: workoutDate.toISOString().split("T")[0],
       exercise_id: entry.exercise_id,
       exercise_name: entry.exercise_name,
       category_id: entry.category_id,
@@ -133,6 +132,8 @@ export function Roll() {
     if (safeCycles <= 0) return;
 
     const historyEntries = getHistoryEntries();
+
+    if (!historyEntries) return;
 
     api.post("/history", historyEntries);
 
@@ -195,6 +196,8 @@ export function Roll() {
             isFinished={isFinished}
             selectedProperties={selectedProperties}
             onGetRandomExercise={getRandomExercise}
+            workoutDate={workoutDate}
+            setWorkoutDate={setWorkoutDate}
           />
         )}
 

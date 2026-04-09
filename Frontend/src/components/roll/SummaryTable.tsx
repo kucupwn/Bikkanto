@@ -3,6 +3,7 @@ import type { WorkoutEntry } from "../../types/exerciseTypes";
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 import { type ProperySelection } from "./WorkoutSettings";
+import HistoryDatePicker from "./DatePicker";
 
 interface Props {
   workout: WorkoutEntry[] | null;
@@ -18,6 +19,8 @@ interface Props {
     selectedProps: ProperySelection,
     usedIds: Set<number>,
   ) => WorkoutEntry | null;
+  workoutDate: Date | null;
+  setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
 }
 
 const WorkoutTable = styled.table`
@@ -73,6 +76,8 @@ export function SummaryTable({
   isFinished,
   selectedProperties,
   onGetRandomExercise,
+  workoutDate,
+  setWorkoutDate,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
@@ -147,6 +152,10 @@ export function SummaryTable({
             type="number"
             placeholder="Finished cycles"
             onChange={handleCyclesInputChange}
+          />
+          <HistoryDatePicker
+            workoutDate={workoutDate}
+            setWorkoutDate={setWorkoutDate}
           />
           <Button onClick={onPostFinishedWorkout}>Finish</Button>
         </CyclesWrapper>
