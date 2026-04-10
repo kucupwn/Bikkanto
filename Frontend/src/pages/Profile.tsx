@@ -2,6 +2,7 @@ import styled from "styled-components";
 import type { User } from "../types/userTypes";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { api } from "../api/api";
+import { PasswordChangeModal } from "../components/profile/PasswordChangeModal";
 
 interface Props {
   currentUser: User;
@@ -23,6 +24,8 @@ export function Profile({ currentUser, setCurrentUser }: Props) {
   const [email, setEmail] = useState<string>(currentUser.email);
   const [firstName, setFirstName] = useState<string>(currentUser.first_name);
   const [lastName, setLastName] = useState<string>(currentUser.last_name);
+  const [isPasswordChangeOpen, setIsPasswordChangeOpen] =
+    useState<boolean>(false);
 
   async function submitChange(data: Record<string, string>) {
     try {
@@ -44,43 +47,51 @@ export function Profile({ currentUser, setCurrentUser }: Props) {
   }, [currentUser]);
 
   return (
-    <ProfileContainer>
-      <span>Email</span>
-      <DataWrapper>
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={currentUser.email}
-        />
-        <button onClick={() => handleChangeApply("email", email)}>Apply</button>
-      </DataWrapper>
-      <span>First name</span>
-      <DataWrapper>
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          placeholder={currentUser.first_name}
-        />
-        <button onClick={() => handleChangeApply("first_name", firstName)}>
-          Apply
-        </button>
-      </DataWrapper>
-      <span>Last name</span>
-      <DataWrapper>
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          placeholder={currentUser.last_name}
-        />
-        <button onClick={() => handleChangeApply("last_name", lastName)}>
-          Apply
-        </button>
-      </DataWrapper>
-      <span>Password</span>
-      <button>Change</button>
-    </ProfileContainer>
+    <>
+      <ProfileContainer>
+        <span>Email</span>
+        <DataWrapper>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={currentUser.email}
+          />
+          <button onClick={() => handleChangeApply("email", email)}>
+            Apply
+          </button>
+        </DataWrapper>
+        <span>First name</span>
+        <DataWrapper>
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder={currentUser.first_name}
+          />
+          <button onClick={() => handleChangeApply("first_name", firstName)}>
+            Apply
+          </button>
+        </DataWrapper>
+        <span>Last name</span>
+        <DataWrapper>
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder={currentUser.last_name}
+          />
+          <button onClick={() => handleChangeApply("last_name", lastName)}>
+            Apply
+          </button>
+        </DataWrapper>
+        <span>Password</span>
+        <button onClick={() => setIsPasswordChangeOpen(true)}>Change</button>
+      </ProfileContainer>
+      <PasswordChangeModal
+        isOpen={isPasswordChangeOpen}
+        onClose={() => setIsPasswordChangeOpen(false)}
+      />
+    </>
   );
 }
