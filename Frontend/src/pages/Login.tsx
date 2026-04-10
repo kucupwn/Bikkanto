@@ -55,6 +55,7 @@ export function Login({ onClose }: Props) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const [verifyPassword, setVerifyPassword] = useState<string>("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -86,6 +87,11 @@ export function Login({ onClose }: Props) {
   }
 
   async function handleRegister() {
+    if (password !== verifyPassword) {
+      console.error("Passwords not matching.");
+      return;
+    }
+
     try {
       api.post("/users/register", {
         username,
@@ -114,7 +120,6 @@ export function Login({ onClose }: Props) {
             <span>Username</span>
             <input
               type="text"
-              name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -123,7 +128,6 @@ export function Login({ onClose }: Props) {
             <span>Password</span>
             <input
               type="password"
-              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -131,6 +135,14 @@ export function Login({ onClose }: Props) {
 
           {mode === "register" && (
             <>
+              <UserInputWrapper>
+                <span>Verify password</span>
+                <input
+                  type="password"
+                  value={verifyPassword}
+                  onChange={(e) => setVerifyPassword(e.target.value)}
+                />
+              </UserInputWrapper>
               <UserInputWrapper>
                 <span>Email</span>
                 <input
