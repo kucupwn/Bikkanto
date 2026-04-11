@@ -27,6 +27,8 @@ const ModalBox = styled.div`
 const InputsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1rem;
 `;
 
@@ -67,6 +69,7 @@ export function PasswordChangeModal({ isOpen, onClose }: Props) {
       <Overlay onClick={onClose}>
         <ModalBox onClick={(e) => e.stopPropagation()}>
           <InputsContainer>
+            <h2>Password change</h2>
             <InputWrapper>
               <span>Old password</span>
               <input
