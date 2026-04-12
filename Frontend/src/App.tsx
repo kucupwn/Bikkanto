@@ -35,12 +35,14 @@ export function App() {
   async function getCurrentUser() {
     if (isLoggedIn) {
       try {
-        const res = api.get<User>("/users");
-        const data = (await res).data;
+        const res = await api.get<User>("/users");
+        const data = res.data;
 
         setCurrentUser(data);
       } catch (err) {
         console.error(err);
+        localStorage.removeItem("token");
+        setIsLoggedIn(false);
       }
     } else {
       setCurrentUser({
