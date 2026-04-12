@@ -42,6 +42,7 @@ export function App() {
       } catch (err) {
         console.error(err);
         localStorage.removeItem("token");
+        localStorage.removeItem("token_expiry");
         setIsLoggedIn(false);
       }
     } else {
