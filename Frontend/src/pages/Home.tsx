@@ -31,8 +31,20 @@ const GuideSection = styled.div`
 const PageLink = styled.a`
   font-size: 24px;
   color: blue;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
+`;
+
+const PageDescription = styled.p`
+  font-size: 20px;
+  margin-top: 1rem;
+`;
+
+const HorizontalLine = styled.hr`
+  height: 1px;
+  width: 350px;
+  background-color: #8e8e8e;
+  border: none;
 `;
 
 export function Home({ currentUser }: Props) {
@@ -46,15 +58,19 @@ export function Home({ currentUser }: Props) {
           <GuideContainer>
             <GuideSection>
               <PageLink href="/roll">Roll</PageLink>
-              <h3>Create a workout.</h3>
+              <PageDescription>Create a workout.</PageDescription>
             </GuideSection>
+            <HorizontalLine />
             <GuideSection>
               <PageLink href="/exercises">Exercises</PageLink>
-              <h3>Collention of your exercises.</h3>
+              <PageDescription>Collention of your exercises.</PageDescription>
             </GuideSection>
+            <HorizontalLine />
             <GuideSection>
               <PageLink href="/history">History</PageLink>
-              <h3>Finished workouts are saved to history.</h3>
+              <PageDescription>
+                Finished workouts are saved to history.
+              </PageDescription>
             </GuideSection>
           </GuideContainer>
         </>
