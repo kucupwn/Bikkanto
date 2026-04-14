@@ -41,6 +41,11 @@ const AuthWrapper = styled.div`
   right: 1rem;
 `;
 
+const LoginButton = styled.button`
+  padding: 5px;
+  font-size: 16px;
+`;
+
 const links = [
   { name: "Home", path: "/" },
   { name: "Roll", path: "/roll" },
@@ -68,9 +73,11 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
         </NavList>
         <AuthWrapper>
           {isLoggedIn ? (
-            <button onClick={handleLogout}>Logout</button>
+            <LoginButton onClick={handleLogout}>Logout</LoginButton>
           ) : (
-            <button onClick={() => setIsLoginOpen(true)}>Login</button>
+            <LoginButton onClick={() => setIsLoginOpen(true)}>
+              Login
+            </LoginButton>
           )}
         </AuthWrapper>
       </Nav>

@@ -29,7 +29,6 @@ const ModalBox = styled.div`
 `;
 
 const Button = styled.button`
-  cursor: pointer;
   width: 100px;
   margin-top: 1rem;
 `;

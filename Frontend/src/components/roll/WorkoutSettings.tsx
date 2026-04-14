@@ -51,7 +51,6 @@ const GetButton = styled.button`
   font-size: 20px;
   padding: 0.3rem 0.5rem;
   margin: 1rem;
-  cursor: pointer;
 `;
 
 export interface ProperySelection {
