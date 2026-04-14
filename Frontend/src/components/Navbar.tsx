@@ -13,7 +13,7 @@ const Nav = styled.nav`
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  background-color: #aaa;
+  background-color: #242424;
   margin-bottom: 1rem;
 `;
 
@@ -26,13 +26,13 @@ const NavList = styled.ul`
 `;
 
 const StyledNavLink = styled(NavLink)`
-  color: #000;
+  color: #cecece;
   font-size: 24px;
   text-decoration: none;
 
   &.active {
     font-weight: bold;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid #cecece;
   }
 `;
 
