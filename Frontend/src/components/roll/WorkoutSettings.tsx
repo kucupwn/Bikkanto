@@ -23,7 +23,12 @@ const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   margin: 1rem;
-  width: 60vw;
+  gap: 3rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 const ExerciseCountWrapper = styled.div`
@@ -139,6 +144,8 @@ export function WorkoutSettings({
           type="number"
           value={exerciseCount}
           onChange={handleExerciseCountChange}
+          style={{ width: "40px" }}
+          max={100}
         />
       </ExerciseCountWrapper>
       <WorkoutBasePropertiesWrapper>
