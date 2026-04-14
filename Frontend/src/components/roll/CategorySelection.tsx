@@ -58,7 +58,7 @@ export function CategorySelection({
       >
         {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
-            {cat.category_name}
+            {capitalize(cat.category_name)}
           </option>
         ))}
       </select>
