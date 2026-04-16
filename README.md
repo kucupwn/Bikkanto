@@ -12,19 +12,6 @@ Workout can be created on Roll page. Input exercise count, and pick exercise rep
 
 Finished workouts are saved to history table, which is located on History page.
 
-## Unfinished features
-
-- Help page
-- Forgot password
-- History statistics
-- Deploy on home server
-- Code comments
-- Code tests
-
 ## Developer notes
 
-This is clearly an unfinished project, yet at this stage it can do everything I wanted.
-
-Beside its functionalities, I wanted a project that helps me come back to Typescript. While I was in the middle of the development, I started to learn React. It was the point where I lost most of my motivation to finish this project, since I realized how hard it is to create frontend with vanilla Typescript compared to React.
-
-Some day I might come back to this project to rework the frontend part with React, but right now I am happy that it works, despite the code is inconsistent and requires refactor on most parts.
+Frontend is being remade with React. Some features are still missing, but the project is mostly functional already as is.
