@@ -14,4 +14,4 @@ Finished workouts are saved to history table, which is located on History page.
 
 ## Developer notes
 
-Frontend is being remade with React. Some features are still missing, but the project is mostly functional already as is.
+The frontend is being rebuilt in React. Some features are still missing, but the project is already mostly functional.
