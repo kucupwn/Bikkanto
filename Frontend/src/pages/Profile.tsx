@@ -9,6 +9,10 @@ interface Props {
   setCurrentUser: Dispatch<SetStateAction<User>>;
 }
 
+const ProfileTitle = styled.h2`
+  align-self: center;
+`;
+
 const ProfileContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -55,6 +59,7 @@ export function Profile({ currentUser, setCurrentUser }: Props) {
   return (
     <>
       <ProfileContainer>
+        <ProfileTitle>{currentUser.username}'s profile</ProfileTitle>
         <InputSection>
           <span>Email</span>
           <InputWrapper>
