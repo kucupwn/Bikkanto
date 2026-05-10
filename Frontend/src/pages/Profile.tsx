@@ -23,6 +23,7 @@ const InputSection = styled.div`
 
 const InputWrapper = styled.div`
   display: flex;
+  gap: 1rem;
 `;
 
 export function Profile({ currentUser, setCurrentUser }: Props) {
