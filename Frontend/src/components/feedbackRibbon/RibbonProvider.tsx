@@ -1,13 +1,13 @@
 import {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
   type ReactNode,
 } from "react";
-
-type RibbonType = "success" | "error";
+import { FeedbackRibbon, type RibbonType } from "./FeedbackRibbon";
 
 interface RibbonState {
   type: RibbonType;
@@ -17,11 +17,10 @@ interface RibbonState {
 
 interface RibbonContextValue {
   showRibbon: (
-    type: RibbonState,
+    type: RibbonType,
     message: string,
     autoDismissMs?: number,
   ) => void;
-  clearRibbon: () => void;
 }
 
 const RibbonContext = createContext<RibbonContextValue | null>(null);
@@ -30,12 +29,8 @@ export function RibbonProvider({ children }: { children: ReactNode }) {
   const [ribbon, setRibbon] = useState<RibbonState | null>(null);
   const timeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function clearRibbon() {
-    useCallback(() => setRibbon(null), []);
-  }
-
-  function showRibbon() {
-    useCallback((type: RibbonType, message: string, autoDismissMS = 0) => {
+  const showRibbon = useCallback(
+    (type: RibbonType, message: string, autoDismissMS = 3000) => {
       if (timeRef.current) {
         clearTimeout(timeRef.current);
       }
@@ -45,8 +40,9 @@ export function RibbonProvider({ children }: { children: ReactNode }) {
       if (autoDismissMS > 0) {
         timeRef.current = setTimeout(() => setRibbon(null), autoDismissMS);
       }
-    }, []);
-  }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (timeRef.current) {
@@ -55,8 +51,21 @@ export function RibbonProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <RibbonContext.Provider value={{ showRibbon, clearRibbon }}>
+    <RibbonContext.Provider value={{ showRibbon }}>
       {children}
+      {ribbon && (
+        <FeedbackRibbon
+          key={ribbon.id}
+          type={ribbon?.type}
+          message={ribbon?.message}
+        />
+      )}
     </RibbonContext.Provider>
   );
+}
+
+export function useRibbon() {
+  const ctx = useContext(RibbonContext);
+  if (!ctx) throw new Error("useRibbon must be used inside <RibbonProvider>");
+  return ctx;
 }
