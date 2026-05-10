@@ -15,12 +15,12 @@ h2 {
 }
 
 button {
-  background-color: cornflowerblue;
+  background-color: rgb(56, 72, 248);
   color: white;
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 5px 10px;
 }
 
 select,

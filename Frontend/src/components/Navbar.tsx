@@ -42,7 +42,6 @@ const AuthWrapper = styled.div`
 `;
 
 const LoginButton = styled.button`
-  padding: 5px;
   font-size: 16px;
 `;
 
