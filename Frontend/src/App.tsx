@@ -12,10 +12,18 @@ import { Profile } from "./pages/Profile";
 import type { User } from "./types/userTypes";
 import { api } from "./api/api";
 
+const TitleContainer = styled.div`
+  width: 100vw;
+  background-color: var(--main-black);
+  color: var(--main-white);
+`;
+
 const Title = styled.h1`
   font-size: 48px;
   justify-self: center;
+  letter-spacing: 5px;
   margin: 0;
+  padding: 10px;
 `;
 
 export function App() {
@@ -63,7 +71,9 @@ export function App() {
 
   return (
     <>
-      <Title>Bikkanto</Title>
+      <TitleContainer>
+        <Title>Bikkanto</Title>
+      </TitleContainer>
       <Navbar
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
