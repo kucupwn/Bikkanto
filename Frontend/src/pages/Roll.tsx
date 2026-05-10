@@ -42,6 +42,7 @@ export function Roll() {
   const [cycles, setCycles] = useState<number | "">("");
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [workoutDate, setWorkoutDate] = useState<Date | null>(new Date());
+  const [title, setTitle] = useState<string | null>(null);
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
 
@@ -171,9 +172,18 @@ export function Roll() {
     fetchExercises();
   }, []);
 
+  useEffect(() => {
+    if (mode === "stored") {
+      setTitle(null);
+    } else {
+      setTitle("Create a workout");
+    }
+  }, []);
+
   return (
     <>
       <RollContainer>
+        <h2>{title}</h2>
         {mode === "settings" && (
           <WorkoutSettings
             exerciseCount={exerciseCount}
@@ -198,6 +208,7 @@ export function Roll() {
             onGetRandomExercise={getRandomExercise}
             workoutDate={workoutDate}
             setWorkoutDate={setWorkoutDate}
+            setTitle={setTitle}
           />
         )}
 
@@ -206,6 +217,7 @@ export function Roll() {
             setWorkout={setWorkout}
             setMode={setMode}
             setHasAcceptedWorkout={setHasAcceptedWorkout}
+            setTitle={setTitle}
           />
         )}
       </RollContainer>

@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
-import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
+import {
+  useEffect,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import type { ViewModes } from "../../pages/Roll";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
@@ -21,6 +26,7 @@ interface Props {
   ) => WorkoutEntry | null;
   workoutDate: Date | null;
   setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
+  setTitle: Dispatch<SetStateAction<string | null>>;
 }
 
 const WorkoutTable = styled.table`
@@ -78,16 +84,19 @@ export function SummaryTable({
   onGetRandomExercise,
   workoutDate,
   setWorkoutDate,
+  setTitle,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
     setMode("settings");
     setHasAcceptedWorkout(false);
+    setTitle("Create a workout");
   }
 
   function acceptWorkout() {
     localStorage.setItem("workout", JSON.stringify(workout));
     setHasAcceptedWorkout(true);
+    setTitle("Have fun with the workout!");
   }
 
   function handleCyclesInputChange(e: ChangeEvent<HTMLInputElement>) {
@@ -111,6 +120,14 @@ export function SummaryTable({
 
     setWorkout(updatedWorkout);
   }
+
+  useEffect(() => {
+    if (localStorage.getItem("workout")) {
+      setTitle("Have fun with the workout!");
+    } else {
+      setTitle("Save workout, if You like it.");
+    }
+  }, []);
 
   return (
     <>

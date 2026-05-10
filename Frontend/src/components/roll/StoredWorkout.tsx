@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import styled from "styled-components";
@@ -17,18 +17,25 @@ interface Props {
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
   setMode: Dispatch<SetStateAction<ViewModes>>;
   setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
+  setTitle: Dispatch<SetStateAction<string | null>>;
 }
 
 export function StoredWorkout({
   setWorkout,
   setMode,
   setHasAcceptedWorkout,
+  setTitle,
 }: Props) {
+  useEffect(() => {
+    setTitle(null);
+  }, []);
+
   function discardWorkout() {
     localStorage.removeItem("workout");
     setWorkout(null);
     setMode("settings");
     setHasAcceptedWorkout(false);
+    setTitle("Create a workout");
   }
 
   function recallWorkout() {
@@ -36,6 +43,7 @@ export function StoredWorkout({
     if (stored) {
       setWorkout(JSON.parse(stored));
       setMode("preview");
+      setTitle("Have fun with the workout!");
     }
   }
 
