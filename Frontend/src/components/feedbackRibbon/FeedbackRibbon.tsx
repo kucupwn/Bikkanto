@@ -18,7 +18,10 @@ const typeStyles: Record<RibbonType, ReturnType<typeof css>> = {
 
 const Ribbon = styled.div<{ $type: RibbonType }>`
   display: flex;
-  top: 25px;
+  position: absolute;
+  border-radius: 10px;
+  padding: 10px;
+  top: 10px;
   right: 25px;
   animation: ${slideIn} 0.25s ease;
   ${({ $type }) => typeStyles[$type]}
