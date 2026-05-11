@@ -181,46 +181,44 @@ export function Roll() {
   }, []);
 
   return (
-    <>
-      <RollContainer>
-        <h2>{title}</h2>
-        {mode === "settings" && (
-          <WorkoutSettings
-            exerciseCount={exerciseCount}
-            setExerciseCount={setExerciseCount}
-            categories={categories}
-            selectedProperties={selectedProperties}
-            setSelectedProperties={setSelectedProperties}
-            onGetWorkout={getWorkout}
-          />
-        )}
-        {mode === "preview" && (
-          <SummaryTable
-            workout={workout}
-            setWorkout={setWorkout}
-            setMode={setMode}
-            hasAcceptedWorkout={hasAcceptedWorkout}
-            setHasAcceptedWorkout={setHasAcceptedWorkout}
-            setCycles={setCycles}
-            onPostFinishedWorkout={postFinishedWorkout}
-            isFinished={isFinished}
-            selectedProperties={selectedProperties}
-            onGetRandomExercise={getRandomExercise}
-            workoutDate={workoutDate}
-            setWorkoutDate={setWorkoutDate}
-            setTitle={setTitle}
-          />
-        )}
+    <RollContainer>
+      <h2>{title}</h2>
+      {mode === "settings" && (
+        <WorkoutSettings
+          exerciseCount={exerciseCount}
+          setExerciseCount={setExerciseCount}
+          categories={categories}
+          selectedProperties={selectedProperties}
+          setSelectedProperties={setSelectedProperties}
+          onGetWorkout={getWorkout}
+        />
+      )}
+      {mode === "preview" && (
+        <SummaryTable
+          workout={workout}
+          setWorkout={setWorkout}
+          setMode={setMode}
+          hasAcceptedWorkout={hasAcceptedWorkout}
+          setHasAcceptedWorkout={setHasAcceptedWorkout}
+          setCycles={setCycles}
+          onPostFinishedWorkout={postFinishedWorkout}
+          isFinished={isFinished}
+          selectedProperties={selectedProperties}
+          onGetRandomExercise={getRandomExercise}
+          workoutDate={workoutDate}
+          setWorkoutDate={setWorkoutDate}
+          setTitle={setTitle}
+        />
+      )}
 
-        {mode === "stored" && (
-          <StoredWorkout
-            setWorkout={setWorkout}
-            setMode={setMode}
-            setHasAcceptedWorkout={setHasAcceptedWorkout}
-            setTitle={setTitle}
-          />
-        )}
-      </RollContainer>
-    </>
+      {mode === "stored" && (
+        <StoredWorkout
+          setWorkout={setWorkout}
+          setMode={setMode}
+          setHasAcceptedWorkout={setHasAcceptedWorkout}
+          setTitle={setTitle}
+        />
+      )}
+    </RollContainer>
   );
 }

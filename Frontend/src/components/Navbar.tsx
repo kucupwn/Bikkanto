@@ -61,25 +61,21 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
   }
 
   return (
-    <>
-      <Nav>
-        <NavList>
-          {links.map((link) => (
-            <li key={link.path}>
-              <StyledNavLink to={link.path}>{link.name}</StyledNavLink>
-            </li>
-          ))}
-        </NavList>
-        <AuthWrapper>
-          {isLoggedIn ? (
-            <LoginButton onClick={handleLogout}>Logout</LoginButton>
-          ) : (
-            <LoginButton onClick={() => setIsLoginOpen(true)}>
-              Login
-            </LoginButton>
-          )}
-        </AuthWrapper>
-      </Nav>
-    </>
+    <Nav>
+      <NavList>
+        {links.map((link) => (
+          <li key={link.path}>
+            <StyledNavLink to={link.path}>{link.name}</StyledNavLink>
+          </li>
+        ))}
+      </NavList>
+      <AuthWrapper>
+        {isLoggedIn ? (
+          <LoginButton onClick={handleLogout}>Logout</LoginButton>
+        ) : (
+          <LoginButton onClick={() => setIsLoginOpen(true)}>Login</LoginButton>
+        )}
+      </AuthWrapper>
+    </Nav>
   );
 }
