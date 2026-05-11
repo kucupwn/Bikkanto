@@ -4,6 +4,7 @@ import { useState, type ChangeEvent } from "react";
 import { capitalize } from "../../utils";
 import { ExercisePropsInput } from "./ExercisePropsInput";
 import { api } from "../../api/api";
+import { ModalBase } from "../ModalBase";
 
 interface Props {
   isOpen: boolean;
@@ -13,27 +14,6 @@ interface Props {
   mode: "add" | "edit" | "delete";
   onSuccess: () => Promise<void>;
 }
-
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const ModalBox = styled.div`
-  background-color: white;
-  padding: 1rem;
-  border-radius: 12px;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 const Title = styled.h2`
   margin-bottom: 1rem;
@@ -132,39 +112,33 @@ export function FullExerciseModal({
   }
 
   return (
-    <Overlay onClick={onClose}>
-      <ModalBox onClick={(e) => e.stopPropagation()}>
-        <Title>{mode === "edit" ? "Edit" : "Delete"} exercise</Title>
-        {mode === "edit" || mode === "delete" ? (
-          <select
-            name="exercise_id"
-            value={exercise.id}
-            onChange={handleChange}
-          >
-            {exercises.map((ex) => (
-              <option key={ex.id} value={ex.id}>
-                {capitalize(ex.exercise_name)}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            name="exercise_name"
-            type="text"
-            placeholder="Exercise name..."
-            value={exercise.exercise_name}
-            onChange={handleChange}
-          />
-        )}
-        {mode !== "delete" && (
-          <ExercisePropsInput
-            exercise={exercise}
-            categories={categories}
-            onHandleChange={handleChange}
-          />
-        )}
-        <Button onClick={handleSubmitExercise}>Submit</Button>
-      </ModalBox>
-    </Overlay>
+    <ModalBase onClose={onClose}>
+      <Title>{mode === "edit" ? "Edit" : "Delete"} exercise</Title>
+      {mode === "edit" || mode === "delete" ? (
+        <select name="exercise_id" value={exercise.id} onChange={handleChange}>
+          {exercises.map((ex) => (
+            <option key={ex.id} value={ex.id}>
+              {capitalize(ex.exercise_name)}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          name="exercise_name"
+          type="text"
+          placeholder="Exercise name..."
+          value={exercise.exercise_name}
+          onChange={handleChange}
+        />
+      )}
+      {mode !== "delete" && (
+        <ExercisePropsInput
+          exercise={exercise}
+          categories={categories}
+          onHandleChange={handleChange}
+        />
+      )}
+      <Button onClick={handleSubmitExercise}>Submit</Button>
+    </ModalBase>
   );
 }

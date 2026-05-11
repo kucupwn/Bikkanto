@@ -3,6 +3,7 @@ import styled from "styled-components";
 import type { Category } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { api } from "../../api/api";
+import { ModalBase } from "../ModalBase";
 
 interface Props {
   isOpen: boolean;
@@ -10,23 +11,6 @@ interface Props {
   categories: Category[];
   onSuccess: () => Promise<void>;
 }
-
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const ModalBox = styled.div`
-  background-color: white;
-  padding: 1rem;
-  border-radius: 12px;
-  min-width: 300px;
-`;
 
 const Button = styled.button`
   width: 100px;
@@ -103,48 +87,46 @@ export function CategoryModal({
   }, [isOpen]);
 
   return (
-    <Overlay onClick={onClose}>
-      <ModalBox onClick={(e) => e.stopPropagation()}>
-        {!operation && (
-          <OperationsContainer>
-            <Title>Choose category operation</Title>
-            <ButtonWrapper>
-              <Button onClick={() => setOperation("add")}>Add</Button>
-              <Button onClick={() => setOperation("delete")}>Delete</Button>
-            </ButtonWrapper>
-          </OperationsContainer>
-        )}
-        {operation === "add" && (
-          <OperationsContainer>
-            <Title>Add new category name</Title>
-            <input
-              type="text"
-              name="category_name"
-              placeholder="Category name..."
-              value={newCategory.category_name}
-              onChange={handleCategoryNameInput}
-            />
-            <Button onClick={handleAddCategory}>Add</Button>
-          </OperationsContainer>
-        )}
-        {operation === "delete" && (
-          <OperationsContainer>
-            <Title>Select category to delete</Title>
-            <select
-              name="id"
-              value={selectedCategoryId}
-              onChange={handleCategoryNameSelect}
-            >
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {capitalize(cat.category_name)}
-                </option>
-              ))}
-            </select>
-            <Button onClick={handleRemoveCategory}>Remove</Button>
-          </OperationsContainer>
-        )}
-      </ModalBox>
-    </Overlay>
+    <ModalBase onClose={onClose}>
+      {!operation && (
+        <OperationsContainer>
+          <Title>Choose category operation</Title>
+          <ButtonWrapper>
+            <Button onClick={() => setOperation("add")}>Add</Button>
+            <Button onClick={() => setOperation("delete")}>Delete</Button>
+          </ButtonWrapper>
+        </OperationsContainer>
+      )}
+      {operation === "add" && (
+        <OperationsContainer>
+          <Title>Add new category name</Title>
+          <input
+            type="text"
+            name="category_name"
+            placeholder="Category name..."
+            value={newCategory.category_name}
+            onChange={handleCategoryNameInput}
+          />
+          <Button onClick={handleAddCategory}>Add</Button>
+        </OperationsContainer>
+      )}
+      {operation === "delete" && (
+        <OperationsContainer>
+          <Title>Select category to delete</Title>
+          <select
+            name="id"
+            value={selectedCategoryId}
+            onChange={handleCategoryNameSelect}
+          >
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {capitalize(cat.category_name)}
+              </option>
+            ))}
+          </select>
+          <Button onClick={handleRemoveCategory}>Remove</Button>
+        </OperationsContainer>
+      )}
+    </ModalBase>
   );
 }
