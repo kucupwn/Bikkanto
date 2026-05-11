@@ -20,10 +20,11 @@ const TitleContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 48px;
+  font-family: "Times New Roman", Times, serif;
   justify-self: center;
-  letter-spacing: 5px;
+  letter-spacing: 10px;
   margin: 0;
-  padding: 10px;
+  padding-top: 10px;
 `;
 
 export function App() {
@@ -72,7 +73,7 @@ export function App() {
   return (
     <>
       <TitleContainer>
-        <Title>Bikkanto</Title>
+        <Title>BIKKANTO</Title>
       </TitleContainer>
       <Navbar
         isLoggedIn={isLoggedIn}
