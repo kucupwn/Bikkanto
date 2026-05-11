@@ -125,7 +125,7 @@ export function SummaryTable({
     if (localStorage.getItem("workout")) {
       setTitle("Have fun with the workout!");
     } else {
-      setTitle("Save workout, if You like it.");
+      setTitle("Accept workout, if You like it.");
     }
   }, []);
 
