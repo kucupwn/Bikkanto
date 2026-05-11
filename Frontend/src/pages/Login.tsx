@@ -2,31 +2,12 @@ import { useState } from "react";
 import styled from "styled-components";
 import { api } from "../api/api";
 import type { AuthResponse } from "../types/userTypes";
+import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
+import { ModalBase } from "../components/ModalBase";
 
 interface Props {
   onClose: () => void;
 }
-
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const ModalBox = styled.div`
-  background-color: white;
-  padding: 1rem;
-  border-radius: 12px;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 const UserInputWrapper = styled.div`
   display: flex;
@@ -60,6 +41,8 @@ export function Login({ onClose }: Props) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
+  const { showRibbon } = useRibbon();
+
   async function handleLogin() {
     try {
       const params = new URLSearchParams();
@@ -82,7 +65,7 @@ export function Login({ onClose }: Props) {
 
       window.location.href = "/";
     } catch (err) {
-      console.error(err);
+      showRibbon("error", "Invalid credentials.");
     }
   }
 
@@ -108,90 +91,83 @@ export function Login({ onClose }: Props) {
   }
 
   return (
-    <>
-      <Overlay onClick={onClose}>
-        <ModalBox onClick={(e) => e.stopPropagation()}>
-          {mode === "login" ? (
-            <ModalTitle>Login</ModalTitle>
-          ) : (
-            <ModalTitle>Register</ModalTitle>
-          )}
+    <ModalBase onClose={onClose}>
+      {mode === "login" ? (
+        <ModalTitle>Login</ModalTitle>
+      ) : (
+        <ModalTitle>Register</ModalTitle>
+      )}
+      <UserInputWrapper>
+        <span>Username</span>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </UserInputWrapper>
+      <UserInputWrapper>
+        <span>Password</span>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </UserInputWrapper>
+
+      {mode === "register" && (
+        <>
           <UserInputWrapper>
-            <span>Username</span>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </UserInputWrapper>
-          <UserInputWrapper>
-            <span>Password</span>
+            <span>Verify password</span>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={verifyPassword}
+              onChange={(e) => setVerifyPassword(e.target.value)}
+            />
+          </UserInputWrapper>
+          <UserInputWrapper>
+            <span>Email</span>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} />
+          </UserInputWrapper>
+
+          <UserInputWrapper>
+            <span>First Name</span>
+            <input
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
             />
           </UserInputWrapper>
 
-          {mode === "register" && (
-            <>
-              <UserInputWrapper>
-                <span>Verify password</span>
-                <input
-                  type="password"
-                  value={verifyPassword}
-                  onChange={(e) => setVerifyPassword(e.target.value)}
-                />
-              </UserInputWrapper>
-              <UserInputWrapper>
-                <span>Email</span>
-                <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </UserInputWrapper>
+          <UserInputWrapper>
+            <span>Last Name</span>
+            <input
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </UserInputWrapper>
+        </>
+      )}
 
-              <UserInputWrapper>
-                <span>First Name</span>
-                <input
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </UserInputWrapper>
+      {mode === "login" ? (
+        <button onClick={handleLogin}>Login</button>
+      ) : (
+        <button onClick={handleRegister}>Register</button>
+      )}
 
-              <UserInputWrapper>
-                <span>Last Name</span>
-                <input
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </UserInputWrapper>
-            </>
-          )}
-
-          {mode === "login" ? (
-            <button onClick={handleLogin}>Login</button>
-          ) : (
-            <button onClick={handleRegister}>Register</button>
-          )}
-
-          <SwitchText>
-            {mode === "login" ? (
-              <>
-                Don't have an account?{" "}
-                <SwitchLink onClick={() => setMode("register")}>
-                  Register
-                </SwitchLink>
-              </>
-            ) : (
-              <>
-                Already have an account?{" "}
-                <SwitchLink onClick={() => setMode("login")}>Login</SwitchLink>
-              </>
-            )}
-          </SwitchText>
-        </ModalBox>
-      </Overlay>
-    </>
+      <SwitchText>
+        {mode === "login" ? (
+          <>
+            Don't have an account?{" "}
+            <SwitchLink onClick={() => setMode("register")}>
+              Register
+            </SwitchLink>
+          </>
+        ) : (
+          <>
+            Already have an account?{" "}
+            <SwitchLink onClick={() => setMode("login")}>Login</SwitchLink>
+          </>
+        )}
+      </SwitchText>
+    </ModalBase>
   );
 }
