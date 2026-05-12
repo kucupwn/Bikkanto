@@ -50,6 +50,12 @@ export function FullExerciseModal({
         },
   );
 
+  const titleLabels = {
+    add: "Add",
+    edit: "Edit",
+    delete: "Delete",
+  };
+
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
 
@@ -113,9 +119,7 @@ export function FullExerciseModal({
 
   return (
     <ModalBase onClose={onClose}>
-      <Title>
-        {mode === "edit" ? "Edit" : mode === "add" ? "Add" : "Delete"} exercise
-      </Title>
+      <Title>{titleLabels[mode]} exercise</Title>
       {mode === "edit" || mode === "delete" ? (
         <select name="exercise_id" value={exercise.id} onChange={handleChange}>
           {exercises.map((ex) => (
