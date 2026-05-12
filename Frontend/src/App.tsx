@@ -106,7 +106,7 @@ export function App() {
           path="/exercises"
           element={
             <ProtectedRoute>
-              <Exercises />
+              <Exercises theme={theme} />
             </ProtectedRoute>
           }
         />

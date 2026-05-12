@@ -10,6 +10,7 @@ import { capitalize } from "../utils";
 import styled from "styled-components";
 import { CategoryModal } from "../components/exercise/CategoryModal";
 import { FullExerciseModal } from "../components/exercise/FullExerciseModal";
+import type { Themes } from "../App";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -25,7 +26,11 @@ const Button = styled.button`
 
 type ModalType = "category" | "add" | "edit" | "delete" | null;
 
-export function Exercises() {
+interface Props {
+  theme: Themes;
+}
+
+export function Exercises({ theme }: Props) {
   const [columns, setColumns] = useState<any[]>([]);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -77,7 +82,7 @@ export function Exercises() {
         <Button onClick={() => setActiveModal("edit")}>Edit</Button>
         <Button onClick={() => setActiveModal("delete")}>Delete</Button>
       </ButtonWrapper>
-      <DataTable data={exercises} columns={columns} />
+      <DataTable data={exercises} columns={columns} theme={theme} />
       <CategoryModal
         isOpen={activeModal === "category"}
         onClose={() => setActiveModal(null)}
