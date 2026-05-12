@@ -14,8 +14,8 @@ body {
 body.dark {
   margin: 0;
   padding: 0;
-  background-color: var(--main-black) !important;
-  color: var(--main-white) !important;
+  background-color: var(--main-black);
+  color: var(--main-white);
 }
 
 p,

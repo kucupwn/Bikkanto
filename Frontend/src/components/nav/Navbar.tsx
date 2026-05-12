@@ -67,7 +67,6 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
 
   function toggleTheme() {
     document.body.classList.toggle("dark");
-    console.log(document.body.classList);
   }
 
   return (
