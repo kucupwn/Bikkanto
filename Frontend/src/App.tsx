@@ -27,6 +27,8 @@ const Title = styled.h1`
   padding-top: 10px;
 `;
 
+export type Themes = "light" | "dark";
+
 export function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
     !!localStorage.getItem("token"),
@@ -40,6 +42,9 @@ export function App() {
     last_name: "",
     role: "",
   });
+  const [theme, setTheme] = useState<Themes>(
+    localStorage.getItem("theme") as Themes,
+  );
 
   async function getCurrentUser() {
     if (isLoggedIn) {
@@ -70,6 +75,10 @@ export function App() {
     getCurrentUser();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    document.body.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
   return (
     <>
       <TitleContainer>
@@ -79,6 +88,8 @@ export function App() {
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
         setIsLoginOpen={setIsLoginOpen}
+        theme={theme}
+        setTheme={setTheme}
       />
 
       <Routes>

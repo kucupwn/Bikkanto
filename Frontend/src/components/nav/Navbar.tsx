@@ -1,12 +1,7 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import type { Dispatch, SetStateAction } from "react";
-
-interface Props {
-  isLoggedIn: boolean;
-  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
-  setIsLoginOpen: Dispatch<SetStateAction<boolean>>;
-}
+import type { Themes } from "../../App";
 
 const Nav = styled.nav`
   display: flex;
@@ -58,7 +53,21 @@ const links = [
   { name: "Profile", path: "/profile" },
 ];
 
-export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
+interface Props {
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+  setIsLoginOpen: Dispatch<SetStateAction<boolean>>;
+  theme: Themes;
+  setTheme: Dispatch<SetStateAction<Themes>>;
+}
+
+export function Navbar({
+  isLoggedIn,
+  setIsLoggedIn,
+  setIsLoginOpen,
+  theme,
+  setTheme,
+}: Props) {
   function handleLogout() {
     localStorage.removeItem("token");
 
@@ -66,7 +75,10 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
   }
 
   function toggleTheme() {
-    document.body.classList.toggle("dark");
+    const targetTheme = theme === "light" ? "dark" : "light";
+
+    setTheme(targetTheme);
+    localStorage.setItem("theme", targetTheme);
   }
 
   return (
