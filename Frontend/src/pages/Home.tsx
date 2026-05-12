@@ -40,8 +40,8 @@ const PageDescription = styled.p`
   margin-top: 1rem;
 `;
 
-const HorizontalLine = styled.hr`
-  height: 1px;
+const HorizontalLine = styled.div`
+  height: 1.5px;
   width: 350px;
   background-color: #8e8e8e;
   border: none;
