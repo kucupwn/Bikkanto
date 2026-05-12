@@ -41,6 +41,11 @@ const AuthWrapper = styled.div`
   right: 1rem;
 `;
 
+const ThemeWrapper = styled.div`
+  position: absolute;
+  left: 1rem;
+`;
+
 const LoginButton = styled.button`
   font-size: 16px;
 `;
@@ -62,6 +67,9 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
 
   return (
     <Nav>
+      <ThemeWrapper>
+        <button>Theme</button>
+      </ThemeWrapper>
       <NavList>
         {links.map((link) => (
           <li key={link.path}>
