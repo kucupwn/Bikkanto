@@ -1,11 +1,21 @@
 :root {
   --main-black: #242424;
-  --main-white: #cecece;
+  --main-white: #ecebeb;
 }
 
 body {
   margin: 0;
   padding: 0;
+  background-color: var(--main-white);
+  color: var(--main-black);
+  transition: 0.3s;
+}
+
+body.dark {
+  margin: 0;
+  padding: 0;
+  background-color: var(--main-black) !important;
+  color: var(--main-white) !important;
 }
 
 p,

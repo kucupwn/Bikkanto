@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Routes, Route } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
+import { Navbar } from "./components/nav/Navbar";
 import { Home } from "./pages/Home";
 import { Roll } from "./pages/Roll";
 import { Exercises } from "./pages/Exercises";

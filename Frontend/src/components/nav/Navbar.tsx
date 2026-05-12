@@ -65,10 +65,15 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
     setIsLoggedIn(false);
   }
 
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    console.log(document.body.classList);
+  }
+
   return (
     <Nav>
       <ThemeWrapper>
-        <button>Theme</button>
+        <button onClick={toggleTheme}>Theme</button>
       </ThemeWrapper>
       <NavList>
         {links.map((link) => (
