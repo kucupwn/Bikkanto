@@ -113,7 +113,9 @@ export function FullExerciseModal({
 
   return (
     <ModalBase onClose={onClose}>
-      <Title>{mode === "edit" ? "Edit" : "Delete"} exercise</Title>
+      <Title>
+        {mode === "edit" ? "Edit" : mode === "add" ? "Add" : "Delete"} exercise
+      </Title>
       {mode === "edit" || mode === "delete" ? (
         <select name="exercise_id" value={exercise.id} onChange={handleChange}>
           {exercises.map((ex) => (
