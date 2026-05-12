@@ -1,5 +1,7 @@
 :root {
   --main-black: #242424;
+  --dark-black: #151515;
+
   --main-white: #ecebeb;
 }
 
@@ -14,7 +16,7 @@ body {
 body.dark {
   margin: 0;
   padding: 0;
-  background-color: var(--main-black);
+  background-color: var(--dark-black);
   color: var(--main-white);
 }
 

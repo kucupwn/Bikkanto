@@ -14,7 +14,7 @@ import { api } from "./api/api";
 
 const TitleContainer = styled.div`
   width: 100vw;
-  background-color: var(--main-black);
+  background-color: var(--dark-black);
   color: var(--main-white);
 `;
 
