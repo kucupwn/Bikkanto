@@ -6,8 +6,13 @@ import {
 } from "../types/historyTypes";
 import { capitalize } from "../utils";
 import { DataTable } from "../components/DataTable";
+import type { Themes } from "../App";
 
-export function History() {
+interface Props {
+  theme: Themes;
+}
+
+export function History({ theme }: Props) {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
 
@@ -34,5 +39,5 @@ export function History() {
     fetchHistory();
   }, []);
 
-  return <DataTable data={history} columns={columns} />;
+  return <DataTable data={history} columns={columns} theme={theme} />;
 }

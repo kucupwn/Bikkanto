@@ -114,7 +114,7 @@ export function App() {
           path="/history"
           element={
             <ProtectedRoute>
-              <History />
+              <History theme={theme} />
             </ProtectedRoute>
           }
         />
