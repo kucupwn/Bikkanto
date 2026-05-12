@@ -26,7 +26,6 @@ export function DataTable({ data, columns, theme }: Props) {
         columns={columns}
         rowHeaders={true}
         width="100%"
-        height={400}
         stretchH="all"
         readOnly={true}
         filters={true}
