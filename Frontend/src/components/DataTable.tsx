@@ -5,7 +5,7 @@ import { HotTable } from "@handsontable/react-wrapper";
 import "handsontable/styles/handsontable.min.css";
 import "handsontable/styles/ht-theme-main.min.css";
 import styled from "styled-components";
-import type { Themes } from "../App";
+import { useTheme } from "./ThemeProvider";
 
 const TableContainer = styled.div`
   width: 80vw;
@@ -15,10 +15,11 @@ const TableContainer = styled.div`
 interface Props {
   data: any;
   columns: any[];
-  theme: Themes;
 }
 
-export function DataTable({ data, columns, theme }: Props) {
+export function DataTable({ data, columns }: Props) {
+  const { theme } = useTheme();
+
   return (
     <TableContainer>
       <HotTable
