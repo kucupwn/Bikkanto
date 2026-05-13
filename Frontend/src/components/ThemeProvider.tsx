@@ -9,12 +9,12 @@ import {
 
 type Themes = "light" | "dark";
 
-type ThemeContextType = {
+type ThemeContextValue = {
   theme: Themes;
   setTheme: Dispatch<SetStateAction<Themes>>;
 };
 
-const ThemeContext = createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Themes>(() => {
