@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import type { Dispatch, SetStateAction } from "react";
-import type { Themes } from "../../App";
+import { useTheme } from "../ThemeProvider";
 
 const Nav = styled.nav`
   display: flex;
@@ -57,17 +57,11 @@ interface Props {
   isLoggedIn: boolean;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
   setIsLoginOpen: Dispatch<SetStateAction<boolean>>;
-  theme: Themes;
-  setTheme: Dispatch<SetStateAction<Themes>>;
 }
 
-export function Navbar({
-  isLoggedIn,
-  setIsLoggedIn,
-  setIsLoginOpen,
-  theme,
-  setTheme,
-}: Props) {
+export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
+  const { theme, setTheme } = useTheme();
+
   function handleLogout() {
     localStorage.removeItem("token");
 

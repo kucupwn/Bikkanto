@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Profile } from "./pages/Profile";
 import type { User } from "./types/userTypes";
 import { api } from "./api/api";
+import { useTheme } from "./components/ThemeProvider";
 
 const TitleContainer = styled.div`
   width: 100vw;
@@ -42,9 +43,8 @@ export function App() {
     last_name: "",
     role: "",
   });
-  const [theme, setTheme] = useState<Themes>(
-    localStorage.getItem("theme") as Themes,
-  );
+
+  const { theme } = useTheme();
 
   async function getCurrentUser() {
     if (isLoggedIn) {
@@ -88,8 +88,6 @@ export function App() {
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
         setIsLoginOpen={setIsLoginOpen}
-        theme={theme}
-        setTheme={setTheme}
       />
 
       <Routes>
@@ -106,7 +104,7 @@ export function App() {
           path="/exercises"
           element={
             <ProtectedRoute>
-              <Exercises theme={theme} />
+              <Exercises />
             </ProtectedRoute>
           }
         />
@@ -114,7 +112,7 @@ export function App() {
           path="/history"
           element={
             <ProtectedRoute>
-              <History theme={theme} />
+              <History />
             </ProtectedRoute>
           }
         />
