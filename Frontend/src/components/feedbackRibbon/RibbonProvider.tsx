@@ -45,9 +45,11 @@ export function RibbonProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (timeRef.current) {
-      clearTimeout(timeRef.current);
-    }
+    return () => {
+      if (timeRef.current) {
+        clearTimeout(timeRef.current);
+      }
+    };
   }, []);
 
   return (
