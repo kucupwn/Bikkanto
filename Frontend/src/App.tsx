@@ -24,7 +24,8 @@ const Title = styled.h1`
   font-family: "Times New Roman", Times, serif;
   justify-self: center;
   letter-spacing: 10px;
-  margin: 10px;
+  margin: 0;
+  padding: 10px;
 `;
 
 export type Themes = "light" | "dark";
