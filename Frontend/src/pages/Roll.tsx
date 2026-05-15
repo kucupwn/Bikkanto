@@ -182,7 +182,7 @@ export function Roll() {
 
   return (
     <RollContainer>
-      <h2>{title}</h2>
+      {!isFinished && <h2>{title}</h2>}
       {mode === "settings" && (
         <WorkoutSettings
           exerciseCount={exerciseCount}
