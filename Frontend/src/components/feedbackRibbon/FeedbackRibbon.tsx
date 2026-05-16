@@ -9,6 +9,7 @@ const slideIn = keyframes`
 
 const Ribbon = styled.div<{ $type: RibbonType }>`
   position: absolute;
+  color: var(--dark-black);
   border-radius: 10px;
   padding: 10px;
   top: 10px;
