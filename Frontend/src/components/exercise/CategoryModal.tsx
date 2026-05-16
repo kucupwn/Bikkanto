@@ -4,6 +4,7 @@ import type { Category } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
+import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
 interface Props {
   isOpen: boolean;
@@ -50,6 +51,7 @@ export function CategoryModal({
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(
     categories[0]?.id ?? 0,
   );
+  const { showRibbon } = useRibbon();
 
   function handleCategoryNameInput(e: ChangeEvent<HTMLInputElement>) {
     setNewCategory({ category_name: e.target.value.toLowerCase() });
@@ -63,9 +65,10 @@ export function CategoryModal({
     try {
       await api.post("/exercises/categories", newCategory);
       await onSuccess();
+      showRibbon("success", "Category successfully added.");
       onClose();
     } catch (err) {
-      console.error(err);
+      showRibbon("error", "Category could not be added.");
     }
   }
 
@@ -73,9 +76,10 @@ export function CategoryModal({
     try {
       await api.delete(`/exercises/categories/${selectedCategoryId}`);
       await onSuccess();
+      showRibbon("success", "Category successfully deleted.");
       onClose();
     } catch (err) {
-      console.error(err);
+      showRibbon("error", "Category could not be deleted.");
     }
   }
 
