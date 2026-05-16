@@ -9,7 +9,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--main-white);
-  color: var(--main-black);
+  color: var(--dark-black);
   transition: 0.3s;
 }
 
