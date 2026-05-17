@@ -5,6 +5,7 @@ import { capitalize } from "../../utils";
 import { ExercisePropsInput } from "./ExercisePropsInput";
 import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
+import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
 interface Props {
   isOpen: boolean;
@@ -49,6 +50,8 @@ export function FullExerciseModal({
           category_name: categories[0]?.category_name ?? "",
         },
   );
+
+  const { showRibbon } = useRibbon();
 
   const titleLabels = {
     add: "Add",
@@ -103,17 +106,20 @@ export function FullExerciseModal({
           return;
         } else {
           await api.post("/exercises", exercise);
+          showRibbon("success", "Exercise successfully added.");
         }
       } else if (mode === "edit") {
         await api.put(`/exercises/${exercise.id}`, exercise);
+        showRibbon("success", "Exercise successfully edited.");
       } else if (mode === "delete") {
         await api.delete(`/exercises/${exercise.id}`);
+        showRibbon("success", "Exercise successfully deleted.");
       }
 
       await onSuccess();
       onClose();
     } catch (err) {
-      console.error(err);
+      showRibbon("success", "Exercise operation failed.");
     }
   }
 
