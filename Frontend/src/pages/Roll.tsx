@@ -13,6 +13,7 @@ import {
 import { SummaryTable } from "../components/roll/SummaryTable";
 import { StoredWorkout } from "../components/roll/StoredWorkout";
 import type { WorkoutHistory } from "../types/historyTypes";
+import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 
 const RollContainer = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ export function Roll() {
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [workoutDate, setWorkoutDate] = useState<Date | null>(new Date());
   const [title, setTitle] = useState<string | null>(null);
+  const { showRibbon } = useRibbon();
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
 
@@ -129,14 +131,15 @@ export function Roll() {
     }));
   }
 
-  function postFinishedWorkout() {
+  async function postFinishedWorkout() {
     if (safeCycles <= 0) return;
 
     const historyEntries = getHistoryEntries();
 
     if (!historyEntries) return;
 
-    api.post("/history", historyEntries);
+    await api.post("/history", historyEntries);
+    showRibbon("success", "Workout saved to history.");
 
     setIsFinished(true);
     localStorage.removeItem("workout");
@@ -150,7 +153,7 @@ export function Roll() {
 
         setCategories(categories);
       } catch (err) {
-        console.error(err);
+        showRibbon("error", "Could not fetch exercises.");
       }
     }
 
@@ -165,7 +168,7 @@ export function Roll() {
 
         setExercises(exercises);
       } catch (err) {
-        console.error(err);
+        showRibbon("error", "Could not fetch categories.");
       }
     }
 
