@@ -2,6 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
+import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
 interface Props {
   isOpen: boolean;
@@ -27,10 +28,11 @@ export function PasswordChangeModal({ isOpen, onClose }: Props) {
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [verifyNewPassword, setVerifyNewPassword] = useState<string>("");
+  const { showRibbon } = useRibbon();
 
   function handleChangeSubmit() {
     if (newPassword !== verifyNewPassword) {
-      console.error("New passwords not matching.");
+      showRibbon("error", "New passwords are not matching.");
       return;
     }
 
@@ -41,8 +43,9 @@ export function PasswordChangeModal({ isOpen, onClose }: Props) {
 
     try {
       api.patch("/users/change_password", passwords);
+      showRibbon("success", "Password changed successfully.");
     } catch (err) {
-      console.error(err);
+      showRibbon("error", "Could not change password.");
     }
 
     onClose();
