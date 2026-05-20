@@ -30,7 +30,7 @@ export function PasswordChangeModal({ isOpen, onClose }: Props) {
   const [verifyNewPassword, setVerifyNewPassword] = useState<string>("");
   const { showRibbon } = useRibbon();
 
-  function handleChangeSubmit() {
+  async function handleChangeSubmit() {
     if (newPassword !== verifyNewPassword) {
       showRibbon("error", "New passwords are not matching.");
       return;
@@ -42,13 +42,14 @@ export function PasswordChangeModal({ isOpen, onClose }: Props) {
     };
 
     try {
-      api.patch("/users/change_password", passwords);
-      showRibbon("success", "Password changed successfully.");
-    } catch (err) {
-      showRibbon("error", "Could not change password.");
-    }
+      await api.patch("/users/change_password", passwords);
 
-    onClose();
+      showRibbon("success", "Password changed successfully.");
+      onClose();
+    } catch (err: any) {
+      const message = err.response.data.detail || "Could not change password.";
+      showRibbon("error", message);
+    }
   }
 
   return (
