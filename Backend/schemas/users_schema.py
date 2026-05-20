@@ -36,6 +36,6 @@ class Token(BaseModel):
     token_type: str
 
 
-class UserVerification(BaseModel):
+class PasswordVerification(BaseModel):
     password: str
     new_password: str
