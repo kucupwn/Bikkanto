@@ -28,7 +28,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    password: str | None = Field(default=None, min_length=5)
+    pass
 
 
 class Token(BaseModel):

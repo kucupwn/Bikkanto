@@ -8,8 +8,8 @@ from ..models import Users
 from ..schemas.users_schema import (
     UserRead,
     UserCreate,
-    UserUpdate,
     PasswordVerification,
+    UserUpdate,
     UserRole,
 )
 from .auth import get_current_user
@@ -93,10 +93,6 @@ async def update_user(
         raise HTTPException(status_code=404, detail="User not found")
 
     update_data = user_update.model_dump(exclude_unset=True)
-
-    if "password" in update_data:
-        user_model.hashed_password = bcrypt_context.hash(update_data["password"])
-        del update_data["password"]
 
     if "email" in update_data:
         existing_email = (
