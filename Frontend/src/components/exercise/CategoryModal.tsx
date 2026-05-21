@@ -67,8 +67,10 @@ export function CategoryModal({
       await onSuccess();
       showRibbon("success", "Category successfully added.");
       onClose();
-    } catch (err) {
-      showRibbon("error", "Category could not be added.");
+    } catch (err: any) {
+      const message =
+        err.response.data.detail || "Category could not be added.";
+      showRibbon("error", message);
     }
   }
 
@@ -78,8 +80,10 @@ export function CategoryModal({
       await onSuccess();
       showRibbon("success", "Category successfully deleted.");
       onClose();
-    } catch (err) {
-      showRibbon("error", "Category could not be deleted.");
+    } catch (err: any) {
+      const message =
+        err.response.data.detail || "Category could not be deleted.";
+      showRibbon("error", message);
     }
   }
 
