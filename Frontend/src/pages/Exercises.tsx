@@ -10,6 +10,7 @@ import { capitalize } from "../utils";
 import styled from "styled-components";
 import { CategoryModal } from "../components/exercise/CategoryModal";
 import { FullExerciseModal } from "../components/exercise/FullExerciseModal";
+import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ export function Exercises() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const { showRibbon } = useRibbon();
 
   async function fetchExercises() {
     try {
@@ -45,8 +47,9 @@ export function Exercises() {
         }));
         setColumns(cols);
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const message = err.response.data.detail || "Could not fetch exercises.";
+      showRibbon("error", message);
     }
   }
 
@@ -56,16 +59,14 @@ export function Exercises() {
       const categories = res.data;
 
       setCategories(categories);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const message = err.response.data.detail || "Could not fetch categories.";
+      showRibbon("error", message);
     }
   }
 
   useEffect(() => {
     fetchExercises();
-  }, []);
-
-  useEffect(() => {
     fetchCategories();
   }, []);
 
