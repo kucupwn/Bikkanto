@@ -3,6 +3,7 @@ import type { User } from "../types/userTypes";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { api } from "../api/api";
 import { PasswordChangeModal } from "../components/profile/PasswordChangeModal";
+import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 
 interface Props {
   currentUser: User;
@@ -36,13 +37,16 @@ export function Profile({ currentUser, setCurrentUser }: Props) {
   const [lastName, setLastName] = useState<string>(currentUser.last_name);
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] =
     useState<boolean>(false);
+  const { showRibbon } = useRibbon();
 
   async function submitChange(data: Record<string, string>) {
     try {
       const res = await api.patch("/users", data);
       setCurrentUser(res.data);
-    } catch (err) {
-      console.error(err);
+      showRibbon("success", "Successful user data update.");
+    } catch (err: any) {
+      const message = err.response.data.detail || "Could not update user data.";
+      showRibbon("error", message);
     }
   }
 
