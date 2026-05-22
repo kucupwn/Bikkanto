@@ -64,14 +64,15 @@ export function Login({ onClose }: Props) {
       localStorage.setItem("token_expiry", expiryTime.toString());
 
       window.location.href = "/";
-    } catch (err) {
-      showRibbon("error", "Invalid credentials.");
+    } catch (err: any) {
+      const message = err.response.data.detail || "Invalid credentials.";
+      showRibbon("error", message);
     }
   }
 
   async function handleRegister() {
     if (password !== verifyPassword) {
-      console.error("Passwords not matching.");
+      showRibbon("error", "Passwords not matching.");
       return;
     }
 
@@ -85,8 +86,12 @@ export function Login({ onClose }: Props) {
       });
 
       setMode("login");
-    } catch (err) {
-      console.error(err);
+
+      showRibbon("success", "Successful registration.");
+    } catch (err: any) {
+      const message =
+        err.response.data.detail || "Could not register the new account.";
+      showRibbon("error", message);
     }
   }
 
