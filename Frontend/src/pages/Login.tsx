@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { api } from "../api/api";
 import type { AuthResponse } from "../types/userTypes";
@@ -94,6 +94,20 @@ export function Login({ onClose }: Props) {
       showRibbon("error", message);
     }
   }
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        handleLogin();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [handleLogin]);
 
   return (
     <ModalBase onClose={onClose}>
