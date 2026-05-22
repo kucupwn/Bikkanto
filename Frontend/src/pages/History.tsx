@@ -6,10 +6,12 @@ import {
 } from "../types/historyTypes";
 import { capitalize } from "../utils";
 import { DataTable } from "../components/DataTable";
+import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 
 export function History() {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
+  const { showRibbon } = useRibbon();
 
   async function fetchHistory() {
     try {
@@ -25,8 +27,9 @@ export function History() {
         }));
         setColumns(cols);
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const message = err.response.data.detail || "Could not fetch history.";
+      showRibbon("error", message);
     }
   }
 
