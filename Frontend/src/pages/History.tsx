@@ -7,14 +7,18 @@ import {
 import { capitalize } from "../utils";
 import { DataTable } from "../components/DataTable";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
+import { Loader } from "../components/Loader";
 
 export function History() {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { showRibbon } = useRibbon();
 
   async function fetchHistory() {
     try {
+      setIsLoading(true);
+
       const res = await api.get("/history");
       const history = res.data;
 
@@ -30,6 +34,8 @@ export function History() {
     } catch (err: any) {
       const message = err.response.data.detail || "Could not fetch history.";
       showRibbon("error", message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -37,5 +43,10 @@ export function History() {
     fetchHistory();
   }, []);
 
-  return <DataTable data={history} columns={columns} />;
+  return (
+    <>
+      {isLoading && <Loader />}
+      {!isLoading && <DataTable data={history} columns={columns} />}
+    </>
+  );
 }
