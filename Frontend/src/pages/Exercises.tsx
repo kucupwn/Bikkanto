@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { CategoryModal } from "../components/exercise/CategoryModal";
 import { FullExerciseModal } from "../components/exercise/FullExerciseModal";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
+import { Loader } from "../components/Loader";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -31,10 +32,13 @@ export function Exercises() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { showRibbon } = useRibbon();
 
   async function fetchExercises() {
     try {
+      setIsLoading(true);
+
       const res = await api.get("/exercises");
       const exercises = res.data;
 
@@ -50,6 +54,8 @@ export function Exercises() {
     } catch (err: any) {
       const message = err.response.data.detail || "Could not fetch exercises.";
       showRibbon("error", message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -78,7 +84,10 @@ export function Exercises() {
         <Button onClick={() => setActiveModal("edit")}>Edit</Button>
         <Button onClick={() => setActiveModal("delete")}>Delete</Button>
       </ButtonWrapper>
-      <DataTable data={exercises} columns={columns} />
+
+      {isLoading && <Loader />}
+      {!isLoading && <DataTable data={exercises} columns={columns} />}
+
       <CategoryModal
         isOpen={activeModal === "category"}
         onClose={() => setActiveModal(null)}
