@@ -118,8 +118,9 @@ export function FullExerciseModal({
 
       await onSuccess();
       onClose();
-    } catch (err) {
-      showRibbon("success", "Exercise operation failed.");
+    } catch (err: any) {
+      const message = err.response.data.detail || "Exercise operation failed.";
+      showRibbon("success", message);
     }
   }
 
