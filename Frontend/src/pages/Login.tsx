@@ -65,8 +65,13 @@ export function Login({ onClose }: Props) {
 
       window.location.href = "/";
     } catch (err: any) {
-      const message = err.response.data.detail || "Invalid credentials.";
-      showRibbon("error", message);
+      const message = err.response?.data?.detail;
+
+      if (!message) {
+        showRibbon("error", "Server is currently down.");
+      } else {
+        showRibbon("error", message);
+      }
     }
   }
 
