@@ -8,6 +8,19 @@ import { capitalize } from "../utils";
 import { DataTable } from "../components/DataTable";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Loader } from "../components/Loader";
+import styled from "styled-components";
+
+const HistoryContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const StatButton = styled.button`
+  width: 100px;
+  font-size: 18px;
+  margin-bottom: 1rem;
+`;
 
 export function History() {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
@@ -44,9 +57,10 @@ export function History() {
   }, []);
 
   return (
-    <>
+    <HistoryContainer>
+      <StatButton>Statistics</StatButton>
       {isLoading && <Loader />}
       {!isLoading && <DataTable data={history} columns={columns} />}
-    </>
+    </HistoryContainer>
   );
 }
