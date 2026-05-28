@@ -9,6 +9,7 @@ import { DataTable } from "../components/DataTable";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Loader } from "../components/Loader";
 import styled from "styled-components";
+import { StatsModal } from "../components/stats/StatsModal";
 
 const HistoryContainer = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ export function History() {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isStatOpen, setIsStatOpen] = useState<boolean>(false);
   const { showRibbon } = useRibbon();
 
   async function fetchHistory() {
@@ -58,9 +60,10 @@ export function History() {
 
   return (
     <HistoryContainer>
-      <StatButton>Statistics</StatButton>
+      <StatButton onClick={() => setIsStatOpen(true)}>Statistics</StatButton>
       {isLoading && <Loader />}
       {!isLoading && <DataTable data={history} columns={columns} />}
+      <StatsModal isOpen={isStatOpen} onClose={() => setIsStatOpen(false)} />
     </HistoryContainer>
   );
 }
