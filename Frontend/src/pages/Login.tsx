@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { api } from "../api/api";
 import type { AuthResponse } from "../types/userTypes";
@@ -40,6 +40,8 @@ export function Login({ onClose }: Props) {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+
+  const usernameInputRef = useRef<HTMLInputElement | null>(null);
 
   const { showRibbon } = useRibbon();
 
@@ -114,6 +116,10 @@ export function Login({ onClose }: Props) {
     };
   }, [handleLogin]);
 
+  useEffect(() => {
+    usernameInputRef.current?.focus();
+  }, []);
+
   return (
     <ModalBase onClose={onClose}>
       {mode === "login" ? (
@@ -125,6 +131,7 @@ export function Login({ onClose }: Props) {
         <span>Username</span>
         <input
           type="text"
+          ref={usernameInputRef}
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
