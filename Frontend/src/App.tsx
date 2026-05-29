@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { Navbar } from "./components/nav/Navbar";
 import { Home } from "./pages/Home";
 import { Roll } from "./pages/Roll";
@@ -26,6 +26,11 @@ const Title = styled.h1`
   letter-spacing: 10px;
   margin: 0;
   padding: 10px;
+`;
+
+const TitleLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
 `;
 
 export type Themes = "light" | "dark";
@@ -82,7 +87,9 @@ export function App() {
   return (
     <>
       <TitleContainer>
-        <Title>BIKKANTO</Title>
+        <TitleLink to="/">
+          <Title>BIKKANTO</Title>
+        </TitleLink>
       </TitleContainer>
       <Navbar
         isLoggedIn={isLoggedIn}
