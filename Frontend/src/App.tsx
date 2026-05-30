@@ -12,6 +12,7 @@ import { Profile } from "./pages/Profile";
 import type { User } from "./types/userTypes";
 import { api } from "./api/api";
 import { useTheme } from "./components/ThemeProvider";
+import { useRibbon } from "./components/feedbackRibbon/RibbonProvider";
 
 const TitleContainer = styled.div`
   width: 100vw;
@@ -49,6 +50,7 @@ export function App() {
     role: "",
   });
 
+  const { showRibbon } = useRibbon();
   const { theme } = useTheme();
 
   async function getCurrentUser() {
@@ -58,8 +60,10 @@ export function App() {
         const data = res.data;
 
         setCurrentUser(data);
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        const message = err.response.data.detail || "No user logged in.";
+        showRibbon("error", message);
+
         localStorage.removeItem("token");
         localStorage.removeItem("token_expiry");
         setIsLoggedIn(false);

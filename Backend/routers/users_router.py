@@ -26,12 +26,12 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 @router.get("/", response_model=UserRead, status_code=status.HTTP_200_OK)
 async def get_current_user(user: user_dependency, db: db_dependency):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+        raise HTTPException(status_code=401, detail="No user logged in.")
 
     users_model = db.query(Users).filter(Users.id == user.get("id")).first()
 
     if users_model is None:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="User not found.")
 
     return UserRead.model_validate(users_model)
 
