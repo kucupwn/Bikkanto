@@ -63,7 +63,8 @@ export function Roll() {
       const [missingCategory] = categories.filter(
         (cat) => cat.id === selectedProp.categoryId,
       );
-      console.error(
+      showRibbon(
+        "error",
         `There is no or not enough ${selectedProp.exerciseDifficulty.toUpperCase()} ${missingCategory.category_name.toUpperCase()}`,
       );
 
