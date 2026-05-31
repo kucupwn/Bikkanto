@@ -102,7 +102,7 @@ export function FullExerciseModal({
         );
 
         if (existing) {
-          console.error(`${exercise.exercise_name} already exists.`);
+          showRibbon("error", `${exercise.exercise_name} already exists.`);
           return;
         } else {
           await api.post("/exercises", exercise);
