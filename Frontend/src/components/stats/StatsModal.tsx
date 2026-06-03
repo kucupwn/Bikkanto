@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ModalBase } from "../ModalBase";
 import HistoryRangePicker from "./HistoryRangePicker";
 import { api } from "../../api/api";
+import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
 interface Props {
   isOpen: boolean;
@@ -11,6 +12,8 @@ interface Props {
 export function StatsModal({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
+  const { showRibbon } = useRibbon();
+
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     new Date(),
     new Date(),
@@ -18,14 +21,21 @@ export function StatsModal({ isOpen, onClose }: Props) {
 
   async function getHistoryInRange() {
     try {
+      const startDate = dateRange[0]?.toISOString().split("T")[0];
+      const endDate = dateRange[1]?.toISOString().split("T")[0];
+
       const res = await api.get("/history/range", {
         params: {
-          start_date: dateRange[0]?.toISOString().split("T")[0],
-          end_date: dateRange[1]?.toISOString().split("T")[0],
+          start_date: startDate,
+          end_date: endDate,
         },
       });
       console.log(res.data);
-    } catch (err: any) {}
+    } catch (err: any) {
+      const message =
+        err.response.data.detail || "Could not fetch history range.";
+      showRibbon("error", message);
+    }
   }
 
   return (
