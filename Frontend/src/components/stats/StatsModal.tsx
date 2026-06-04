@@ -21,13 +21,17 @@ export function StatsModal({ isOpen, onClose }: Props) {
 
   async function getHistoryInRange() {
     try {
-      const startDate = dateRange[0]?.toISOString().split("T")[0];
-      const endDate = dateRange[1]?.toISOString().split("T")[0];
+      const [start, end] = dateRange;
+
+      if (!start || !end) {
+        showRibbon("error", "Please select both dates.");
+        return;
+      }
 
       const res = await api.get("/history/range", {
         params: {
-          start_date: startDate,
-          end_date: endDate,
+          start_date: start.toISOString().split("T")[0],
+          end_date: end.toISOString().split("T")[0],
         },
       });
       console.log(res.data);
