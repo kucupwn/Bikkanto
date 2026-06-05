@@ -4,6 +4,7 @@ import HistoryRangePicker from "./HistoryRangePicker";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import type { WorkoutHistory } from "../../types/historyTypes";
+import { Statistics } from "./Statistics";
 
 interface Props {
   isOpen: boolean;
@@ -50,6 +51,9 @@ export function StatsModal({ isOpen, onClose }: Props) {
       <h2>Statistics</h2>
       <HistoryRangePicker dateRange={dateRange} setDateRange={setDateRange} />
       <button onClick={getHistoryInRange}>Get</button>
+      {historyEntries.length > 0 && (
+        <Statistics dateRange={dateRange} historyEntries={historyEntries} />
+      )}
     </ModalBase>
   );
 }
