@@ -49,9 +49,9 @@ export function Statistics({ dateRange, historyEntries }: Props) {
       <p>Range: {stats?.statRange} days</p>
       <p>Workout count: {stats?.workoutDays} </p>
       <h3>Top categories:</h3>
-      {stats?.categoryCount.slice(0, 3).map(([name, _], i) => (
+      {stats?.categoryCount.slice(0, 3).map(([name, count], i) => (
         <p key={name}>
-          {i + 1}. {capitalize(name)}
+          {i + 1}. {capitalize(name)} ({count})
         </p>
       ))}
     </>
