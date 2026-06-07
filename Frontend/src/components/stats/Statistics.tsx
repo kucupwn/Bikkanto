@@ -1,5 +1,5 @@
 import type { WorkoutHistory } from "../../types/historyTypes";
-import { formatDate } from "../../utils";
+import { capitalize, formatDate } from "../../utils";
 
 interface Props {
   dateRange: [Date | null, Date | null];
@@ -8,6 +8,18 @@ interface Props {
 
 export function Statistics({ dateRange, historyEntries }: Props) {
   const stats = getBasicStats();
+
+  function getCategoryCounts() {
+    const counts: Record<string, number> = {};
+
+    historyEntries.forEach((entry) => {
+      if (entry.category_name) {
+        counts[entry.category_name] = (counts[entry.category_name] || 0) + 1;
+      }
+    });
+
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  }
 
   function getBasicStats() {
     if (!dateRange[0] || !dateRange[1]) return null;
@@ -25,6 +37,7 @@ export function Statistics({ dateRange, historyEntries }: Props) {
     return {
       statRange: statRange,
       workoutDays: workoutDays.size,
+      categoryCount: getCategoryCounts(),
     };
   }
 
@@ -34,7 +47,13 @@ export function Statistics({ dateRange, historyEntries }: Props) {
         Stats of {`${formatDate(dateRange[0])} - ${formatDate(dateRange[1])}`}
       </h3>
       <p>Range: {stats?.statRange} days</p>
-      <h3>Workout count: {stats?.workoutDays} </h3>
+      <p>Workout count: {stats?.workoutDays} </p>
+      <h3>Top categories:</h3>
+      {stats?.categoryCount.slice(0, 3).map((category, i) => (
+        <p key={category[0]}>
+          {i + 1}. {capitalize(category[0])}
+        </p>
+      ))}
     </>
   );
 }
