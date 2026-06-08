@@ -55,11 +55,21 @@ const StyledNavLink = styled(NavLink)`
 const AuthWrapper = styled.div`
   position: absolute;
   right: 1rem;
+
+  @media (max-width: 768px) {
+    position: relative;
+    right: 0;
+  }
 `;
 
 const ThemeWrapper = styled.div`
   position: absolute;
   left: 1rem;
+
+  @media (max-width: 768px) {
+    position: relative;
+    left: 0;
+  }
 `;
 
 const LoginButton = styled.button`
@@ -102,14 +112,16 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
     <Nav>
       <Hamburger onClick={() => setIsMenuOpen((prev) => !prev)}>☰</Hamburger>
       <NavList $isOpen={isMenuOpen}>
-        <ThemeWrapper>
-          <button onClick={toggleTheme}>Theme</button>
-        </ThemeWrapper>
         {links.map((link) => (
           <li key={link.path}>
             <StyledNavLink to={link.path}>{link.name}</StyledNavLink>
           </li>
         ))}
+
+        <ThemeWrapper>
+          <button onClick={toggleTheme}>Theme</button>
+        </ThemeWrapper>
+
         <AuthWrapper>
           {isLoggedIn ? (
             <LoginButton onClick={handleLogout}>Logout</LoginButton>
