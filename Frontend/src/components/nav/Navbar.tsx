@@ -10,6 +10,10 @@ const Nav = styled.nav`
   padding: 1rem;
   background-color: var(--main-black);
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    justify-content: left;
+  }
 `;
 
 const NavList = styled.ul<{ $isOpen: boolean }>`
@@ -21,7 +25,7 @@ const NavList = styled.ul<{ $isOpen: boolean }>`
     display: ${(props) => (props.$isOpen ? "flex" : "none")};
     flex-direction: column;
     position: absolute;
-    top: 60px;
+    top: 110px;
     left: 0;
     width: 100%;
     padding: 1rem;
