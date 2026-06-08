@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { useTheme } from "../ThemeProvider";
 
 const Nav = styled.nav`
@@ -12,12 +12,29 @@ const Nav = styled.nav`
   margin-bottom: 1rem;
 `;
 
-const NavList = styled.ul`
+const NavList = styled.ul<{ $isOpen: boolean }>`
   list-style: none;
   display: flex;
   gap: 1rem;
-  margin: 0;
-  padding: 0;
+
+  @media (max-width: 768px) {
+    display: ${(props) => (props.$isOpen ? "flex" : "none")};
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--main-black);
+  }
+`;
+
+const Hamburger = styled.button`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -60,6 +77,8 @@ interface Props {
 }
 
 export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
   const { theme, setTheme } = useTheme();
 
   function handleLogout() {
@@ -77,23 +96,26 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
 
   return (
     <Nav>
-      <ThemeWrapper>
-        <button onClick={toggleTheme}>Theme</button>
-      </ThemeWrapper>
-      <NavList>
+      <Hamburger onClick={() => setIsMenuOpen((prev) => !prev)}>☰</Hamburger>
+      <NavList $isOpen={isMenuOpen}>
+        <ThemeWrapper>
+          <button onClick={toggleTheme}>Theme</button>
+        </ThemeWrapper>
         {links.map((link) => (
           <li key={link.path}>
             <StyledNavLink to={link.path}>{link.name}</StyledNavLink>
           </li>
         ))}
+        <AuthWrapper>
+          {isLoggedIn ? (
+            <LoginButton onClick={handleLogout}>Logout</LoginButton>
+          ) : (
+            <LoginButton onClick={() => setIsLoginOpen(true)}>
+              Login
+            </LoginButton>
+          )}
+        </AuthWrapper>
       </NavList>
-      <AuthWrapper>
-        {isLoggedIn ? (
-          <LoginButton onClick={handleLogout}>Logout</LoginButton>
-        ) : (
-          <LoginButton onClick={() => setIsLoginOpen(true)}>Login</LoginButton>
-        )}
-      </AuthWrapper>
     </Nav>
   );
 }
