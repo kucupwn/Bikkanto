@@ -115,7 +115,9 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
       <NavList $isOpen={isMenuOpen}>
         {links.map((link) => (
           <li key={link.path}>
-            <StyledNavLink to={link.path}>{link.name}</StyledNavLink>
+            <StyledNavLink to={link.path} onClick={() => setIsMenuOpen(false)}>
+              {link.name}
+            </StyledNavLink>
           </li>
         ))}
 
