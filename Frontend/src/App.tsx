@@ -15,7 +15,7 @@ import { useTheme } from "./components/ThemeProvider";
 import { useRibbon } from "./components/feedbackRibbon/RibbonProvider";
 
 const TitleContainer = styled.div`
-  width: 100vw;
+  width: 100%;
   background-color: var(--dark-black);
   color: var(--main-white);
 `;
