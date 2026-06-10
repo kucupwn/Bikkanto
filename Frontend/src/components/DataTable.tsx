@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { useTheme } from "./ThemeProvider";
 
 const TableContainer = styled.div`
-  width: 80vw;
+  width: 90vw;
   margin: auto;
 `;
 
@@ -26,7 +26,8 @@ export function DataTable({ data, columns }: Props) {
         data={data}
         columns={columns}
         rowHeaders={true}
-        width="100%"
+        width="90vw"
+        height="70vh"
         stretchH="all"
         readOnly={true}
         filters={true}
