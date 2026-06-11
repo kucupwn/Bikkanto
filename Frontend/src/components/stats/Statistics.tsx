@@ -37,7 +37,7 @@ export function Statistics({ dateRange, historyEntries }: Props) {
     return {
       statRange: statRange,
       workoutDays: workoutDays.size,
-      categoryCount: getCategoryCounts(),
+      categoryCounts: getCategoryCounts(),
     };
   }
 
@@ -49,11 +49,19 @@ export function Statistics({ dateRange, historyEntries }: Props) {
       <p>Range: {stats?.statRange} days</p>
       <p>Workout count: {stats?.workoutDays} </p>
       <h3>Top categories:</h3>
-      {stats?.categoryCount.slice(0, 3).map(([name, count], i) => (
-        <p key={name}>
-          {i + 1}. {capitalize(name)} ({count})
-        </p>
-      ))}
+      {Array.from({ length: 3 }).map((_, i) => {
+        const item = stats?.categoryCounts?.[i];
+        const name = item?.[0];
+        const count = item?.[1];
+
+        return (
+          <p key={i}>
+            {name
+              ? `${i + 1}. ${capitalize(name)} (${count})`
+              : `${i + 1}. N/A`}
+          </p>
+        );
+      })}
     </>
   );
 }
