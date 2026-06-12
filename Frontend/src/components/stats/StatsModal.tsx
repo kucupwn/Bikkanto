@@ -5,6 +5,19 @@ import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import type { WorkoutHistory } from "../../types/historyTypes";
 import { Statistics } from "./Statistics";
+import styled from "styled-components";
+
+const Title = styled.h2`
+  margin-bottom: 1rem;
+`;
+
+const GetButton = styled.button`
+  margin: 1rem;
+`;
+
+const SeparatorLine = styled.hr`
+  width: 200px;
+`;
 
 interface Props {
   isOpen: boolean;
@@ -48,11 +61,15 @@ export function StatsModal({ isOpen, onClose }: Props) {
 
   return (
     <ModalBase onClose={onClose}>
-      <h2>Statistics</h2>
+      <Title>Statistics</Title>
       <HistoryRangePicker dateRange={dateRange} setDateRange={setDateRange} />
-      <button onClick={getHistoryInRange}>Get</button>
+      <GetButton onClick={getHistoryInRange}>Get</GetButton>
+
       {historyEntries.length > 0 && (
-        <Statistics dateRange={dateRange} historyEntries={historyEntries} />
+        <>
+          <SeparatorLine />
+          <Statistics dateRange={dateRange} historyEntries={historyEntries} />
+        </>
       )}
     </ModalBase>
   );
