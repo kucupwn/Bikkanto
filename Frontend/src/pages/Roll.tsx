@@ -121,9 +121,7 @@ export function Roll() {
     return workout.map((entry) => ({
       date_complete: workoutDate.toISOString().split("T")[0],
       exercise_id: entry.exercise_id,
-      exercise_name: entry.exercise_name,
       category_id: entry.category_id,
-      category_name: entry.category_name,
       difficulty: entry.difficulty,
       reps_difficulty: entry.reps_difficulty,
       cycles: safeCycles,

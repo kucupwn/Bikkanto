@@ -46,8 +46,10 @@ export function Statistics({ dateRange, historyEntries }: Props) {
       <h3>
         Stats of {`${formatDate(dateRange[0])} - ${formatDate(dateRange[1])}`}
       </h3>
+
       <p>Range: {stats?.statRange} days</p>
-      <p>Workout count: {stats?.workoutDays} </p>
+      <p>Workout count: {stats?.workoutDays}</p>
+
       <h3>Top categories:</h3>
       {Array.from({ length: 3 }).map((_, i) => {
         const item = stats?.categoryCounts?.[i];
