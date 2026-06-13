@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
 from datetime import date
@@ -19,12 +19,7 @@ async def read_all(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    history_entries = (
-        db.query(History)
-        .filter(History.user_id == user.get("id"))
-        .options(joinedload(History.exercise), joinedload(History.category))
-        .all()
-    )
+    history_entries = db.query(History).filter(History.user_id == user.get("id")).all()
 
     return history_entries
 
@@ -47,7 +42,6 @@ async def get_history_range(
             History.user_id == user.get("id"),
             History.date_complete.between(start_date, end_date),
         )
-        .options(joinedload(History.exercise), joinedload(History.category))
         .all()
     )
 
@@ -75,7 +69,9 @@ async def create_history_batch(
         history = History(
             date_complete=entry.date_complete,
             exercise_id=entry.exercise_id,
+            exercise_name=exercise.exercise_name,
             category_id=entry.category_id,
+            category_name=category.category_name,
             difficulty=entry.difficulty,
             reps_difficulty=entry.reps_difficulty,
             cycles=entry.cycles,

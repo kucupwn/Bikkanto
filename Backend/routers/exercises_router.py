@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
 from .auth import get_current_user
@@ -72,7 +72,12 @@ async def delete_category(
     )
 
     if not category_model:
-        raise HTTPException(status_code=404, detail="Exercise not found")
+        raise HTTPException(status_code=404, detail="Category not found")
+
+    if db.query(Exercises).filter(Exercises.category_id == category_id).first():
+        raise HTTPException(
+            status_code=400, detail="Cannot delete category used by exercises"
+        )
 
     db.delete(category_model)
 
@@ -82,12 +87,7 @@ async def delete_category(
 @router.get("/", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
 async def read_all_exercises(user: user_dependency, db: db_dependency):
 
-    exercises = (
-        db.query(Exercises)
-        .filter(Exercises.user_id == user.get("id"))
-        .options(joinedload(Exercises.category))
-        .all()
-    )
+    exercises = db.query(Exercises).filter(Exercises.user_id == user.get("id")).all()
     return exercises
 
 
