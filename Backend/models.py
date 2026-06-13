@@ -25,11 +25,6 @@ class Exercises(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
 
     category = relationship("Categories", back_populates="exercise")
-    history = relationship(
-        "History",
-        back_populates="exercise",
-        cascade="all, delete-orphan",
-    )
     user = relationship("Users", back_populates="exercise")
 
     @property
@@ -51,9 +46,7 @@ class Categories(Base):
     exercise = relationship(
         "Exercises",
         back_populates="category",
-        cascade="all, delete-orphan",
     )
-    history = relationship("History", back_populates="category")
     user = relationship("Users", back_populates="category")
 
 
@@ -76,17 +69,10 @@ class History(Base):
     )
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
 
-    exercise = relationship("Exercises", back_populates="history")
-    category = relationship("Categories", back_populates="history")
+    exercise_name = Column(String, nullable=False)
+    category_name = Column(String, nullable=False)
+
     user = relationship("Users", back_populates="history")
-
-    @property
-    def category_name(self):
-        return self.category.category_name if self.category else None
-
-    @property
-    def exercise_name(self):
-        return self.exercise.exercise_name if self.exercise else None
 
 
 class Users(Base):
