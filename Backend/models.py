@@ -75,6 +75,26 @@ class History(Base):
     user = relationship("Users", back_populates="history")
 
 
+class WorkoutDraft(Base):
+    id = Column(Integer, primary_key=True, index=True)
+    difficulty = Column(String)
+    reps_difficulty = Column(String)
+    repetitions = Column(Integer)
+
+    exercise_id = Column(
+        Integer, ForeignKey("exercises.id"), nullable=False, index=True
+    )
+    category_id = Column(
+        Integer, ForeignKey("categories.id"), nullable=False, index=True
+    )
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    exercise_name = Column(String, nullable=False)
+    category_name = Column(String, nullable=False)
+
+    user = relationship("Users", back_populates="history")
+
+
 class Users(Base):
     __tablename__ = "users"
 
