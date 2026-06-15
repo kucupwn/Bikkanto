@@ -31,3 +31,23 @@ class HistoryRead(HistoryBase):
 class HistoryCreate(HistoryBase):
     exercise_id: int = Field(gt=0)
     category_id: int = Field(gt=0)
+
+
+class WorkoutDraftBase(BaseModel):
+    difficulty: Difficulty
+    reps_difficulty: RepsDifficulty
+    repetitions: int = Field(gt=0)
+
+
+class WorkoutDraftRead(WorkoutDraftBase):
+    id: int
+    exercise_name: str
+    category_name: str
+
+    class Config:
+        from_attributes = True
+
+
+class WorkoutDraftCreate(WorkoutDraftBase):
+    exercise_id: int = Field(gt=0)
+    category_id: int = Field(gt=0)
