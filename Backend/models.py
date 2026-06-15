@@ -79,6 +79,7 @@ class WorkoutDraft(Base):
     __tablename__ = "workout_draft"
 
     id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, nullable=False)
     difficulty = Column(String)
     reps_difficulty = Column(String)
     repetitions = Column(Integer)
