@@ -17,6 +17,8 @@ class HistoryBase(BaseModel):
     cycles: int = Field(gt=0)
     repetitions: int = Field(gt=0)
     sum_repetitions: int = Field(gt=0)
+    exercise_id: int = Field(gt=0)
+    category_id: int = Field(gt=0)
 
 
 class HistoryRead(HistoryBase):
@@ -29,14 +31,16 @@ class HistoryRead(HistoryBase):
 
 
 class HistoryCreate(HistoryBase):
-    exercise_id: int = Field(gt=0)
-    category_id: int = Field(gt=0)
+    pass
 
 
 class WorkoutDraftBase(BaseModel):
+    session_id: int = Field(gt=0)
     difficulty: Difficulty
     reps_difficulty: RepsDifficulty
     repetitions: int = Field(gt=0)
+    exercise_id: int = Field(gt=0)
+    category_id: int = Field(gt=0)
 
 
 class WorkoutDraftRead(WorkoutDraftBase):
@@ -49,5 +53,4 @@ class WorkoutDraftRead(WorkoutDraftBase):
 
 
 class WorkoutDraftCreate(WorkoutDraftBase):
-    exercise_id: int = Field(gt=0)
-    category_id: int = Field(gt=0)
+    pass
