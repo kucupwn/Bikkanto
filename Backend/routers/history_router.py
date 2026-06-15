@@ -6,7 +6,7 @@ from datetime import date
 from .auth import get_current_user
 from ..database import get_db
 from ..models import History, Exercises, Categories
-from ..schemas.history_schema import HistoryRead, HistoryCreate
+from ..schemas.history_schema import HistoryRead, HistoryCreate, WorkoutDraftRead
 
 router = APIRouter(prefix="/history", tags=["history"])
 
@@ -89,3 +89,11 @@ async def create_history_batch(
         db.refresh(model)
 
     return history_models
+
+
+@router.get(
+    "/draft", response_model=List[WorkoutDraftRead], status_code=status.HTTP_200_OK
+)
+async def get_Workout_draft(user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
