@@ -5,7 +5,7 @@ from starlette import status
 from datetime import date
 from .auth import get_current_user
 from ..database import get_db
-from ..models import History, Exercises, Categories
+from ..models import History, Exercises, Categories, WorkoutDraft
 from ..schemas.history_schema import HistoryRead, HistoryCreate, WorkoutDraftRead
 
 router = APIRouter(prefix="/history", tags=["history"])
@@ -94,6 +94,17 @@ async def create_history_batch(
 @router.get(
     "/draft", response_model=List[WorkoutDraftRead], status_code=status.HTTP_200_OK
 )
-async def get_Workout_draft(user: user_dependency, db: db_dependency):
+async def get_Workout_draft(user: user_dependency, db: db_dependency, session_id: int):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    draft_models = (
+        db.query(WorkoutDraft)
+        .filter(
+            WorkoutDraft.session_id == session_id,
+            WorkoutDraft.user_id == user.get("id"),
+        )
+        .all()
+    )
+
+    return draft_models
