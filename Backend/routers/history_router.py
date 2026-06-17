@@ -6,7 +6,12 @@ from datetime import date
 from .auth import get_current_user
 from ..database import get_db
 from ..models import History, Exercises, Categories, WorkoutDraft
-from ..schemas.history_schema import HistoryRead, HistoryCreate, WorkoutDraftRead
+from ..schemas.history_schema import (
+    HistoryRead,
+    HistoryCreate,
+    WorkoutDraftRead,
+    WorkoutDraftCreate,
+)
 
 router = APIRouter(prefix="/history", tags=["history"])
 
@@ -106,5 +111,54 @@ async def get_Workout_draft(user: user_dependency, db: db_dependency, session_id
         )
         .all()
     )
+
+    return draft_models
+
+
+@router.post(
+    "/draft",
+    response_model=List[WorkoutDraftCreate],
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_workout_draft(
+    user: user_dependency, db: db_dependency, entries: List[WorkoutDraftCreate]
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    drafts = db.query(WorkoutDraft).filter(WorkoutDraft.user_id == user.get("id")).all()
+    session_ids = {draft.session_id for draft in drafts}
+    latest_id = max(session_ids)
+
+    draft_models = []
+
+    for entry in entries:
+        exercise = db.get(Exercises, entry.exercise_id)
+        if not exercise:
+            raise HTTPException(status_code=400, detail=f"Invalid exercise id")
+
+        category = db.get(Categories, entry.category_id)
+        if not category:
+            raise HTTPException(status_code=400, detail=f"Invalid category id")
+
+        draft = WorkoutDraft(
+            session_id=latest_id + 1,
+            exercise_id=entry.exercise_id,
+            exercise_name=exercise.exercise_name,
+            category_id=entry.category_id,
+            category_name=category.category_name,
+            difficulty=entry.difficulty,
+            reps_difficulty=entry.reps_difficulty,
+            repetitions=entry.repetitions,
+            user_id=user.get("id"),
+        )
+
+        draft_models.append(draft)
+
+    db.add_all(draft_models)
+    db.commit()
+
+    for model in draft_models:
+        db.refresh(model)
 
     return draft_models
