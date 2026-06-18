@@ -128,7 +128,7 @@ async def create_workout_draft(
 
     drafts = db.query(WorkoutDraft).filter(WorkoutDraft.user_id == user.get("id")).all()
     session_ids = {draft.session_id for draft in drafts}
-    latest_id = max(session_ids)
+    current_id = max(session_ids) + 1
 
     draft_models = []
 
@@ -142,7 +142,7 @@ async def create_workout_draft(
             raise HTTPException(status_code=400, detail=f"Invalid category id")
 
         draft = WorkoutDraft(
-            session_id=latest_id + 1,
+            session_id=current_id,
             exercise_id=entry.exercise_id,
             exercise_name=exercise.exercise_name,
             category_id=entry.category_id,
