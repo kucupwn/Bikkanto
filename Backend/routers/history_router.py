@@ -128,7 +128,7 @@ async def create_workout_draft(
 
     drafts = db.query(WorkoutDraft).filter(WorkoutDraft.user_id == user.get("id")).all()
     session_ids = {draft.session_id for draft in drafts}
-    current_id = max(session_ids) + 1
+    current_id = max(session_ids, default=0) + 1
 
     draft_models = []
 
