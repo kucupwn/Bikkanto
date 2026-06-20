@@ -54,11 +54,12 @@ class History(Base):
     __tablename__ = "history"
 
     id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, nullable=False)
     date_complete = Column(Date, nullable=False)
     cycles = Column(Integer)
     difficulty = Column(String)
     reps_difficulty = Column(String)
-    repetitions = Column(Integer)
+    reps = Column(Integer)
     sum_repetitions = Column(Integer)
 
     exercise_id = Column(
@@ -82,7 +83,7 @@ class WorkoutDraft(Base):
     session_id = Column(Integer, nullable=False)
     difficulty = Column(String)
     reps_difficulty = Column(String)
-    repetitions = Column(Integer)
+    reps = Column(Integer)
 
     exercise_id = Column(
         Integer, ForeignKey("exercises.id"), nullable=False, index=True
