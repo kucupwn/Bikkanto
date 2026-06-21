@@ -1,6 +1,6 @@
 from typing import Annotated, List
 from sqlalchemy.orm import Session
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
 from datetime import date
 from .auth import get_current_user
@@ -80,7 +80,7 @@ async def create_history_batch(
             difficulty=entry.difficulty,
             reps_difficulty=entry.reps_difficulty,
             cycles=entry.cycles,
-            repetitions=entry.repetitions,
+            reps=entry.reps,
             sum_repetitions=entry.sum_repetitions,
             user_id=user.get("id"),
         )
@@ -115,6 +115,30 @@ async def get_Workout_draft(user: user_dependency, db: db_dependency, session_id
     return draft_models
 
 
+@router.delete("/draft/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_workout_draft(
+    user: user_dependency, db: db_dependency, session_id: int = Path(gt=0)
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    draft_model = (
+        db.query(WorkoutDraft)
+        .filter(
+            WorkoutDraft.session_id == session_id,
+            WorkoutDraft.user_id == user.get("id"),
+        )
+        .all()
+    )
+
+    if not draft_model:
+        raise HTTPException(status_code=404, detail="Session id not found.")
+
+    db.delete(draft_model)
+
+    db.commit()
+
+
 @router.post(
     "/draft",
     response_model=List[WorkoutDraftCreate],
@@ -126,8 +150,8 @@ async def create_workout_draft(
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    drafts = db.query(WorkoutDraft).filter(WorkoutDraft.user_id == user.get("id")).all()
-    session_ids = {draft.session_id for draft in drafts}
+    history_sessions = db.query(History).filter(History.user_id == user.get("id")).all()
+    session_ids = {prev.session_id for prev in history_sessions}
     current_id = max(session_ids, default=0) + 1
 
     draft_models = []
@@ -149,7 +173,7 @@ async def create_workout_draft(
             category_name=category.category_name,
             difficulty=entry.difficulty,
             reps_difficulty=entry.reps_difficulty,
-            repetitions=entry.repetitions,
+            reps=entry.reps,
             user_id=user.get("id"),
         )
 
