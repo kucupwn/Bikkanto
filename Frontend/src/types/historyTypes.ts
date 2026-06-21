@@ -10,7 +10,7 @@ export interface WorkoutHistory {
   difficulty: ExerciseDifficulty;
   reps_difficulty: RepsDifficulty;
   cycles: number;
-  repetitions: number;
+  reps: number;
   sum_repetitions: number;
 }
 
@@ -21,6 +21,6 @@ export const HISTORY_COLUMN_ORDER = [
   "difficulty",
   "reps_difficulty",
   "cycles",
-  "repetitions",
+  "reps",
   "sum_repetitions",
 ] as const;

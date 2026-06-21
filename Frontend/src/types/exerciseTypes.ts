@@ -29,9 +29,9 @@ export type ExerciseDifficulty = (typeof exerciseDifficultyOptions)[number];
 
 export interface WorkoutEntry {
   exercise_id: number;
-  exercise_name: string;
+  exercise_name?: string;
   category_id: number;
-  category_name: string;
+  category_name?: string;
   difficulty: ExerciseDifficulty;
   reps_difficulty: RepsDifficulty;
   reps: number;

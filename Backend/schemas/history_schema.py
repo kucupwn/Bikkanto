@@ -11,11 +11,12 @@ class RepsDifficulty(str, Enum):
 
 
 class HistoryBase(BaseModel):
+    session_id: int = Field(gt=0)
     date_complete: date
     difficulty: Difficulty
     reps_difficulty: RepsDifficulty
     cycles: int = Field(gt=0)
-    repetitions: int = Field(gt=0)
+    reps: int = Field(gt=0)
     sum_repetitions: int = Field(gt=0)
     exercise_id: int = Field(gt=0)
     category_id: int = Field(gt=0)
@@ -35,16 +36,16 @@ class HistoryCreate(HistoryBase):
 
 
 class WorkoutDraftBase(BaseModel):
-    session_id: int = Field(gt=0)
     difficulty: Difficulty
     reps_difficulty: RepsDifficulty
-    repetitions: int = Field(gt=0)
+    reps: int = Field(gt=0)
     exercise_id: int = Field(gt=0)
     category_id: int = Field(gt=0)
 
 
 class WorkoutDraftRead(WorkoutDraftBase):
     id: int
+    session_id: int
     exercise_name: str
     category_name: str
 
