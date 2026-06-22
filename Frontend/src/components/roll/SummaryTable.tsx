@@ -10,25 +10,6 @@ import type { ViewModes } from "../../pages/Roll";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
 
-interface Props {
-  workout: WorkoutEntry[] | null;
-  setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
-  setMode: Dispatch<SetStateAction<ViewModes>>;
-  hasAcceptedWorkout: boolean;
-  setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
-  setCycles: Dispatch<SetStateAction<number | "">>;
-  onPostFinishedWorkout: () => void;
-  isFinished: boolean;
-  selectedProperties: ProperySelection[];
-  onGetRandomExercise: (
-    selectedProps: ProperySelection,
-    usedIds: Set<number>,
-  ) => WorkoutEntry | null;
-  workoutDate: Date | null;
-  setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
-  setTitle: Dispatch<SetStateAction<string | null>>;
-}
-
 const WorkoutTable = styled.table`
   margin: 1rem;
   border-collapse: collapse;
@@ -71,6 +52,26 @@ const CyclesWrapper = styled.div`
   gap: 1rem;
 `;
 
+interface Props {
+  workout: WorkoutEntry[] | null;
+  setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
+  setMode: Dispatch<SetStateAction<ViewModes>>;
+  hasAcceptedWorkout: boolean;
+  setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
+  setCycles: Dispatch<SetStateAction<number | "">>;
+  onPostFinishedWorkout: () => Promise<void>;
+  isFinished: boolean;
+  selectedProperties: ProperySelection[];
+  onGetRandomExercise: (
+    selectedProps: ProperySelection,
+    usedIds: Set<number>,
+  ) => WorkoutEntry | null;
+  workoutDate: Date | null;
+  setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
+  setTitle: Dispatch<SetStateAction<string | null>>;
+  onPostWorkoutDraft: () => Promise<void>;
+}
+
 export function SummaryTable({
   workout,
   setWorkout,
@@ -85,6 +86,7 @@ export function SummaryTable({
   workoutDate,
   setWorkoutDate,
   setTitle,
+  onPostWorkoutDraft,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
@@ -93,8 +95,9 @@ export function SummaryTable({
     setTitle("Create a workout");
   }
 
-  function acceptWorkout() {
+  async function acceptWorkout() {
     localStorage.setItem("workout", JSON.stringify(workout));
+    await onPostWorkoutDraft();
     setHasAcceptedWorkout(true);
     setTitle("Have fun with the workout!");
   }
