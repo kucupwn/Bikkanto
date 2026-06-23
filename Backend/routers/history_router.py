@@ -99,14 +99,13 @@ async def create_history_batch(
 @router.get(
     "/draft", response_model=List[WorkoutDraftRead], status_code=status.HTTP_200_OK
 )
-async def get_Workout_draft(user: user_dependency, db: db_dependency, session_id: int):
+async def get_Workout_draft(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     draft_models = (
         db.query(WorkoutDraft)
         .filter(
-            WorkoutDraft.session_id == session_id,
             WorkoutDraft.user_id == user.get("id"),
         )
         .all()
@@ -128,10 +127,10 @@ async def delete_workout_draft(
             WorkoutDraft.session_id == session_id,
             WorkoutDraft.user_id == user.get("id"),
         )
-        .all()
+        .first()
     )
 
-    if not draft_model:
+    if draft_model is None:
         raise HTTPException(status_code=404, detail="Session id not found.")
 
     db.delete(draft_model)
@@ -152,7 +151,7 @@ async def create_workout_draft(
 
     history_sessions = db.query(History).filter(History.user_id == user.get("id")).all()
     session_ids = {prev.session_id for prev in history_sessions}
-    current_id = max(session_ids, default=0) + 1
+    current_id = max(session_ids, default=1) + 1
 
     draft_models = []
 
