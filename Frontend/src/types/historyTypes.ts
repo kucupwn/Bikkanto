@@ -2,6 +2,7 @@ import type { ExerciseDifficulty, RepsDifficulty } from "./exerciseTypes";
 
 export interface WorkoutHistory {
   id?: number;
+  session?: number;
   date_complete: string;
   exercise_id: number;
   exercise_name?: string;
@@ -16,6 +17,7 @@ export interface WorkoutHistory {
 
 export const HISTORY_COLUMN_ORDER = [
   "date_complete",
+  "session",
   "exercise_name",
   "category_name",
   "difficulty",
