@@ -28,7 +28,7 @@ export const exerciseDifficultyOptions = [
 export type ExerciseDifficulty = (typeof exerciseDifficultyOptions)[number];
 
 export interface WorkoutEntry {
-  session_id?: number;
+  session_id?: string;
   exercise_id: number;
   exercise_name?: string;
   category_id: number;
