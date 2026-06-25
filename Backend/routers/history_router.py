@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated, List
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
@@ -62,6 +63,10 @@ async def create_history_batch(
 
     history_models = []
 
+    prev_sessions = db.query(History).filter(History.user_id == user.get("id")).all()
+    prev_nums = [entry.session for entry in prev_sessions]
+    current_session = max(prev_nums, default=0) + 1
+
     for entry in entries:
         exercise = db.get(Exercises, entry.exercise_id)
         if not exercise:
@@ -72,6 +77,7 @@ async def create_history_batch(
             raise HTTPException(status_code=400, detail=f"Invalid category id")
 
         history = History(
+            session=current_session,
             date_complete=entry.date_complete,
             exercise_id=entry.exercise_id,
             exercise_name=exercise.exercise_name,
@@ -116,7 +122,7 @@ async def get_Workout_draft(user: user_dependency, db: db_dependency):
 
 @router.delete("/draft/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_workout_draft(
-    user: user_dependency, db: db_dependency, session_id: int = Path(gt=0)
+    user: user_dependency, db: db_dependency, session_id: str
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
@@ -140,7 +146,7 @@ async def delete_workout_draft(
 
 @router.post(
     "/draft",
-    response_model=List[WorkoutDraftCreate],
+    response_model=List[WorkoutDraftRead],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_workout_draft(
@@ -149,11 +155,9 @@ async def create_workout_draft(
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    history_sessions = db.query(History).filter(History.user_id == user.get("id")).all()
-    session_ids = {prev.session_id for prev in history_sessions}
-    current_id = max(session_ids, default=1) + 1
-
     draft_models = []
+
+    session = uuid.uuid4().hex
 
     for entry in entries:
         exercise = db.get(Exercises, entry.exercise_id)
@@ -165,7 +169,7 @@ async def create_workout_draft(
             raise HTTPException(status_code=400, detail=f"Invalid category id")
 
         draft = WorkoutDraft(
-            session_id=current_id,
+            session_id=session,
             exercise_id=entry.exercise_id,
             exercise_name=exercise.exercise_name,
             category_id=entry.category_id,

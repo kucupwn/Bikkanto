@@ -11,7 +11,6 @@ class RepsDifficulty(str, Enum):
 
 
 class HistoryBase(BaseModel):
-    session_id: int = Field(gt=0)
     date_complete: date
     difficulty: Difficulty
     reps_difficulty: RepsDifficulty
@@ -24,6 +23,7 @@ class HistoryBase(BaseModel):
 
 class HistoryRead(HistoryBase):
     id: int
+    session: int
     exercise_name: str
     category_name: str
 
@@ -45,7 +45,7 @@ class WorkoutDraftBase(BaseModel):
 
 class WorkoutDraftRead(WorkoutDraftBase):
     id: int
-    session_id: int
+    session_id: str
     exercise_name: str
     category_name: str
 
