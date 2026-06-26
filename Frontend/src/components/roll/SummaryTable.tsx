@@ -9,6 +9,7 @@ import {
 import type { ViewModes } from "../../pages/Roll";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
+import { api } from "../../api/api";
 
 const WorkoutTable = styled.table`
   margin: 1rem;
@@ -69,7 +70,6 @@ interface Props {
   workoutDate: Date | null;
   setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
   setTitle: Dispatch<SetStateAction<string | null>>;
-  onPostWorkoutDraft: () => Promise<void>;
 }
 
 export function SummaryTable({
@@ -86,7 +86,6 @@ export function SummaryTable({
   workoutDate,
   setWorkoutDate,
   setTitle,
-  onPostWorkoutDraft,
 }: Props) {
   function resetWorkout() {
     setWorkout(null);
@@ -96,8 +95,11 @@ export function SummaryTable({
   }
 
   async function acceptWorkout() {
-    localStorage.setItem("workout", JSON.stringify(workout));
-    await onPostWorkoutDraft();
+    if (!workout?.length) return;
+
+    const res = await api.post("/history/draft", workout);
+    // Re-set for session_id (backend returns WorkoutDraftRead model)
+    setWorkout(res.data);
     setHasAcceptedWorkout(true);
     setTitle("Have fun with the workout!");
   }
@@ -125,11 +127,21 @@ export function SummaryTable({
   }
 
   useEffect(() => {
-    if (localStorage.getItem("workout")) {
-      setTitle("Have fun with the workout!");
-    } else {
-      setTitle("Accept workout, if You like it.");
+    async function getWorkoutDraft() {
+      try {
+        const res = await api.get("/history/draft");
+
+        if (res.data) {
+          setTitle("Have fun with the workout!");
+        } else {
+          setTitle("Accept workout, if You like it.");
+        }
+      } catch (err: any) {
+        console.error("Could not fetch workout draft.");
+      }
     }
+
+    getWorkoutDraft();
   }, []);
 
   return (

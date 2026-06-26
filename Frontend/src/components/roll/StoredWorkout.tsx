@@ -2,6 +2,7 @@ import { useEffect, type Dispatch, type SetStateAction } from "react";
 import type { ViewModes } from "../../pages/Roll";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import styled from "styled-components";
+import { api } from "../../api/api";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -14,6 +15,7 @@ const TextWrapper = styled.div`
 `;
 
 interface Props {
+  workout: WorkoutEntry[] | null;
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
   setMode: Dispatch<SetStateAction<ViewModes>>;
   setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
@@ -21,6 +23,7 @@ interface Props {
 }
 
 export function StoredWorkout({
+  workout,
   setWorkout,
   setMode,
   setHasAcceptedWorkout,
@@ -30,18 +33,26 @@ export function StoredWorkout({
     setTitle(null);
   }, []);
 
-  function discardWorkout() {
-    localStorage.removeItem("workout");
-    setWorkout(null);
-    setMode("settings");
-    setHasAcceptedWorkout(false);
-    setTitle("Create a workout");
+  async function discardWorkout() {
+    try {
+      if (workout?.length) {
+        await api.delete(`/history/draft/${workout[0].session_id}`);
+
+        setWorkout(null);
+        setMode("settings");
+        setHasAcceptedWorkout(false);
+        setTitle("Create a workout");
+      }
+    } catch (err: any) {
+      console.error("Could not delete workout draft.");
+    }
   }
 
-  function recallWorkout() {
-    const stored = localStorage.getItem("workout");
-    if (stored) {
-      setWorkout(JSON.parse(stored));
+  async function recallWorkout() {
+    const res = await api.get("/history/draft");
+
+    if (res.data) {
+      setWorkout(res.data);
       setMode("preview");
       setTitle("Have fun with the workout!");
     }

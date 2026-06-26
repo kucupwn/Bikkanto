@@ -28,18 +28,12 @@ export function Roll() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
-
   const [selectedProperties, setSelectedProperties] = useState<
     ProperySelection[]
   >([]);
-  const [workout, setWorkout] = useState<WorkoutEntry[] | null>(() => {
-    const stored = localStorage.getItem("workout");
-    return stored ? JSON.parse(stored) : null;
-  });
-  const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(
-    workout !== null,
-  );
-  const [mode, setMode] = useState<ViewModes>(workout ? "stored" : "settings");
+  const [workout, setWorkout] = useState<WorkoutEntry[] | null>(null);
+  const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(false);
+  const [mode, setMode] = useState<ViewModes>("settings");
   const [cycles, setCycles] = useState<number | "">("");
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [workoutDate, setWorkoutDate] = useState<Date | null>(new Date());
@@ -116,7 +110,7 @@ export function Roll() {
   }
 
   function getHistoryEntries(): WorkoutHistory[] | null {
-    if (workout === null || workoutDate === null) return null;
+    if (!workout || !workoutDate) return null;
 
     return workout.map((entry) => ({
       date_complete: workoutDate.toISOString().split("T")[0],
@@ -125,7 +119,7 @@ export function Roll() {
       difficulty: entry.difficulty,
       reps_difficulty: entry.reps_difficulty,
       cycles: safeCycles,
-      repetitions: entry.reps,
+      reps: entry.reps,
       sum_repetitions: entry.reps * safeCycles,
     }));
   }
@@ -141,7 +135,11 @@ export function Roll() {
     showRibbon("success", "Workout saved to history.");
 
     setIsFinished(true);
-    localStorage.removeItem("workout");
+
+    // Will need to add time for safety
+    if (workout) {
+      await api.delete(`/history/draft/${workout[0].session_id}`);
+    }
   }
 
   useEffect(() => {
@@ -172,6 +170,24 @@ export function Roll() {
     }
 
     fetchExercises();
+  }, []);
+
+  useEffect(() => {
+    async function getWorkoutDraft() {
+      try {
+        const res = await api.get("/history/draft");
+
+        if (res.data.length > 0) {
+          setWorkout(res.data);
+          setHasAcceptedWorkout(true);
+          setMode("stored");
+        }
+      } catch (err) {
+        showRibbon("error", "Could not fetch workout draft.");
+      }
+    }
+
+    getWorkoutDraft();
   }, []);
 
   useEffect(() => {
@@ -215,6 +231,7 @@ export function Roll() {
 
       {mode === "stored" && (
         <StoredWorkout
+          workout={workout}
           setWorkout={setWorkout}
           setMode={setMode}
           setHasAcceptedWorkout={setHasAcceptedWorkout}
