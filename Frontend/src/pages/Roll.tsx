@@ -131,14 +131,21 @@ export function Roll() {
 
     if (!historyEntries) return;
 
-    await api.post("/history", historyEntries);
-    showRibbon("success", "Workout saved to history.");
+    try {
+      await api.post("/history", historyEntries);
 
-    setIsFinished(true);
+      if (workout) {
+        try {
+          await api.delete(`/history/draft/${workout[0].session_id}`);
+        } catch (err: any) {
+          showRibbon("error", "Failed to delete workout from draft.");
+        }
+      }
 
-    // Will need to add time for safety
-    if (workout) {
-      await api.delete(`/history/draft/${workout[0].session_id}`);
+      setIsFinished(true);
+      showRibbon("success", "Workout saved to history.");
+    } catch (err: any) {
+      showRibbon("error", "Failed to save workout. Draft kept.");
     }
   }
 
