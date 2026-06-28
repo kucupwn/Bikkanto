@@ -3,6 +3,7 @@ import type { ViewModes } from "../../pages/Roll";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import styled from "styled-components";
 import { api } from "../../api/api";
+import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -29,6 +30,8 @@ export function StoredWorkout({
   setHasAcceptedWorkout,
   setTitle,
 }: Props) {
+  const { showRibbon } = useRibbon();
+
   useEffect(() => {
     setTitle(null);
   }, []);
@@ -44,7 +47,7 @@ export function StoredWorkout({
         setTitle("Create a workout");
       }
     } catch (err: any) {
-      console.error("Could not delete workout draft.");
+      showRibbon("error", "Could not delete workout draft.");
     }
   }
 
