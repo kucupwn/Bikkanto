@@ -52,12 +52,16 @@ export function StoredWorkout({
   }
 
   async function recallWorkout() {
-    const res = await api.get("/history/draft");
+    try {
+      const res = await api.get("/history/draft");
 
-    if (res.data) {
-      setWorkout(res.data);
-      setMode("preview");
-      setTitle("Have fun with the workout!");
+      if (res.data) {
+        setWorkout(res.data);
+        setMode("preview");
+        setTitle("Have fun with the workout!");
+      }
+    } catch (err: any) {
+      showRibbon("error", "Could not recall workout draft.");
     }
   }
 
