@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { DataTable } from "../components/DataTable";
 import { api } from "../api/api";
 import {
   EXERCISE_COLUMNS_ORDER,
@@ -7,25 +6,11 @@ import {
   type Exercise,
 } from "../types/exerciseTypes";
 import { capitalize } from "../utils";
-import styled from "styled-components";
-import { CategoryModal } from "../components/exercise/CategoryModal";
-import { FullExerciseModal } from "../components/exercise/FullExerciseModal";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
-import { Loader } from "../components/Loader";
+import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-`;
-
-const Button = styled.button`
-  margin: 1rem;
-  padding: 0.5rem 0;
-  width: 80px;
-`;
-
-type ModalType = "category" | "add" | "edit" | "delete" | null;
+type ExercisesView = "own" | "pool" | null;
+export type ModalType = "category" | "add" | "edit" | "delete" | null;
 
 export function Exercises() {
   const [columns, setColumns] = useState<any[]>([]);
@@ -33,6 +18,7 @@ export function Exercises() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [activeTable, setActiveTable] = useState<ExercisesView>(null);
   const { showRibbon } = useRibbon();
 
   async function fetchExercises() {
@@ -78,46 +64,18 @@ export function Exercises() {
 
   return (
     <>
-      <ButtonWrapper>
-        <Button onClick={() => setActiveModal("category")}>Category</Button>
-        <Button onClick={() => setActiveModal("add")}>Add</Button>
-        <Button onClick={() => setActiveModal("edit")}>Edit</Button>
-        <Button onClick={() => setActiveModal("delete")}>Delete</Button>
-      </ButtonWrapper>
-
-      {isLoading && <Loader />}
-      {!isLoading && <DataTable data={exercises} columns={columns} />}
-
-      <CategoryModal
-        isOpen={activeModal === "category"}
-        onClose={() => setActiveModal(null)}
-        categories={categories}
-        onSuccess={fetchCategories}
-      />
-      <FullExerciseModal
-        isOpen={activeModal === "add"}
-        onClose={() => setActiveModal(null)}
-        exercises={exercises}
-        categories={categories}
-        mode={"add"}
-        onSuccess={fetchExercises}
-      />
-      <FullExerciseModal
-        isOpen={activeModal === "edit"}
-        onClose={() => setActiveModal(null)}
-        exercises={exercises}
-        categories={categories}
-        mode={"edit"}
-        onSuccess={fetchExercises}
-      />
-      <FullExerciseModal
-        isOpen={activeModal === "delete"}
-        onClose={() => setActiveModal(null)}
-        exercises={exercises}
-        categories={categories}
-        mode={"delete"}
-        onSuccess={fetchExercises}
-      />
+      {activeTable === "own" && (
+        <OwnExerciseTable
+          activeModal={activeModal}
+          setActiveModal={setActiveModal}
+          exercises={exercises}
+          categories={categories}
+          onFetchCategories={fetchCategories}
+          onFetchExercises={fetchExercises}
+          columns={columns}
+          isLoading={isLoading}
+        />
+      )}
     </>
   );
 }
