@@ -8,6 +8,17 @@ import {
 import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
+import styled from "styled-components";
+
+const TableViewButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+const TableViewButton = styled.button`
+  font-size: 20px;
+`;
 
 type ExercisesView = "own" | "pool" | null;
 export type ModalType = "category" | "add" | "edit" | "delete" | null;
@@ -64,6 +75,11 @@ export function Exercises() {
 
   return (
     <>
+      <TableViewButtonContainer>
+        <TableViewButton>Own</TableViewButton>
+        <TableViewButton>Pool</TableViewButton>
+      </TableViewButtonContainer>
+
       {activeTable === "own" && (
         <OwnExerciseTable
           activeModal={activeModal}
