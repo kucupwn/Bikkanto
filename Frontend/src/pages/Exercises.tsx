@@ -13,6 +13,14 @@ import styled from "styled-components";
 const TableViewButtonContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  gap: 1rem;
+`;
+
+const TableViewButtonWrapper = styled.div`
+  display: flex;
   gap: 1rem;
 `;
 
@@ -76,8 +84,15 @@ export function Exercises() {
   return (
     <>
       <TableViewButtonContainer>
-        <TableViewButton>Own</TableViewButton>
-        <TableViewButton>Pool</TableViewButton>
+        <h2>Table view:</h2>
+        <TableViewButtonWrapper>
+          <TableViewButton onClick={() => setActiveTable("own")}>
+            Own
+          </TableViewButton>
+          <TableViewButton onClick={() => setActiveTable("pool")}>
+            Pool
+          </TableViewButton>
+        </TableViewButtonWrapper>
       </TableViewButtonContainer>
 
       {activeTable === "own" && (
