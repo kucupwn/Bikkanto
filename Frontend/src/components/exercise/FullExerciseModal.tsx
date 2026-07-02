@@ -7,6 +7,14 @@ import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
+const Title = styled.h2`
+  margin-bottom: 1rem;
+`;
+
+const Button = styled.button`
+  margin-top: 1rem;
+`;
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -15,14 +23,6 @@ interface Props {
   mode: "add" | "edit" | "delete";
   onSuccess: () => Promise<void>;
 }
-
-const Title = styled.h2`
-  margin-bottom: 1rem;
-`;
-
-const Button = styled.button`
-  margin-top: 1rem;
-`;
 
 export function FullExerciseModal({
   isOpen,

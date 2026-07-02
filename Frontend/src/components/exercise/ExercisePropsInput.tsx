@@ -7,14 +7,6 @@ import {
 import { capitalize } from "../../utils";
 import type { ChangeEvent } from "react";
 
-interface Props {
-  exercise: Exercise;
-  categories: Category[];
-  onHandleChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => void;
-}
-
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -28,6 +20,14 @@ const ExercisePropsContainer = styled.div`
   gap: 1rem;
   margin-top: 1rem;
 `;
+
+interface Props {
+  exercise: Exercise;
+  categories: Category[];
+  onHandleChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+}
 
 export function ExercisePropsInput({
   exercise,

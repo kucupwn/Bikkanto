@@ -6,13 +6,6 @@ import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  categories: Category[];
-  onSuccess: () => Promise<void>;
-}
-
 const Button = styled.button`
   width: 100px;
   margin-top: 1rem;
@@ -33,6 +26,13 @@ const ButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
 `;
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  categories: Category[];
+  onSuccess: () => Promise<void>;
+}
 
 type Operations = "add" | "delete" | null;
 
