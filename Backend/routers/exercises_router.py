@@ -84,10 +84,17 @@ async def delete_category(
     db.commit()
 
 
+@router.get("/pool", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
+async def get_exercises_pool(db: db_dependency):
+    exercises = db.query(Exercises).all()
+
+    return exercises
+
+
 @router.get("/", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
 async def read_all_exercises(user: user_dependency, db: db_dependency):
-
     exercises = db.query(Exercises).filter(Exercises.user_id == user.get("id")).all()
+
     return exercises
 
 
