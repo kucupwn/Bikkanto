@@ -9,6 +9,7 @@ import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
 import styled from "styled-components";
+import { PoolExerciseTable } from "../components/exercise/PoolExerciseTable";
 
 const TableViewButtonContainer = styled.div`
   display: flex;
@@ -44,12 +45,19 @@ export function Exercises() {
     try {
       setIsLoading(true);
 
-      const res = await api.get("/exercises");
-      const exercises = res.data;
+      let fetchedExercises: Exercise[] = [];
 
-      setExercises(exercises);
+      if (activeTable === "own") {
+        const res = await api.get("/exercises");
+        fetchedExercises = res.data;
+      } else if (activeTable === "pool") {
+        const res = await api.get("/exercises/pool");
+        fetchedExercises = res.data;
+      } else return;
 
-      if (exercises.length > 0) {
+      setExercises(fetchedExercises);
+
+      if (fetchedExercises.length > 0) {
         const cols = EXERCISE_COLUMNS_ORDER.map((key) => ({
           data: key,
           title: capitalize(key).replace("_", " "),
@@ -79,7 +87,7 @@ export function Exercises() {
   useEffect(() => {
     fetchExercises();
     fetchCategories();
-  }, []);
+  }, [activeTable]);
 
   return (
     <>
@@ -104,6 +112,13 @@ export function Exercises() {
           onFetchCategories={fetchCategories}
           onFetchExercises={fetchExercises}
           columns={columns}
+          isLoading={isLoading}
+        />
+      )}
+      {activeTable === "pool" && (
+        <PoolExerciseTable
+          columns={columns}
+          exercises={exercises}
           isLoading={isLoading}
         />
       )}
