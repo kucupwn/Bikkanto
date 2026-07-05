@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/api";
 import {
   EXERCISE_COLUMNS_ORDER,
@@ -33,13 +33,21 @@ type ExercisesView = "own" | "pool" | null;
 export type ModalType = "category" | "add" | "edit" | "delete" | null;
 
 export function Exercises() {
-  const [columns, setColumns] = useState<any[]>([]);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeTable, setActiveTable] = useState<ExercisesView>(null);
   const { showRibbon } = useRibbon();
+
+  const columns = useMemo(
+    () =>
+      EXERCISE_COLUMNS_ORDER.map((key) => ({
+        data: key,
+        title: capitalize(key).replace("_", " "),
+      })),
+    [],
+  );
 
   async function fetchExercises() {
     try {
@@ -56,14 +64,6 @@ export function Exercises() {
       } else return;
 
       setExercises(fetchedExercises);
-
-      if (fetchedExercises.length > 0) {
-        const cols = EXERCISE_COLUMNS_ORDER.map((key) => ({
-          data: key,
-          title: capitalize(key).replace("_", " "),
-        }));
-        setColumns(cols);
-      }
     } catch (err: any) {
       const message = err.response.data.detail || "Could not fetch exercises.";
       showRibbon("error", message);
