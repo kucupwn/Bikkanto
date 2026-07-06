@@ -2,6 +2,7 @@ from typing import Annotated, List
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
+from collections import defaultdict, Counter
 from .auth import get_current_user
 from ..database import get_db
 from ..models import Exercises, Categories
@@ -11,6 +12,7 @@ from ..schemas.exercises_schema import (
     ExerciseUpdate,
     CategoryRead,
     CategoryCreate,
+    ExercisePoolRead,
 )
 
 router = APIRouter(prefix="/exercises", tags=["exercises"])
@@ -84,11 +86,40 @@ async def delete_category(
     db.commit()
 
 
-@router.get("/pool", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
+@router.get(
+    "/pool", response_model=List[ExercisePoolRead], status_code=status.HTTP_200_OK
+)
 async def get_exercises_pool(db: db_dependency):
     exercises = db.query(Exercises).all()
 
-    return exercises
+    grouped = defaultdict(list)
+
+    for ex in exercises:
+        grouped[ex.exercise_name].append(ex)
+
+    result = []
+
+    for exercise_name, group in grouped.items():
+
+        difficulty = Counter(ex.difficulty for ex in group).most_common(1)[0][0]
+        category_name = Counter(ex.category_name for ex in group).most_common(1)[0][0]
+
+        result.append(
+            ExercisePoolRead(
+                exercise_name=exercise_name,
+                category_name=category_name,
+                difficulty=difficulty,
+                easy_min=round(sum(ex.easy_min for ex in group) / len(group)),
+                easy_max=round(sum(ex.easy_max for ex in group) / len(group)),
+                medium_min=round(sum(ex.medium_min for ex in group) / len(group)),
+                medium_max=round(sum(ex.medium_max for ex in group) / len(group)),
+                hard_min=round(sum(ex.hard_min for ex in group) / len(group)),
+                hard_max=round(sum(ex.hard_max for ex in group) / len(group)),
+                sample_count=len(group),
+            )
+        )
+
+    return result
 
 
 @router.get("/", response_model=List[ExerciseRead], status_code=status.HTTP_200_OK)
