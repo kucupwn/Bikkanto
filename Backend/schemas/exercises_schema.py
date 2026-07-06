@@ -46,3 +46,16 @@ class ExerciseCreate(ExerciseBase):
 
 class ExerciseUpdate(ExerciseBase):
     category_id: int = Field(gt=0)
+
+
+class ExercisePoolRead(BaseModel):
+    exercise_name: str
+    category_name: str
+    difficulty: Difficulty
+    easy_min: int
+    easy_max: int
+    medium_min: int
+    medium_max: int
+    hard_min: int
+    hard_max: int
+    sample_count: int
