@@ -10,6 +10,7 @@ export interface Exercise {
   hard_max: number;
   category_id: number;
   category_name: string;
+  sample_count?: number;
 }
 
 export interface Category {
@@ -52,4 +53,9 @@ export const EXERCISE_COLUMNS_ORDER = [
   "category_name",
   "difficulty",
   ...NUMERIC_COLUMNS,
+] as const;
+
+export const POOL_EXERCISE_COLUMNS_ORDER = [
+  ...EXERCISE_COLUMNS_ORDER,
+  "sample_count",
 ] as const;
