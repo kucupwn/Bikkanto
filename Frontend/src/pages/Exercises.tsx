@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/api";
 import {
   EXERCISE_COLUMNS_ORDER,
+  POOL_EXERCISE_COLUMNS_ORDER,
   type Category,
   type Exercise,
 } from "../types/exerciseTypes";
@@ -40,14 +41,17 @@ export function Exercises() {
   const [activeTable, setActiveTable] = useState<ExercisesView>(null);
   const { showRibbon } = useRibbon();
 
-  const columns = useMemo(
-    () =>
-      EXERCISE_COLUMNS_ORDER.map((key) => ({
-        data: key,
-        title: capitalize(key).replace("_", " "),
-      })),
-    [],
-  );
+  const columns = useMemo(() => {
+    const columnOrder =
+      activeTable === "pool"
+        ? POOL_EXERCISE_COLUMNS_ORDER
+        : EXERCISE_COLUMNS_ORDER;
+
+    return columnOrder.map((key) => ({
+      data: key,
+      title: capitalize(key).replace("_", " "),
+    }));
+  }, [activeTable]);
 
   async function fetchExercises() {
     try {
