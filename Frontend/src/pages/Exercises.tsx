@@ -96,7 +96,7 @@ export function Exercises() {
   return (
     <>
       <TableViewButtonContainer>
-        <h2>Table view:</h2>
+        <h2>Select table view:</h2>
         <TableViewButtonWrapper>
           <TableViewButton onClick={() => setActiveTable("own")}>
             Own
