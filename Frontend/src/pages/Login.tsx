@@ -29,6 +29,13 @@ const ModalTitle = styled.h2`
   margin-bottom: 1rem;
 `;
 
+const LoginFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+`;
+
 type AuthMode = "login" | "register";
 
 export function Login({ onClose }: Props) {
@@ -186,12 +193,15 @@ export function Login({ onClose }: Props) {
 
       <SwitchText>
         {mode === "login" ? (
-          <>
-            Don't have an account?{" "}
-            <SwitchLink onClick={() => setMode("register")}>
-              Register
-            </SwitchLink>
-          </>
+          <LoginFooter>
+            <div>
+              Don't have an account?{" "}
+              <SwitchLink onClick={() => setMode("register")}>
+                Register
+              </SwitchLink>
+            </div>
+            <SwitchLink>Forgot password</SwitchLink>
+          </LoginFooter>
         ) : (
           <>
             Already have an account?{" "}
