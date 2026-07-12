@@ -36,7 +36,7 @@ const LoginFooter = styled.div`
   gap: 1rem;
 `;
 
-type AuthMode = "login" | "register";
+type AuthMode = "login" | "register" | "forgotPW";
 
 export function Login({ onClose }: Props) {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -200,7 +200,9 @@ export function Login({ onClose }: Props) {
                 Register
               </SwitchLink>
             </div>
-            <SwitchLink>Forgot password</SwitchLink>
+            <SwitchLink onClick={() => setMode("forgotPW")}>
+              Forgot password
+            </SwitchLink>
           </LoginFooter>
         ) : (
           <>
