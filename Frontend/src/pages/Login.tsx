@@ -131,26 +131,33 @@ export function Login({ onClose }: Props) {
     <ModalBase onClose={onClose}>
       {mode === "login" ? (
         <ModalTitle>Login</ModalTitle>
-      ) : (
+      ) : mode === "register" ? (
         <ModalTitle>Register</ModalTitle>
+      ) : (
+        <ModalTitle>Forgot password</ModalTitle>
       )}
-      <UserInputWrapper>
-        <span>Username</span>
-        <input
-          type="text"
-          ref={usernameInputRef}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </UserInputWrapper>
-      <UserInputWrapper>
-        <span>Password</span>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </UserInputWrapper>
+
+      {mode === "login" && (
+        <>
+          <UserInputWrapper>
+            <span>Username</span>
+            <input
+              type="text"
+              ref={usernameInputRef}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </UserInputWrapper>
+          <UserInputWrapper>
+            <span>Password</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </UserInputWrapper>
+        </>
+      )}
 
       {mode === "register" && (
         <>
@@ -185,10 +192,19 @@ export function Login({ onClose }: Props) {
         </>
       )}
 
+      {mode === "forgotPW" && (
+        <UserInputWrapper>
+          <span>Email</span>
+          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+        </UserInputWrapper>
+      )}
+
       {mode === "login" ? (
         <button onClick={handleLogin}>Login</button>
-      ) : (
+      ) : mode === "register" ? (
         <button onClick={handleRegister}>Register</button>
+      ) : (
+        <button>Submit</button>
       )}
 
       <SwitchText>
@@ -204,11 +220,13 @@ export function Login({ onClose }: Props) {
               Forgot password
             </SwitchLink>
           </LoginFooter>
-        ) : (
+        ) : mode === "register" ? (
           <>
             Already have an account?{" "}
             <SwitchLink onClick={() => setMode("login")}>Login</SwitchLink>
           </>
+        ) : (
+          <SwitchLink onClick={() => setMode("login")}>Back</SwitchLink>
         )}
       </SwitchText>
     </ModalBase>
