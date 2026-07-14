@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Routes, Route, Link } from "react-router-dom";
 import { Navbar } from "./components/nav/Navbar";
 import { Home } from "./pages/Home";
-import { Roll } from "./pages/Roll";
+import { Workout } from "./pages/Workout";
 import { Exercises } from "./pages/Exercises";
 import { History } from "./pages/History";
 import { Login } from "./pages/Login";
@@ -104,10 +104,10 @@ export function App() {
       <Routes>
         <Route path="/" element={<Home currentUser={currentUser} />} />
         <Route
-          path="/roll"
+          path="/workout"
           element={
             <ProtectedRoute>
-              <Roll />
+              <Workout />
             </ProtectedRoute>
           }
         />

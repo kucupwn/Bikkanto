@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import type { ViewModes } from "../../pages/Roll";
+import type { ViewModes } from "../../pages/Workout";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
 import { api } from "../../api/api";

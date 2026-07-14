@@ -1,5 +1,5 @@
 import { useEffect, type Dispatch, type SetStateAction } from "react";
-import type { ViewModes } from "../../pages/Roll";
+import type { ViewModes } from "../../pages/Workout";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import styled from "styled-components";
 import { api } from "../../api/api";

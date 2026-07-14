@@ -15,7 +15,7 @@ import { StoredWorkout } from "../components/roll/StoredWorkout";
 import type { WorkoutHistory } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 
-const RollContainer = styled.div`
+const WorkoutContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +24,7 @@ const RollContainer = styled.div`
 
 export type ViewModes = "settings" | "preview" | "stored";
 
-export function Roll() {
+export function Workout() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -206,7 +206,7 @@ export function Roll() {
   }, []);
 
   return (
-    <RollContainer>
+    <WorkoutContainer>
       {!isFinished && <h2>{title}</h2>}
       {mode === "settings" && (
         <WorkoutSettings
@@ -245,6 +245,6 @@ export function Roll() {
           setTitle={setTitle}
         />
       )}
-    </RollContainer>
+    </WorkoutContainer>
   );
 }

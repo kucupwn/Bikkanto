@@ -57,7 +57,7 @@ export function Home({ currentUser }: Props) {
           </WelcomeContainer>
           <GuideContainer>
             <GuideSection>
-              <PageLink href="/roll">Roll</PageLink>
+              <PageLink href="/workout">Workout</PageLink>
               <PageDescription>Create a workout.</PageDescription>
             </GuideSection>
             <HorizontalLine />
