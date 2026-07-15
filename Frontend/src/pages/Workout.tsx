@@ -22,7 +22,7 @@ const WorkoutContainer = styled.div`
   flex-direction: column;
 `;
 
-export type ViewModes = "settings" | "preview" | "stored";
+export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
 
 export function Workout() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
@@ -33,7 +33,7 @@ export function Workout() {
   >([]);
   const [workout, setWorkout] = useState<WorkoutEntry[] | null>(null);
   const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(false);
-  const [mode, setMode] = useState<ViewModes>("settings");
+  const [mode, setMode] = useState<ViewModes>(null);
   const [cycles, setCycles] = useState<number | "">("");
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [workoutDate, setWorkoutDate] = useState<Date | null>(new Date());
@@ -201,13 +201,29 @@ export function Workout() {
     if (mode === "stored") {
       setTitle(null);
     } else {
-      setTitle("Create a workout");
+      setTitle("Create a workout OR Select a workout");
     }
   }, []);
+
+  useEffect(() => {
+    if (mode === "settings") {
+      setTitle("Create a workout");
+    } else if (mode === "select") {
+      setTitle("Select a workout");
+    }
+  }, [mode]);
 
   return (
     <WorkoutContainer>
       {!isFinished && <h2>{title}</h2>}
+
+      {mode === null && (
+        <div>
+          <button onClick={() => setMode("settings")}>Create</button>
+          <button onClick={() => setMode("select")}>Select</button>
+        </div>
+      )}
+
       {mode === "settings" && (
         <WorkoutSettings
           exerciseCount={exerciseCount}
