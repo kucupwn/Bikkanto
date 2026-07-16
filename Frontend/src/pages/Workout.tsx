@@ -199,7 +199,7 @@ export function Workout() {
 
   useEffect(() => {
     if (mode === "stored") {
-      setTitle(null);
+      setTitle("Applied workout");
     } else {
       setTitle("Create a workout OR Select a workout");
     }
