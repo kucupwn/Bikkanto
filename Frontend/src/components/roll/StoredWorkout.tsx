@@ -33,7 +33,7 @@ export function StoredWorkout({
   const { showRibbon } = useRibbon();
 
   useEffect(() => {
-    setTitle(null);
+    setTitle("Previously applied workout");
   }, []);
 
   async function discardWorkout() {
@@ -42,9 +42,9 @@ export function StoredWorkout({
         await api.delete(`/history/draft/${workout[0].session_id}`);
 
         setWorkout(null);
-        setMode("settings");
+        setMode(null);
         setHasAcceptedWorkout(false);
-        setTitle("Create a workout");
+        setTitle("Create a workout OR Select a workout");
       }
     } catch (err: any) {
       showRibbon("error", "Could not delete workout draft.");
