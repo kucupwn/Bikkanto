@@ -131,7 +131,7 @@ export function SummaryTable({
       try {
         const res = await api.get("/history/draft");
 
-        if (res.data) {
+        if (res.data.length > 0) {
           setTitle("Have fun with the workout!");
         } else {
           setTitle("Accept workout, if You like it.");
