@@ -22,6 +22,12 @@ const WorkoutContainer = styled.div`
   flex-direction: column;
 `;
 
+const MainSelectButtonWrapper = styled.div`
+  display: flex;
+  margin: 1rem;
+  gap: 1rem;
+`;
+
 export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
 
 export function Workout() {
@@ -198,11 +204,7 @@ export function Workout() {
   }, []);
 
   useEffect(() => {
-    if (mode === "stored") {
-      setTitle("Applied workout");
-    } else {
-      setTitle("Create a workout OR Select a workout");
-    }
+    setTitle("Create a workout OR Select a workout");
   }, []);
 
   useEffect(() => {
@@ -218,10 +220,10 @@ export function Workout() {
       {!isFinished && <h2>{title}</h2>}
 
       {mode === null && (
-        <div>
+        <MainSelectButtonWrapper>
           <button onClick={() => setMode("settings")}>Create</button>
           <button onClick={() => setMode("select")}>Select</button>
-        </div>
+        </MainSelectButtonWrapper>
       )}
 
       {mode === "settings" && (
