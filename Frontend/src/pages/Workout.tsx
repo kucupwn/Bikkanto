@@ -9,9 +9,9 @@ import {
 import {
   WorkoutSettings,
   type ProperySelection,
-} from "../components/roll/WorkoutSettings";
-import { SummaryTable } from "../components/roll/SummaryTable";
-import { StoredWorkout } from "../components/roll/StoredWorkout";
+} from "../components/workout/WorkoutSettings";
+import { SummaryTable } from "../components/workout/SummaryTable";
+import { StoredWorkout } from "../components/workout/StoredWorkout";
 import type { WorkoutHistory } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 
