@@ -105,7 +105,7 @@ async def create_history_batch(
 @router.get(
     "/draft", response_model=List[WorkoutDraftRead], status_code=status.HTTP_200_OK
 )
-async def get_Workout_draft(user: user_dependency, db: db_dependency):
+async def get_draft_workout(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
@@ -121,7 +121,7 @@ async def get_Workout_draft(user: user_dependency, db: db_dependency):
 
 
 @router.delete("/draft/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_workout_draft(
+async def delete_draft_workout(
     user: user_dependency, db: db_dependency, session_id: str
 ):
     if user is None:
@@ -149,7 +149,7 @@ async def delete_workout_draft(
     response_model=List[WorkoutDraftRead],
     status_code=status.HTTP_201_CREATED,
 )
-async def create_workout_draft(
+async def create_draft_workout(
     user: user_dependency, db: db_dependency, entries: List[WorkoutDraftCreate]
 ):
     if user is None:

@@ -77,7 +77,7 @@ class History(Base):
 
 
 class WorkoutDraft(Base):
-    __tablename__ = "workout_draft"
+    __tablename__ = "draft_workout"
 
     id = Column(Integer, primary_key=True, index=True)
     session_id = Column(String, nullable=False)
@@ -96,7 +96,7 @@ class WorkoutDraft(Base):
     exercise_name = Column(String, nullable=False)
     category_name = Column(String, nullable=False)
 
-    user = relationship("Users", back_populates="workout_draft")
+    user = relationship("Users", back_populates="draft_workout")
 
 
 class Users(Base):
@@ -119,6 +119,6 @@ class Users(Base):
     category = relationship(
         "Categories", back_populates="user", cascade="all, delete-orphan"
     )
-    workout_draft = relationship(
+    draft_workout = relationship(
         "WorkoutDraft", back_populates="user", cascade="all, delete-orphan"
     )
