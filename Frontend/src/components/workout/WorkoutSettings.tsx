@@ -1,4 +1,9 @@
-import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
+import {
+  useState,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import styled from "styled-components";
 import {
   exerciseDifficultyOptions,
@@ -60,6 +65,7 @@ export interface ProperySelection {
 }
 
 type GlobalPropertyType = "exercise" | "reps";
+type WorkoutCreationType = "random" | "preset" | null;
 
 export function WorkoutSettings({
   exerciseCount,
@@ -69,6 +75,7 @@ export function WorkoutSettings({
   setSelectedProperties,
   onGetWorkout,
 }: Props) {
+  const [creationType, setCreationType] = useState<WorkoutCreationType>(null);
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
   const globalExerciseDifficulty = getGlobalDifficulty("exercise");
   const globalRepsDifficulty = getGlobalDifficulty("reps");
@@ -137,72 +144,78 @@ export function WorkoutSettings({
 
   return (
     <>
-      <ExerciseCountWrapper>
-        <span>Exercise Count:</span>
-        <input
-          type="number"
-          value={exerciseCount}
-          onChange={handleExerciseCountChange}
-          style={{ width: "40px" }}
-          max={100}
-        />
-      </ExerciseCountWrapper>
-      <WorkoutBasePropertiesWrapper>
-        <GlobalExerciseDifficultyWrapper>
-          <span>Global Exercise Difficulty:</span>
-          <select
-            name="exercise-difficulty"
-            value={globalExerciseDifficulty}
-            onChange={(e) =>
-              setGlobalPropertySettings(
-                "exercise",
-                e.target.value as ExerciseDifficulty,
-              )
-            }
-          >
-            {exerciseDifficultyOptions.map((diff) => (
-              <option key={diff} value={diff}>
-                {capitalize(diff)}
-              </option>
-            ))}
-            <option key="custom" value="custom">
-              Custom
-            </option>
-          </select>
-        </GlobalExerciseDifficultyWrapper>
-        <GlobalRepsDifficultyWrapper>
-          <span>Global Repetitions Difficulty:</span>
-          <select
-            name="reps-difficulty"
-            value={globalRepsDifficulty}
-            onChange={(e) =>
-              setGlobalPropertySettings(
-                "reps",
-                e.target.value as RepsDifficulty,
-              )
-            }
-          >
-            {repsDifficultyOptions.map((diff) => (
-              <option key={diff} value={diff}>
-                {capitalize(diff)}
-              </option>
-            ))}
-            <option key="custom" value="custom">
-              Custom
-            </option>
-          </select>
-        </GlobalRepsDifficultyWrapper>
-      </WorkoutBasePropertiesWrapper>
-      {Array.from({ length: safeCount }).map((_, index) => (
-        <CategorySelection
-          key={index}
-          currentCount={index + 1}
-          categories={categories}
-          value={selectedProperties[index]}
-          onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
-        />
-      ))}
-      {safeCount > 0 && <GetButton onClick={onGetWorkout}>Get</GetButton>}
+      <button onClick={() => setCreationType("random")}>Random</button>
+      <button onClick={() => setCreationType("preset")}>Preset</button>
+      {creationType !== null && (
+        <div>
+          <ExerciseCountWrapper>
+            <span>Exercise Count:</span>
+            <input
+              type="number"
+              value={exerciseCount}
+              onChange={handleExerciseCountChange}
+              style={{ width: "40px" }}
+              max={100}
+            />
+          </ExerciseCountWrapper>
+          <WorkoutBasePropertiesWrapper>
+            <GlobalExerciseDifficultyWrapper>
+              <span>Global Exercise Difficulty:</span>
+              <select
+                name="exercise-difficulty"
+                value={globalExerciseDifficulty}
+                onChange={(e) =>
+                  setGlobalPropertySettings(
+                    "exercise",
+                    e.target.value as ExerciseDifficulty,
+                  )
+                }
+              >
+                {exerciseDifficultyOptions.map((diff) => (
+                  <option key={diff} value={diff}>
+                    {capitalize(diff)}
+                  </option>
+                ))}
+                <option key="custom" value="custom">
+                  Custom
+                </option>
+              </select>
+            </GlobalExerciseDifficultyWrapper>
+            <GlobalRepsDifficultyWrapper>
+              <span>Global Repetitions Difficulty:</span>
+              <select
+                name="reps-difficulty"
+                value={globalRepsDifficulty}
+                onChange={(e) =>
+                  setGlobalPropertySettings(
+                    "reps",
+                    e.target.value as RepsDifficulty,
+                  )
+                }
+              >
+                {repsDifficultyOptions.map((diff) => (
+                  <option key={diff} value={diff}>
+                    {capitalize(diff)}
+                  </option>
+                ))}
+                <option key="custom" value="custom">
+                  Custom
+                </option>
+              </select>
+            </GlobalRepsDifficultyWrapper>
+          </WorkoutBasePropertiesWrapper>
+          {Array.from({ length: safeCount }).map((_, index) => (
+            <CategorySelection
+              key={index}
+              currentCount={index + 1}
+              categories={categories}
+              value={selectedProperties[index]}
+              onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
+            />
+          ))}
+          {safeCount > 0 && <GetButton onClick={onGetWorkout}>Get</GetButton>}
+        </div>
+      )}
     </>
   );
 }
