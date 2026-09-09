@@ -15,15 +15,6 @@ import {
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
 
-interface Props {
-  exerciseCount: number | "";
-  setExerciseCount: Dispatch<SetStateAction<number | "">>;
-  categories: Category[];
-  selectedProperties: ProperySelection[];
-  setSelectedProperties: Dispatch<SetStateAction<ProperySelection[]>>;
-  onGetWorkout: () => void;
-}
-
 const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
   justify-content: space-around;
@@ -76,6 +67,15 @@ export interface ProperySelection {
 
 type GlobalPropertyType = "exercise" | "reps";
 type WorkoutCreationType = "random" | "preset" | null;
+
+interface Props {
+  exerciseCount: number | "";
+  setExerciseCount: Dispatch<SetStateAction<number | "">>;
+  categories: Category[];
+  selectedProperties: ProperySelection[];
+  setSelectedProperties: Dispatch<SetStateAction<ProperySelection[]>>;
+  onGetWorkout: () => void;
+}
 
 export function WorkoutSettings({
   exerciseCount,
