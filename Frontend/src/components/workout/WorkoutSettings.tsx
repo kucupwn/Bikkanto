@@ -15,6 +15,12 @@ import {
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
 
+const WorkoutSettingsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const WorkoutBasePropertiesWrapper = styled.div`
   display: flex;
   justify-content: space-around;
@@ -163,7 +169,7 @@ export function WorkoutSettings({
         </SettingsButton>
       </SettingButtonsWrapper>
       {creationType !== null && (
-        <div>
+        <WorkoutSettingsContainer>
           <ExerciseCountWrapper>
             <span>Exercise Count:</span>
             <input
@@ -230,7 +236,7 @@ export function WorkoutSettings({
             />
           ))}
           {safeCount > 0 && <GetButton onClick={onGetWorkout}>Get</GetButton>}
-        </div>
+        </WorkoutSettingsContainer>
       )}
     </>
   );
