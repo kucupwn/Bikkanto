@@ -36,6 +36,16 @@ const WorkoutBasePropertiesWrapper = styled.div`
   }
 `;
 
+const SettingButtonsWrapper = styled.div`
+  display: flex;
+  margin: 1rem;
+  gap: 1rem;
+`;
+
+const SettingsButton = styled.button`
+  width: 100px;
+`;
+
 const ExerciseCountWrapper = styled.div`
   display: flex;
   gap: 1rem;
@@ -144,8 +154,14 @@ export function WorkoutSettings({
 
   return (
     <>
-      <button onClick={() => setCreationType("random")}>Random</button>
-      <button onClick={() => setCreationType("preset")}>Preset</button>
+      <SettingButtonsWrapper>
+        <SettingsButton onClick={() => setCreationType("random")}>
+          Random
+        </SettingsButton>
+        <SettingsButton onClick={() => setCreationType("preset")}>
+          Preset
+        </SettingsButton>
+      </SettingButtonsWrapper>
       {creationType !== null && (
         <div>
           <ExerciseCountWrapper>
