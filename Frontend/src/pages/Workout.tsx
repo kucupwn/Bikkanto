@@ -29,6 +29,7 @@ const MainSelectButtonWrapper = styled.div`
 `;
 
 export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
+export type WorkoutCreationType = "random" | "preset" | null;
 
 export function Workout() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
@@ -37,6 +38,8 @@ export function Workout() {
   const [selectedProperties, setSelectedProperties] = useState<
     ProperySelection[]
   >([]);
+  const [workoutCreationMode, setWorkoutCreationMode] =
+    useState<WorkoutCreationType>(null);
   const [workout, setWorkout] = useState<WorkoutEntry[] | null>(null);
   const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(false);
   const [mode, setMode] = useState<ViewModes>(null);
@@ -231,8 +234,11 @@ export function Workout() {
           exerciseCount={exerciseCount}
           setExerciseCount={setExerciseCount}
           categories={categories}
+          exercises={exercises}
           selectedProperties={selectedProperties}
           setSelectedProperties={setSelectedProperties}
+          workoutCreationMode={workoutCreationMode}
+          setWorkoutCreationMode={setWorkoutCreationMode}
           onGetWorkout={getWorkout}
         />
       )}
