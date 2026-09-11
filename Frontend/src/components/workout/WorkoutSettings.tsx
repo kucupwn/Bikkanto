@@ -1,19 +1,16 @@
-import {
-  useState,
-  type ChangeEvent,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
 import {
   exerciseDifficultyOptions,
   repsDifficultyOptions,
   type Category,
+  type Exercise,
   type ExerciseDifficulty,
   type RepsDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { CategorySelection } from "./CategorySelection";
+import type { WorkoutCreationType } from "../../pages/Workout";
 
 const WorkoutSettingsContainer = styled.div`
   display: flex;
@@ -67,19 +64,22 @@ const GetButton = styled.button`
 
 export interface ProperySelection {
   categoryId: number;
+  exerciseId?: number;
   exerciseDifficulty: ExerciseDifficulty;
   repsDifficulty: RepsDifficulty;
 }
 
 type GlobalPropertyType = "exercise" | "reps";
-type WorkoutCreationType = "random" | "preset" | null;
 
 interface Props {
   exerciseCount: number | "";
   setExerciseCount: Dispatch<SetStateAction<number | "">>;
   categories: Category[];
+  exercises: Exercise[];
   selectedProperties: ProperySelection[];
   setSelectedProperties: Dispatch<SetStateAction<ProperySelection[]>>;
+  workoutCreationMode: WorkoutCreationType;
+  setWorkoutCreationMode: Dispatch<SetStateAction<WorkoutCreationType>>;
   onGetWorkout: () => void;
 }
 
@@ -87,11 +87,13 @@ export function WorkoutSettings({
   exerciseCount,
   setExerciseCount,
   categories,
+  exercises,
   selectedProperties,
   setSelectedProperties,
+  workoutCreationMode,
+  setWorkoutCreationMode,
   onGetWorkout,
 }: Props) {
-  const [creationType, setCreationType] = useState<WorkoutCreationType>(null);
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
   const globalExerciseDifficulty = getGlobalDifficulty("exercise");
   const globalRepsDifficulty = getGlobalDifficulty("reps");
@@ -161,14 +163,14 @@ export function WorkoutSettings({
   return (
     <>
       <SettingButtonsWrapper>
-        <SettingsButton onClick={() => setCreationType("random")}>
+        <SettingsButton onClick={() => setWorkoutCreationMode("random")}>
           Random
         </SettingsButton>
-        <SettingsButton onClick={() => setCreationType("preset")}>
+        <SettingsButton onClick={() => setWorkoutCreationMode("preset")}>
           Preset
         </SettingsButton>
       </SettingButtonsWrapper>
-      {creationType !== null && (
+      {workoutCreationMode !== null && (
         <WorkoutSettingsContainer>
           <ExerciseCountWrapper>
             <span>Exercise Count:</span>
@@ -231,8 +233,10 @@ export function WorkoutSettings({
               key={index}
               currentCount={index + 1}
               categories={categories}
+              exercises={exercises}
               value={selectedProperties[index]}
               onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
+              workoutCreationMode={workoutCreationMode}
             />
           ))}
           {safeCount > 0 && <GetButton onClick={onGetWorkout}>Get</GetButton>}
