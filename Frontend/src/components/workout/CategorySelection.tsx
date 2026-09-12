@@ -3,19 +3,14 @@ import {
   exerciseDifficultyOptions,
   repsDifficultyOptions,
   type Category,
+  type Exercise,
   type ExerciseDifficulty,
   type RepsDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import type { ProperySelection } from "./WorkoutSettings";
 import type { ChangeEvent } from "react";
-
-interface Props {
-  currentCount: number;
-  categories: Category[];
-  value: ProperySelection;
-  onChange: (newValue: ProperySelection) => void;
-}
+import type { WorkoutCreationType } from "../../pages/Workout";
 
 const CategorySelectionContainer = styled.div`
   display: flex;
@@ -24,20 +19,70 @@ const CategorySelectionContainer = styled.div`
   margin: 1rem;
 `;
 
-export function CategorySelection({
+interface Props {
+  currentCount: number;
+  categories: Category[];
+  exercises: Exercise[];
+  value: ProperySelection;
+  onChange: (newValue: ProperySelection) => void;
+  workoutCreationMode: WorkoutCreationType;
+}
+
+export function CategoryAndExerciseSelection({
   currentCount,
   categories,
+  exercises,
   value,
   onChange,
+  workoutCreationMode,
 }: Props) {
+  function getFirstMatchingExercise(
+    categoryId: number,
+    difficulty: ExerciseDifficulty,
+  ) {
+    return (
+      exercises.find(
+        (exc) =>
+          exc.category_id === categoryId && exc.difficulty === difficulty,
+      )?.id ?? 0
+    );
+  }
+
   function handleCategoryChange(e: ChangeEvent<HTMLSelectElement>) {
-    onChange({ ...value, categoryId: Number(e.target.value) });
+    const categoryId = Number(e.target.value);
+
+    onChange({
+      ...value,
+      categoryId,
+      ...(workoutCreationMode === "preset"
+        ? {
+            exerciseId: getFirstMatchingExercise(
+              categoryId,
+              value.exerciseDifficulty,
+            ),
+          }
+        : {}),
+    });
+  }
+
+  function handleExerciseChange(e: ChangeEvent<HTMLSelectElement>) {
+    onChange({
+      ...value,
+      exerciseId: Number(e.target.value),
+    });
   }
 
   function handleExerciseDifficultyChange(e: ChangeEvent<HTMLSelectElement>) {
+    const difficulty = e.target.value as ExerciseDifficulty;
+
     onChange({
       ...value,
-      exerciseDifficulty: e.target.value as ExerciseDifficulty,
+      exerciseDifficulty: difficulty,
+      ...(workoutCreationMode === "preset"
+        ? {
+            exerciseId: getFirstMatchingExercise(value.categoryId, difficulty),
+          }
+        : {}),
     });
   }
 
@@ -62,6 +107,25 @@ export function CategorySelection({
           </option>
         ))}
       </select>
+      {workoutCreationMode === "preset" && (
+        <select
+          name="exercise-select"
+          value={value.exerciseId}
+          onChange={handleExerciseChange}
+        >
+          {exercises
+            .filter(
+              (exc) =>
+                exc.category_id === value.categoryId &&
+                exc.difficulty === value.exerciseDifficulty,
+            )
+            .map((exc) => (
+              <option key={exc.id} value={exc.id}>
+                {capitalize(exc.exercise_name)}
+              </option>
+            ))}
+        </select>
+      )}
       <select
         name="exercise-difficulty-select"
         value={value.exerciseDifficulty}
