@@ -28,7 +28,7 @@ interface Props {
   workoutCreationMode: WorkoutCreationType;
 }
 
-export function CategoryAndExerciseSelection({
+export function ExerciseSelection({
   currentCount,
   categories,
   exercises,
