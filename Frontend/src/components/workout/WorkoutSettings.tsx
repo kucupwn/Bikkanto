@@ -9,7 +9,7 @@ import {
   type RepsDifficulty,
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
-import { CategorySelection } from "./CategorySelection";
+import { ExerciseSelection } from "./ExerciseSelection";
 import type { WorkoutCreationType } from "../../pages/Workout";
 
 const WorkoutSettingsContainer = styled.div`
@@ -111,6 +111,12 @@ export function WorkoutSettings({
           return (
             prev[index] ?? {
               categoryId: categories[0]?.id ?? 0,
+              exerciseId:
+                exercises.find(
+                  (exc) =>
+                    exc.category_id === categories[0]?.id &&
+                    exc.difficulty === "beginner",
+                )?.id ?? 0,
               exerciseDifficulty: "beginner",
               repsDifficulty: "easy",
             }
@@ -229,7 +235,7 @@ export function WorkoutSettings({
             </GlobalRepsDifficultyWrapper>
           </WorkoutBasePropertiesWrapper>
           {Array.from({ length: safeCount }).map((_, index) => (
-            <CategorySelection
+            <ExerciseSelection
               key={index}
               currentCount={index + 1}
               categories={categories}
