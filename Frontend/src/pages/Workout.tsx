@@ -95,12 +95,49 @@ export function Workout() {
     };
   }
 
+  function getPresetExercise(
+    selectedProp: ProperySelection,
+  ): WorkoutEntry | null {
+    const exercise = exercises.find(
+      (ex) =>
+        ex.id === selectedProp.exerciseId &&
+        ex.category_id === selectedProp.categoryId,
+    );
+
+    if (!exercise) {
+      showRibbon("error", "Selected exercise could not be found.");
+      return null;
+    }
+
+    const minKey = `${selectedProp.repsDifficulty}_min` as keyof Exercise;
+    const maxKey = `${selectedProp.repsDifficulty}_max` as keyof Exercise;
+
+    const minRep = exercise[minKey] as number;
+    const maxRep = exercise[maxKey] as number;
+
+    const reps = Math.floor(Math.random() * (maxRep - minRep + 1)) + minRep;
+
+    return {
+      exercise_id: exercise.id!,
+      exercise_name: exercise.exercise_name,
+      category_id: exercise.category_id,
+      category_name: exercise.category_name,
+      difficulty: exercise.difficulty,
+      reps_difficulty: selectedProp.repsDifficulty,
+      reps,
+    };
+  }
+
   function getWorkout() {
     const usedExerciseIds = new Set<number>();
 
     const rolledWorkout: WorkoutEntry[] = selectedProperties
-      .map((exc) => {
-        const exercise = getRandomExercise(exc, usedExerciseIds);
+      .map((selectedProp) => {
+        if (workoutCreationMode === "preset") {
+          return getPresetExercise(selectedProp);
+        }
+
+        const exercise = getRandomExercise(selectedProp, usedExerciseIds);
 
         if (exercise) {
           usedExerciseIds.add(exercise.exercise_id);
@@ -112,10 +149,10 @@ export function Workout() {
 
     if (rolledWorkout.length !== selectedProperties.length) {
       return;
-    } else {
-      setWorkout(rolledWorkout);
-      setMode("preview");
     }
+
+    setWorkout(rolledWorkout);
+    setMode("preview");
   }
 
   function getHistoryEntries(): WorkoutHistory[] | null {
