@@ -12,11 +12,22 @@ import type { ProperySelection } from "./WorkoutSettings";
 import type { ChangeEvent } from "react";
 import type { WorkoutCreationType } from "../../pages/Workout";
 
-const CategorySelectionContainer = styled.div`
+const SelectionContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const SelectGroup = styled.div`
   display: flex;
   justify-content: space-around;
   gap: 1rem;
   margin: 1rem;
+
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 interface Props {
@@ -94,60 +105,62 @@ export function ExerciseSelection({
   }
 
   return (
-    <CategorySelectionContainer>
+    <SelectionContainer>
       <span>Exercise {currentCount}:</span>
-      <select
-        name="category-select"
-        value={value.categoryId}
-        onChange={handleCategoryChange}
-      >
-        {categories.map((cat) => (
-          <option key={cat.id} value={cat.id}>
-            {capitalize(cat.category_name)}
-          </option>
-        ))}
-      </select>
-      {workoutCreationMode === "preset" && (
+      <SelectGroup>
         <select
-          name="exercise-select"
-          value={value.exerciseId}
-          onChange={handleExerciseChange}
+          name="category-select"
+          value={value.categoryId}
+          onChange={handleCategoryChange}
         >
-          {exercises
-            .filter(
-              (exc) =>
-                exc.category_id === value.categoryId &&
-                exc.difficulty === value.exerciseDifficulty,
-            )
-            .map((exc) => (
-              <option key={exc.id} value={exc.id}>
-                {capitalize(exc.exercise_name)}
-              </option>
-            ))}
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {capitalize(cat.category_name)}
+            </option>
+          ))}
         </select>
-      )}
-      <select
-        name="exercise-difficulty-select"
-        value={value.exerciseDifficulty}
-        onChange={handleExerciseDifficultyChange}
-      >
-        {exerciseDifficultyOptions.map((diff) => (
-          <option key={diff} value={diff}>
-            {capitalize(diff)}
-          </option>
-        ))}
-      </select>
-      <select
-        name="reps-difficulty-select"
-        value={value.repsDifficulty}
-        onChange={handleRepsDifficultyChange}
-      >
-        {repsDifficultyOptions.map((diff) => (
-          <option key={diff} value={diff}>
-            {capitalize(diff)}
-          </option>
-        ))}
-      </select>
-    </CategorySelectionContainer>
+        {workoutCreationMode === "preset" && (
+          <select
+            name="exercise-select"
+            value={value.exerciseId}
+            onChange={handleExerciseChange}
+          >
+            {exercises
+              .filter(
+                (exc) =>
+                  exc.category_id === value.categoryId &&
+                  exc.difficulty === value.exerciseDifficulty,
+              )
+              .map((exc) => (
+                <option key={exc.id} value={exc.id}>
+                  {capitalize(exc.exercise_name)}
+                </option>
+              ))}
+          </select>
+        )}
+        <select
+          name="exercise-difficulty-select"
+          value={value.exerciseDifficulty}
+          onChange={handleExerciseDifficultyChange}
+        >
+          {exerciseDifficultyOptions.map((diff) => (
+            <option key={diff} value={diff}>
+              {capitalize(diff)}
+            </option>
+          ))}
+        </select>
+        <select
+          name="reps-difficulty-select"
+          value={value.repsDifficulty}
+          onChange={handleRepsDifficultyChange}
+        >
+          {repsDifficultyOptions.map((diff) => (
+            <option key={diff} value={diff}>
+              {capitalize(diff)}
+            </option>
+          ))}
+        </select>
+      </SelectGroup>
+    </SelectionContainer>
   );
 }
