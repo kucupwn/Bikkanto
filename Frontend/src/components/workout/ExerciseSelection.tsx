@@ -18,15 +18,17 @@ const SelectionContainer = styled.div`
   align-items: center;
 `;
 
-const SelectGroup = styled.div`
+const SelectGroup = styled.div<{ workoutCreationMode: WorkoutCreationType }>`
   display: flex;
   justify-content: space-around;
   gap: 1rem;
   margin: 1rem;
 
   @media (max-width: 768px) {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    ${({ workoutCreationMode }) =>
+      workoutCreationMode === "preset" &&
+      `display: grid;
+      grid-template-columns: 1fr 1fr;`}
   }
 `;
 
@@ -107,7 +109,7 @@ export function ExerciseSelection({
   return (
     <SelectionContainer>
       <span>Exercise {currentCount}:</span>
-      <SelectGroup>
+      <SelectGroup workoutCreationMode={workoutCreationMode}>
         <select
           name="category-select"
           value={value.categoryId}
