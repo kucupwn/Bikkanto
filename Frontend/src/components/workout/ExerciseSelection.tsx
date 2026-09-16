@@ -49,7 +49,7 @@ export function ExerciseSelection({
   onChange,
   workoutCreationMode,
 }: Props) {
-  function getFirstMatchingExercise(
+  function getFirstMatchingExerciseId(
     categoryId: number,
     difficulty: ExerciseDifficulty,
   ) {
@@ -69,7 +69,7 @@ export function ExerciseSelection({
       categoryId,
       ...(workoutCreationMode === "preset"
         ? {
-            exerciseId: getFirstMatchingExercise(
+            exerciseId: getFirstMatchingExerciseId(
               categoryId,
               value.exerciseDifficulty,
             ),
@@ -93,7 +93,10 @@ export function ExerciseSelection({
       exerciseDifficulty: difficulty,
       ...(workoutCreationMode === "preset"
         ? {
-            exerciseId: getFirstMatchingExercise(value.categoryId, difficulty),
+            exerciseId: getFirstMatchingExerciseId(
+              value.categoryId,
+              difficulty,
+            ),
           }
         : {}),
     });
