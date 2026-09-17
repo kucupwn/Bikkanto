@@ -57,13 +57,13 @@ export function Home({ currentUser }: Props) {
           </WelcomeContainer>
           <GuideContainer>
             <GuideSection>
-              <PageLink href="/workout">Workout</PageLink>
-              <PageDescription>Create a workout.</PageDescription>
+              <PageLink href="/exercises">Exercises</PageLink>
+              <PageDescription>Collention of your exercises.</PageDescription>
             </GuideSection>
             <HorizontalLine />
             <GuideSection>
-              <PageLink href="/exercises">Exercises</PageLink>
-              <PageDescription>Collention of your exercises.</PageDescription>
+              <PageLink href="/workout">Workout</PageLink>
+              <PageDescription>Create a workout.</PageDescription>
             </GuideSection>
             <HorizontalLine />
             <GuideSection>

@@ -78,8 +78,8 @@ const LoginButton = styled.button`
 
 const links = [
   { name: "Home", path: "/" },
-  { name: "Workout", path: "/workout" },
   { name: "Exercises", path: "/exercises" },
+  { name: "Workout", path: "/workout" },
   { name: "History", path: "/history" },
   { name: "Profile", path: "/profile" },
 ];
