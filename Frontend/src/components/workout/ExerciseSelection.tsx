@@ -49,6 +49,12 @@ export function ExerciseSelection({
   onChange,
   workoutCreationMode,
 }: Props) {
+  const filteredExercises = exercises.filter(
+    (exc) =>
+      exc.category_id === value.categoryId &&
+      exc.difficulty === value.exerciseDifficulty,
+  );
+
   function getFirstMatchingExerciseId(
     categoryId: number,
     difficulty: ExerciseDifficulty,
@@ -130,17 +136,15 @@ export function ExerciseSelection({
             value={value.exerciseId}
             onChange={handleExerciseChange}
           >
-            {exercises
-              .filter(
-                (exc) =>
-                  exc.category_id === value.categoryId &&
-                  exc.difficulty === value.exerciseDifficulty,
-              )
-              .map((exc) => (
+            {filteredExercises.length > 0 ? (
+              filteredExercises.map((exc) => (
                 <option key={exc.id} value={exc.id}>
                   {capitalize(exc.exercise_name)}
                 </option>
-              ))}
+              ))
+            ) : (
+              <option value={0}>N/A</option>
+            )}
           </select>
         )}
         <select
