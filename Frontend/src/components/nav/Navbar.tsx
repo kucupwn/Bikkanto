@@ -76,6 +76,11 @@ const LoginButton = styled.button`
   font-size: 16px;
 `;
 
+const ThemeButton = styled.button`
+  border-radius: 25px;
+  padding: 0.4rem;
+`;
+
 const links = [
   { name: "Home", path: "/" },
   { name: "Exercises", path: "/exercises" },
@@ -121,9 +126,9 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
         ))}
 
         <ThemeWrapper>
-          <button onClick={toggleTheme} aria-label="Toggle theme">
+          <ThemeButton onClick={toggleTheme} aria-label="Toggle theme">
             {theme === "light" ? "🌙" : "☀️"}
-          </button>
+          </ThemeButton>
         </ThemeWrapper>
 
         <AuthWrapper>
