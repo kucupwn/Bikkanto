@@ -121,7 +121,9 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
         ))}
 
         <ThemeWrapper>
-          <button onClick={toggleTheme}>Theme</button>
+          <button onClick={toggleTheme} aria-label="Toggle theme">
+            {theme === "light" ? "🌙" : "☀️"}
+          </button>
         </ThemeWrapper>
 
         <AuthWrapper>
