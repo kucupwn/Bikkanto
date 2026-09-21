@@ -7,7 +7,7 @@ import {
   type SetStateAction,
 } from "react";
 
-type Themes = "light" | "dark";
+export type Themes = "light" | "dark";
 
 type ThemeContextValue = {
   theme: Themes;
