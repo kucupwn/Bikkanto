@@ -121,7 +121,7 @@ export function ExerciseSelection({
 
   return (
     <SelectionContainer>
-      <span>Exercise {currentCount}:</span>
+      <span style={{ color: "white" }}>Exercise {currentCount}:</span>
       <SelectGroup workoutCreationMode={workoutCreationMode}>
         <select
           name="category-select"
