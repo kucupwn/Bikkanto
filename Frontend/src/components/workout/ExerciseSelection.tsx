@@ -16,6 +16,10 @@ const SelectionContainer = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  background-color: var(--main-black);
+  border-radius: 10px;
+  padding: 0 1rem;
+  margin: 0.2rem;
 `;
 
 const SelectGroup = styled.div<{ workoutCreationMode: WorkoutCreationType }>`
