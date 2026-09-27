@@ -36,8 +36,12 @@ const SettingButtonsWrapper = styled.div`
   gap: 1rem;
 `;
 
-const SettingsButton = styled.button`
+const SettingsButton = styled.button<{
+  active: boolean;
+}>`
   width: 100px;
+  background-color: ${({ active }) =>
+    active ? "var(--button-blue)" : "var(--main-black)"};
 `;
 
 const ExerciseCountWrapper = styled.div`
@@ -169,10 +173,16 @@ export function WorkoutSettings({
   return (
     <>
       <SettingButtonsWrapper>
-        <SettingsButton onClick={() => setWorkoutCreationMode("random")}>
+        <SettingsButton
+          active={workoutCreationMode === "random"}
+          onClick={() => setWorkoutCreationMode("random")}
+        >
           Random
         </SettingsButton>
-        <SettingsButton onClick={() => setWorkoutCreationMode("preset")}>
+        <SettingsButton
+          active={workoutCreationMode === "preset"}
+          onClick={() => setWorkoutCreationMode("preset")}
+        >
           Preset
         </SettingsButton>
       </SettingButtonsWrapper>
