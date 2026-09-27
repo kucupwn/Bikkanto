@@ -3,6 +3,8 @@
   --dark-black: #151515;
 
   --main-white: #ecebeb;
+
+  --button-blue: #3848f8;
 }
 
 body {
@@ -27,7 +29,7 @@ h2 {
 }
 
 button {
-  background-color: rgb(56, 72, 248);
+  background-color: var(--button-blue);
   color: white;
   border-radius: 10px;
   border: none;
