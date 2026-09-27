@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { useTheme } from "../ThemeProvider";
+import { useTheme, type Themes } from "../ThemeProvider";
 
 const Nav = styled.nav`
   display: flex;
@@ -76,9 +76,11 @@ const LoginButton = styled.button`
   font-size: 16px;
 `;
 
-const ThemeButton = styled.button`
+const ThemeButton = styled.button<{ $theme: Themes }>`
   border-radius: 25px;
   padding: 0.4rem;
+  background-color: ${({ $theme }) =>
+    $theme === "light" ? "var(--dark-black)" : "var(--main-white)"};
 `;
 
 const links = [
@@ -126,7 +128,11 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
         ))}
 
         <ThemeWrapper>
-          <ThemeButton onClick={toggleTheme} aria-label="Toggle theme">
+          <ThemeButton
+            $theme={theme}
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
             {theme === "light" ? "🌙" : "☀️"}
           </ThemeButton>
         </ThemeWrapper>
