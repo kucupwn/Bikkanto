@@ -8,7 +8,7 @@ import {
   type ExerciseDifficulty,
   type RepsDifficulty,
 } from "../../types/exerciseTypes";
-import { capitalize } from "../../utils";
+import { capitalize, HorizontalLine } from "../../utils";
 import { ExerciseSelection } from "./ExerciseSelection";
 import type { WorkoutCreationType } from "../../pages/Workout";
 
@@ -186,6 +186,9 @@ export function WorkoutSettings({
           Preset
         </SettingsButton>
       </SettingButtonsWrapper>
+
+      <HorizontalLine />
+
       {workoutCreationMode !== null && (
         <WorkoutSettingsContainer>
           <ExerciseCountWrapper>

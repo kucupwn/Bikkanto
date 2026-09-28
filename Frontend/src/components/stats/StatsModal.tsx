@@ -6,6 +6,7 @@ import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import type { WorkoutHistory } from "../../types/historyTypes";
 import { Statistics } from "./Statistics";
 import styled from "styled-components";
+import { HorizontalLine } from "../../utils";
 
 const Title = styled.h2`
   margin-bottom: 1rem;
@@ -13,10 +14,6 @@ const Title = styled.h2`
 
 const GetButton = styled.button`
   margin: 1rem;
-`;
-
-const SeparatorLine = styled.hr`
-  width: 200px;
 `;
 
 interface Props {
@@ -67,7 +64,7 @@ export function StatsModal({ isOpen, onClose }: Props) {
 
       {historyEntries.length > 0 && (
         <>
-          <SeparatorLine />
+          <HorizontalLine $width="200px" />
           <Statistics dateRange={dateRange} historyEntries={historyEntries} />
         </>
       )}

@@ -1,5 +1,6 @@
 import type { User } from "../types/userTypes";
 import styled from "styled-components";
+import { HorizontalLine } from "../utils";
 
 interface Props {
   currentUser: User;
@@ -38,13 +39,6 @@ const PageLink = styled.a`
 const PageDescription = styled.p`
   font-size: 20px;
   margin-top: 1rem;
-`;
-
-const HorizontalLine = styled.div`
-  height: 1.5px;
-  width: 350px;
-  background-color: #8e8e8e;
-  border: none;
 `;
 
 export function Home({ currentUser }: Props) {
