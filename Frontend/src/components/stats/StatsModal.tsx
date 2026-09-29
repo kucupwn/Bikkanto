@@ -48,6 +48,11 @@ export function StatsModal({ isOpen, onClose }: Props) {
         },
       });
 
+      if (res.data.length === 0) {
+        showRibbon("error", "No workout was done in selected range.");
+        return;
+      }
+
       setHistoryEntries(res.data);
     } catch (err: any) {
       const message =
