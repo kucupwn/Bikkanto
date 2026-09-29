@@ -14,6 +14,7 @@ const Ribbon = styled.div<{ $type: RibbonType }>`
   padding: 10px;
   top: 10px;
   right: 25px;
+  z-index: 999;
   animation: ${slideIn} 0.25s ease;
   background-color: ${({ $type }) => {
     return $type === "success" ? "#6ce961" : "#e15d5d";
