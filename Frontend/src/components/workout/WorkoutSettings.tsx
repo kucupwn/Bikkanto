@@ -11,6 +11,7 @@ import {
 import { capitalize, HorizontalLine } from "../../utils";
 import { ExerciseSelection } from "./ExerciseSelection";
 import type { WorkoutCreationType } from "../../pages/Workout";
+import { InfoTooltip } from "../InfoTooltip";
 
 const WorkoutSettingsContainer = styled.div`
   display: flex;
@@ -185,6 +186,7 @@ export function WorkoutSettings({
         >
           Preset
         </SettingsButton>
+        <InfoTooltip text="test" />
       </SettingButtonsWrapper>
 
       <HorizontalLine />
