@@ -186,7 +186,17 @@ export function WorkoutSettings({
         >
           Preset
         </SettingsButton>
-        <InfoTooltip text="test" />
+        <InfoTooltip
+          text={
+            <>
+              Random: Randomly selects exercises based on your chosen category,
+              difficulty, and reps difficulty.
+              <br />
+              Preset: Choose exercises manually. Your selected category,
+              difficulty, and reps difficulty filter the available exercises.
+            </>
+          }
+        />
       </SettingButtonsWrapper>
 
       <HorizontalLine />
