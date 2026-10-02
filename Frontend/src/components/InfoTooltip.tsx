@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import styled from "styled-components";
 
 const InfoIcon = styled.span`
@@ -21,6 +22,10 @@ const Tooltip = styled.div`
 
   font-size: 12px;
 
+  z-index: 999;
+
+  border: 1px solid var(--main-white);
+
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s;
@@ -30,7 +35,7 @@ const Tooltip = styled.div`
   }
 `;
 
-export function InfoTooltip({ text }: { text: string }) {
+export function InfoTooltip({ text }: { text: ReactNode }) {
   return (
     <InfoIcon>
       <span>ⓘ</span>
