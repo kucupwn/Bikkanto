@@ -19,7 +19,7 @@ const NavList = styled.ul<{ $isOpen: boolean }>`
   list-style: none;
   display: flex;
   gap: 1rem;
-  z-index: 999;
+  z-index: 998;
 
   @media (max-width: 768px) {
     display: ${(props) => (props.$isOpen ? "flex" : "none")};
