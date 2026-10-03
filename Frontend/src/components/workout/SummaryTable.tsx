@@ -189,6 +189,7 @@ export function SummaryTable({
             workoutDate={workoutDate}
             setWorkoutDate={setWorkoutDate}
           />
+          <button>Save to Presets</button>
           <Button onClick={onPostFinishedWorkout}>Finish</Button>
         </CyclesWrapper>
       )}
