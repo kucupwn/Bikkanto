@@ -72,8 +72,12 @@ const ThemeWrapper = styled.div`
   }
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled.button<{ $isLoggedIn: boolean }>`
   font-size: 16px;
+  background-color: ${({ $isLoggedIn }) =>
+    $isLoggedIn ? "var(--dark-black)" : "var(--button-blue)"};
+  border: ${({ $isLoggedIn }) =>
+    $isLoggedIn ? "1px solid var(--main-white)" : "none"};
 `;
 
 const ThemeButton = styled.button<{ $theme: Themes }>`
@@ -139,9 +143,14 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
 
         <AuthWrapper>
           {isLoggedIn ? (
-            <LoginButton onClick={handleLogout}>Logout</LoginButton>
+            <LoginButton onClick={handleLogout} $isLoggedIn={isLoggedIn}>
+              Logout
+            </LoginButton>
           ) : (
-            <LoginButton onClick={() => setIsLoginOpen(true)}>
+            <LoginButton
+              onClick={() => setIsLoginOpen(true)}
+              $isLoggedIn={isLoggedIn}
+            >
               Login
             </LoginButton>
           )}
