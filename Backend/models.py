@@ -75,6 +75,9 @@ class History(Base):
 
     user = relationship("Users", back_populates="history")
 
+    exercise = relationship("Exercises")
+    category = relationship("Categories")
+
 
 class PresetWorkout(Base):
     __tablename__ = "preset_workout"
@@ -96,6 +99,9 @@ class PresetWorkout(Base):
     category_name = Column(String, nullable=False)
 
     user = relationship("Users", back_populates="preset_workout")
+
+    exercise = relationship("Exercises")
+    category = relationship("Categories")
 
 
 class DraftWorkout(Base):
@@ -119,6 +125,9 @@ class DraftWorkout(Base):
     category_name = Column(String, nullable=False)
 
     user = relationship("Users", back_populates="draft_workout")
+
+    exercise = relationship("Exercises")
+    category = relationship("Categories")
 
 
 class Users(Base):
