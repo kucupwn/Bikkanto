@@ -35,7 +35,7 @@ class HistoryCreate(HistoryBase):
     pass
 
 
-class WorkoutDraftBase(BaseModel):
+class DraftWorkoutBase(BaseModel):
     difficulty: Difficulty
     reps_difficulty: RepsDifficulty
     reps: int = Field(gt=0)
@@ -43,7 +43,7 @@ class WorkoutDraftBase(BaseModel):
     category_id: int = Field(gt=0)
 
 
-class WorkoutDraftRead(WorkoutDraftBase):
+class DraftWorkoutRead(DraftWorkoutBase):
     id: int
     session_id: str
     exercise_name: str
@@ -53,5 +53,5 @@ class WorkoutDraftRead(WorkoutDraftBase):
         from_attributes = True
 
 
-class WorkoutDraftCreate(WorkoutDraftBase):
+class DraftWorkoutCreate(DraftWorkoutBase):
     pass

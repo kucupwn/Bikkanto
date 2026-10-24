@@ -98,7 +98,7 @@ export function SummaryTable({
     if (!workout?.length) return;
 
     const res = await api.post("/history/draft", workout);
-    // Re-set for session_id (backend returns WorkoutDraftRead model)
+    // Re-set for session_id (backend returns DraftWorkoutRead model)
     setWorkout(res.data);
     setHasAcceptedWorkout(true);
     setTitle("Have fun with the workout!");
@@ -127,7 +127,7 @@ export function SummaryTable({
   }
 
   useEffect(() => {
-    async function getWorkoutDraft() {
+    async function getDraftWorkout() {
       try {
         const res = await api.get("/history/draft");
 
@@ -141,7 +141,7 @@ export function SummaryTable({
       }
     }
 
-    getWorkoutDraft();
+    getDraftWorkout();
   }, []);
 
   return (

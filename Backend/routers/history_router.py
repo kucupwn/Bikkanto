@@ -6,12 +6,12 @@ from starlette import status
 from datetime import date
 from .auth import get_current_user
 from ..database import get_db
-from ..models import History, Exercises, Categories, WorkoutDraft
+from ..models import History, Exercises, Categories, DraftWorkout
 from ..schemas.history_schema import (
     HistoryRead,
     HistoryCreate,
-    WorkoutDraftRead,
-    WorkoutDraftCreate,
+    DraftWorkoutRead,
+    DraftWorkoutCreate,
 )
 
 router = APIRouter(prefix="/history", tags=["history"])
@@ -103,16 +103,16 @@ async def create_history_batch(
 
 
 @router.get(
-    "/draft", response_model=List[WorkoutDraftRead], status_code=status.HTTP_200_OK
+    "/draft", response_model=List[DraftWorkoutRead], status_code=status.HTTP_200_OK
 )
 async def get_draft_workout(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     draft_models = (
-        db.query(WorkoutDraft)
+        db.query(DraftWorkout)
         .filter(
-            WorkoutDraft.user_id == user.get("id"),
+            DraftWorkout.user_id == user.get("id"),
         )
         .all()
     )
@@ -128,10 +128,10 @@ async def delete_draft_workout(
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
     draft_model = (
-        db.query(WorkoutDraft)
+        db.query(DraftWorkout)
         .filter(
-            WorkoutDraft.session_id == session_id,
-            WorkoutDraft.user_id == user.get("id"),
+            DraftWorkout.session_id == session_id,
+            DraftWorkout.user_id == user.get("id"),
         )
         .first()
     )
@@ -146,11 +146,11 @@ async def delete_draft_workout(
 
 @router.post(
     "/draft",
-    response_model=List[WorkoutDraftRead],
+    response_model=List[DraftWorkoutRead],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_draft_workout(
-    user: user_dependency, db: db_dependency, entries: List[WorkoutDraftCreate]
+    user: user_dependency, db: db_dependency, entries: List[DraftWorkoutCreate]
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
@@ -168,7 +168,7 @@ async def create_draft_workout(
         if not category:
             raise HTTPException(status_code=400, detail=f"Invalid category id")
 
-        draft = WorkoutDraft(
+        draft = DraftWorkout(
             session_id=session,
             exercise_id=entry.exercise_id,
             exercise_name=exercise.exercise_name,

@@ -226,7 +226,7 @@ export function Workout() {
   }, []);
 
   useEffect(() => {
-    async function getWorkoutDraft() {
+    async function getDraftWorkout() {
       try {
         const res = await api.get("/history/draft");
 
@@ -240,7 +240,7 @@ export function Workout() {
       }
     }
 
-    getWorkoutDraft();
+    getDraftWorkout();
   }, []);
 
   useEffect(() => {

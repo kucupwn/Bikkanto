@@ -76,7 +76,7 @@ class History(Base):
     user = relationship("Users", back_populates="history")
 
 
-class WorkoutDraft(Base):
+class DraftWorkout(Base):
     __tablename__ = "draft_workout"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -120,5 +120,5 @@ class Users(Base):
         "Categories", back_populates="user", cascade="all, delete-orphan"
     )
     draft_workout = relationship(
-        "WorkoutDraft", back_populates="user", cascade="all, delete-orphan"
+        "DraftWorkout", back_populates="user", cascade="all, delete-orphan"
     )
