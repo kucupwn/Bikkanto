@@ -76,6 +76,28 @@ class History(Base):
     user = relationship("Users", back_populates="history")
 
 
+class PresetWorkout(Base):
+    __tablename__ = "preset_workout"
+
+    id = Column(Integer, primary_key=True, index=True)
+    preset_id = Column(String, nullable=False)
+    difficulty = Column(String)
+    reps_difficulty = Column(String)
+
+    exercise_id = Column(
+        Integer, ForeignKey("exercises.id"), nullable=False, index=True
+    )
+    category_id = Column(
+        Integer, ForeignKey("categories.id"), nullable=False, index=True
+    )
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    exercise_name = Column(String, nullable=False)
+    category_name = Column(String, nullable=False)
+
+    user = relationship("Users", back_populates="preset_workout")
+
+
 class DraftWorkout(Base):
     __tablename__ = "draft_workout"
 
@@ -121,4 +143,7 @@ class Users(Base):
     )
     draft_workout = relationship(
         "DraftWorkout", back_populates="user", cascade="all, delete-orphan"
+    )
+    preset_workout = relationship(
+        "PresetWorkout", back_populates="user", cascade="all, delete-orphan"
     )
