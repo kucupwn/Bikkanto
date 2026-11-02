@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class CategoryRead(BaseModel):
@@ -12,6 +12,11 @@ class CategoryRead(BaseModel):
 
 class CategoryCreate(BaseModel):
     category_name: str
+
+    @field_validator("category_name")
+    @classmethod
+    def lowercase_name(cls, value: str) -> str:
+        return value.lower()
 
 
 class Difficulty(str, Enum):
@@ -42,6 +47,11 @@ class ExerciseRead(ExerciseBase):
 
 class ExerciseCreate(ExerciseBase):
     category_id: int = Field(gt=0)
+
+    @field_validator("exercise_name")
+    @classmethod
+    def lowercase_name(cls, value: str) -> str:
+        return value.lower()
 
 
 class ExerciseUpdate(ExerciseBase):
