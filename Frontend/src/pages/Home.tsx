@@ -1,79 +1,162 @@
 import type { User } from "../types/userTypes";
 import styled from "styled-components";
-import { HorizontalLine } from "../utils";
+import { Link } from "react-router-dom";
+import { ArrowRight, LogIn } from "lucide-react";
+import { Board, BoardHead, BoardTitle, Button, Page } from "../components/ui";
+import { FlapText } from "../components/FlapText";
 
 interface Props {
   currentUser: User;
+  isLoggedIn: boolean;
+  onLogin: () => void;
 }
 
-const WelcomeContainer = styled.div`
+const Hero = styled(Board)`
+  padding: 2.5rem 2rem 2rem;
+  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  justify-self: center;
+  gap: 1.25rem;
+
+  @media (max-width: 900px) {
+    padding: 1.5rem 1rem;
+  }
 `;
 
-const GuideContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+const HeroText = styled.p`
+  max-width: 56ch;
+  color: var(--board-ink-2);
+  font-size: 17px;
 `;
 
-const GuideSection = styled.div`
-  display: flex;
-  flex-direction: column;
+const Row = styled(Link)`
+  display: grid;
+  grid-template-columns: 4.5rem minmax(8rem, 14rem) 1fr auto;
   align-items: center;
-  justify-content: center;
-  margin: 1rem;
-`;
-
-const PageLink = styled.a`
-  font-size: 24px;
-  color: blue;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem;
+  border-bottom: 1px solid var(--board-line);
+  color: var(--board-ink);
   text-decoration: none;
-  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &:hover {
+    background: var(--board-cell);
+  }
+
+  &:hover svg {
+    color: var(--amber);
+    transform: translateX(3px);
+  }
+
+  svg {
+    color: var(--board-ink-2);
+    transition:
+      transform 0.2s var(--ease-out),
+      color 0.15s ease;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 3rem 1fr auto;
+
+    > :nth-child(3) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  }
 `;
 
-const PageDescription = styled.p`
-  font-size: 20px;
-  margin-top: 1rem;
+const RowNo = styled.span`
+  font-family: var(--font-board);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--board-ink-2);
+  font-variant-numeric: tabular-nums;
 `;
 
-export function Home({ currentUser }: Props) {
+const RowName = styled.span`
+  font-family: var(--font-board);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+`;
+
+const RowDesc = styled.span`
+  color: var(--board-ink-2);
+`;
+
+const steps = [
+  {
+    path: "/exercises",
+    name: "Exercises",
+    desc: "Your categories and exercises, with easy, medium and hard rep ranges.",
+  },
+  {
+    path: "/workout",
+    name: "Workout",
+    desc: "Roll a workout from your library, reroll any row, then log your cycles.",
+  },
+  {
+    path: "/history",
+    name: "History",
+    desc: "Every finished workout, plus statistics for any date range.",
+  },
+];
+
+export function Home({ currentUser, isLoggedIn, onLogin }: Props) {
+  const signedIn = isLoggedIn && !!currentUser.username;
+
   return (
-    <>
-      {currentUser.username ? (
-        <>
-          <WelcomeContainer>
-            <h1>{`Welcome ${currentUser.username}!`}</h1>
-          </WelcomeContainer>
-          <GuideContainer>
-            <GuideSection>
-              <PageLink href="/exercises">Exercises</PageLink>
-              <PageDescription>Collention of your exercises.</PageDescription>
-            </GuideSection>
-            <HorizontalLine />
-            <GuideSection>
-              <PageLink href="/workout">Workout</PageLink>
-              <PageDescription>Create a workout.</PageDescription>
-            </GuideSection>
-            <HorizontalLine />
-            <GuideSection>
-              <PageLink href="/history">History</PageLink>
-              <PageDescription>
-                Finished workouts are saved to history.
-              </PageDescription>
-            </GuideSection>
-          </GuideContainer>
-        </>
-      ) : (
-        <WelcomeContainer>
-          <h1>Welcome!</h1>
-          <p>Please login for full experience.</p>
-        </WelcomeContainer>
-      )}
-    </>
+    <Page>
+      <Hero as="section">
+        <h1>
+          <FlapText
+            text={signedIn ? `Welcome ${currentUser.username}` : "Bikkanto"}
+            cells
+            size="xl"
+            animateOnMount
+          />
+        </h1>
+        {signedIn ? (
+          <HeroText>
+            Pick up where you left off. Build your library, roll today's
+            workout, and keep the history honest.
+          </HeroText>
+        ) : (
+          <>
+            <HeroText>
+              Bodyweight workouts rolled from your own exercise library. Set
+              rep ranges that match your level, pick categories and
+              difficulty, and let the board pick the session.
+            </HeroText>
+            <div>
+              <Button $variant="primary" $size="lg" onClick={onLogin}>
+                <LogIn size={20} aria-hidden="true" />
+                Log in or create an account
+              </Button>
+            </div>
+          </>
+        )}
+      </Hero>
+
+      <Board as="nav" aria-label="Get started">
+        <BoardHead>
+          <BoardTitle>How it works</BoardTitle>
+        </BoardHead>
+        {steps.map((step, i) => (
+          <Row key={step.path} to={step.path}>
+            <RowNo>{String(i + 1).padStart(2, "0")}</RowNo>
+            <RowName>{step.name}</RowName>
+            <RowDesc>{step.desc}</RowDesc>
+            <ArrowRight size={20} aria-hidden="true" />
+          </Row>
+        ))}
+      </Board>
+    </Page>
   );
 }

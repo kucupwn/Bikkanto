@@ -9,26 +9,15 @@ import {
 import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
-import styled from "styled-components";
 import { PoolExerciseTable } from "../components/exercise/PoolExerciseTable";
-
-const TableViewButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-bottom: 1rem;
-  gap: 1rem;
-`;
-
-const TableViewButtonWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const TableViewButton = styled.button`
-  font-size: 20px;
-`;
+import {
+  Page,
+  PageHeader,
+  PageLede,
+  PageTitle,
+  SegmentButton,
+  Segmented,
+} from "../components/ui";
 
 type ExercisesView = "own" | "pool" | null;
 export type ModalType = "category" | "add" | "edit" | "delete" | null;
@@ -38,7 +27,8 @@ export function Exercises() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [activeTable, setActiveTable] = useState<ExercisesView>(null);
+  const [activeTable, setActiveTable] = useState<ExercisesView>("own");
+
   const { showRibbon } = useRibbon();
 
   const columns = useMemo(() => {
@@ -69,7 +59,7 @@ export function Exercises() {
 
       setExercises(fetchedExercises);
     } catch (err: any) {
-      const message = err.response.data.detail || "Could not fetch exercises.";
+      const message = err.response?.data?.detail || "Could not fetch exercises.";
       showRibbon("error", message);
     } finally {
       setIsLoading(false);
@@ -83,7 +73,7 @@ export function Exercises() {
 
       setCategories(categories);
     } catch (err: any) {
-      const message = err.response.data.detail || "Could not fetch categories.";
+      const message = err.response?.data?.detail || "Could not fetch categories.";
       showRibbon("error", message);
     }
   }
@@ -94,18 +84,35 @@ export function Exercises() {
   }, [activeTable]);
 
   return (
-    <>
-      <TableViewButtonContainer>
-        <h2>Select table view:</h2>
-        <TableViewButtonWrapper>
-          <TableViewButton onClick={() => setActiveTable("own")}>
-            Own
-          </TableViewButton>
-          <TableViewButton onClick={() => setActiveTable("pool")}>
+    <Page>
+      <PageHeader>
+        <div>
+          <PageTitle>Exercises</PageTitle>
+          <PageLede>
+            {activeTable === "pool"
+              ? "Every exercise shared across Bikkanto, with how many athletes use it."
+              : "Your library. Rep ranges here decide what a rolled workout asks of you."}
+          </PageLede>
+        </div>
+        <Segmented role="tablist" aria-label="Table view">
+          <SegmentButton
+            role="tab"
+            aria-selected={activeTable === "own"}
+            $active={activeTable === "own"}
+            onClick={() => setActiveTable("own")}
+          >
+            My exercises
+          </SegmentButton>
+          <SegmentButton
+            role="tab"
+            aria-selected={activeTable === "pool"}
+            $active={activeTable === "pool"}
+            onClick={() => setActiveTable("pool")}
+          >
             Pool
-          </TableViewButton>
-        </TableViewButtonWrapper>
-      </TableViewButtonContainer>
+          </SegmentButton>
+        </Segmented>
+      </PageHeader>
 
       {activeTable === "own" && (
         <OwnExerciseTable
@@ -126,6 +133,6 @@ export function Exercises() {
           isLoading={isLoading}
         />
       )}
-    </>
+    </Page>
   );
 }

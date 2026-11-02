@@ -1,5 +1,6 @@
 import { type Dispatch, type SetStateAction } from "react";
 import DatePicker from "react-datepicker";
+import { Input } from "../ui";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -17,6 +18,8 @@ export default function HistoryDatePicker({
       selected={workoutDate}
       onChange={(date: Date | null) => setWorkoutDate(date)}
       dateFormat="yyyy-MM-dd"
+      maxDate={new Date()}
+      customInput={<Input aria-label="Workout date" />}
     />
   );
 }

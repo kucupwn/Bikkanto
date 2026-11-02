@@ -1,18 +1,47 @@
 import { useEffect, type Dispatch, type SetStateAction } from "react";
+import styled from "styled-components";
+import { Play, Trash2 } from "lucide-react";
 import type { ViewModes } from "../../pages/Workout";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
-import styled from "styled-components";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
+import { FlapText } from "../FlapText";
+import { Board, Button } from "../ui";
 
-const ButtonWrapper = styled.div`
+const Notice = styled(Board)`
+  max-width: 720px;
+  padding: 2rem;
   display: flex;
-  gap: 1rem;
-  margin: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+
+  p {
+    color: var(--board-ink-2);
+    max-width: 52ch;
+  }
+
+  @media (max-width: 700px) {
+    padding: 1.5rem 1rem;
+  }
 `;
 
-const TextWrapper = styled.div`
-  margin: 1rem;
+const Actions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+`;
+
+const BoardGhost = styled(Button)`
+  background: transparent;
+  color: var(--board-ink);
+  border-color: var(--board-line);
+
+  &:hover:not(:disabled) {
+    background: var(--board-cell);
+    border-color: var(--red);
+    color: var(--red);
+  }
 `;
 
 interface Props {
@@ -33,7 +62,7 @@ export function StoredWorkout({
   const { showRibbon } = useRibbon();
 
   useEffect(() => {
-    setTitle("Previously applied workout");
+    setTitle("Unfinished workout");
   }, []);
 
   async function discardWorkout() {
@@ -44,9 +73,9 @@ export function StoredWorkout({
         setWorkout(null);
         setMode(null);
         setHasAcceptedWorkout(false);
-        setTitle("Create a workout OR Select a workout");
+        setTitle("Start a workout");
       }
-    } catch (err: any) {
+    } catch {
       showRibbon("error", "Could not delete workout draft.");
     }
   }
@@ -58,23 +87,33 @@ export function StoredWorkout({
       if (res.data) {
         setWorkout(res.data);
         setMode("preview");
-        setTitle("Have fun with the workout!");
+        setTitle("Workout in progress");
       }
-    } catch (err: any) {
+    } catch {
       showRibbon("error", "Could not recall workout draft.");
     }
   }
 
+  const count = workout?.length ?? 0;
+
   return (
-    <>
-      <TextWrapper>
-        <p>You have accepted, but not saved workout.</p>
-        <p>Do you want to Discard it, or Recall it?</p>
-      </TextWrapper>
-      <ButtonWrapper>
-        <button onClick={discardWorkout}>Discard</button>
-        <button onClick={recallWorkout}>Recall</button>
-      </ButtonWrapper>
-    </>
+    <Notice as="section">
+      <FlapText text="Unfinished" cells size="md" tone="amber" animateOnMount />
+      <p>
+        You accepted a workout of {count} {count === 1 ? "exercise" : "exercises"}{" "}
+        but haven't logged it yet. Pick it back up, or discard it to start
+        fresh.
+      </p>
+      <Actions>
+        <Button $variant="primary" onClick={recallWorkout}>
+          <Play size={18} aria-hidden="true" />
+          Resume workout
+        </Button>
+        <BoardGhost onClick={discardWorkout}>
+          <Trash2 size={18} aria-hidden="true" />
+          Discard
+        </BoardGhost>
+      </Actions>
+    </Notice>
   );
 }

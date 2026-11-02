@@ -11,7 +11,7 @@ export function formatDate(date: Date | null) {
 }
 
 export const HorizontalLine = styled.div<{ $width?: string }>`
-  height: 1.5px;
-  width: ${({ $width = "350px" }) => $width};
-  background-color: #8e8e8e;
+  height: 1px;
+  width: ${({ $width = "100%" }) => $width};
+  background-color: var(--line-soft);
 `;

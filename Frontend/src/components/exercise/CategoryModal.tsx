@@ -1,30 +1,29 @@
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import styled from "styled-components";
 import type { Category } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
+import {
+  Button,
+  Field,
+  FieldLabel,
+  Input,
+  SegmentButton,
+  Segmented,
+  Select,
+} from "../ui";
 
-const Button = styled.button`
-  width: 100px;
-  margin-top: 1rem;
-`;
-
-const Title = styled.h2`
-  margin-bottom: 1rem;
-`;
-
-const OperationsContainer = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  gap: 1rem;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
+const Warning = styled.p`
+  color: var(--ink-2);
+  font-size: 14px;
 `;
 
 interface Props {
@@ -34,17 +33,15 @@ interface Props {
   onSuccess: () => Promise<void>;
 }
 
-type Operations = "add" | "delete" | null;
+type Operations = "add" | "delete";
 
-export function CategoryModal({
-  isOpen,
-  onClose,
-  categories,
-  onSuccess,
-}: Props) {
-  if (!isOpen) return null;
+export function CategoryModal(props: Props) {
+  if (!props.isOpen) return null;
+  return <CategoryModalContent {...props} />;
+}
 
-  const [operation, setOperation] = useState<Operations>(null);
+function CategoryModalContent({ onClose, categories, onSuccess }: Props) {
+  const [operation, setOperation] = useState<Operations>("add");
   const [newCategory, setNewCategory] = useState<Category>({
     category_name: "",
   });
@@ -69,7 +66,7 @@ export function CategoryModal({
       onClose();
     } catch (err: any) {
       const message =
-        err.response.data.detail || "Category could not be added.";
+        err.response?.data?.detail || "Category could not be added.";
       showRibbon("error", message);
     }
   }
@@ -82,59 +79,88 @@ export function CategoryModal({
       onClose();
     } catch (err: any) {
       const message =
-        err.response.data.detail || "Category could not be deleted.";
+        err.response?.data?.detail || "Category could not be deleted.";
       showRibbon("error", message);
     }
   }
 
-  useEffect(() => {
-    if (!isOpen) {
-      setOperation(null);
-      setNewCategory({ category_name: "" });
-    }
-  }, [isOpen]);
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (operation === "add") handleAddCategory();
+    else handleRemoveCategory();
+  }
 
   return (
-    <ModalBase onClose={onClose}>
-      {!operation && (
-        <OperationsContainer>
-          <Title>Choose category operation</Title>
-          <ButtonWrapper>
-            <Button onClick={() => setOperation("add")}>Add</Button>
-            <Button onClick={() => setOperation("delete")}>Delete</Button>
-          </ButtonWrapper>
-        </OperationsContainer>
-      )}
-      {operation === "add" && (
-        <OperationsContainer>
-          <Title>Add new category name</Title>
-          <input
-            type="text"
-            name="category_name"
-            placeholder="Category name..."
-            value={newCategory.category_name}
-            onChange={handleCategoryNameInput}
-          />
-          <Button onClick={handleAddCategory}>Add</Button>
-        </OperationsContainer>
-      )}
-      {operation === "delete" && (
-        <OperationsContainer>
-          <Title>Select category to delete</Title>
-          <select
-            name="id"
-            value={selectedCategoryId}
-            onChange={handleCategoryNameSelect}
-          >
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {capitalize(cat.category_name)}
-              </option>
-            ))}
-          </select>
-          <Button onClick={handleRemoveCategory}>Remove</Button>
-        </OperationsContainer>
-      )}
+    <ModalBase onClose={onClose} title="Categories">
+      <Segmented role="tablist" aria-label="Category action">
+        <SegmentButton
+          role="tab"
+          aria-selected={operation === "add"}
+          $active={operation === "add"}
+          onClick={() => setOperation("add")}
+        >
+          Add
+        </SegmentButton>
+        <SegmentButton
+          role="tab"
+          aria-selected={operation === "delete"}
+          $active={operation === "delete"}
+          onClick={() => setOperation("delete")}
+          disabled={categories.length === 0}
+        >
+          Delete
+        </SegmentButton>
+      </Segmented>
+
+      <Form onSubmit={handleSubmit}>
+        {operation === "add" ? (
+          <>
+            <Field>
+              <FieldLabel>Category name</FieldLabel>
+              <Input
+                type="text"
+                name="category_name"
+                placeholder="e.g. push up"
+                value={newCategory.category_name}
+                onChange={handleCategoryNameInput}
+                autoFocus
+                required
+              />
+            </Field>
+            <Button
+              type="submit"
+              $variant="primary"
+              $block
+              disabled={!newCategory.category_name.trim()}
+            >
+              Add category
+            </Button>
+          </>
+        ) : (
+          <>
+            <Field>
+              <FieldLabel>Category</FieldLabel>
+              <Select
+                name="id"
+                value={selectedCategoryId}
+                onChange={handleCategoryNameSelect}
+              >
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {capitalize(cat.category_name)}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Warning>
+              Deleting a category cannot be undone.
+            </Warning>
+            <Button type="submit" $variant="danger" $block>
+              Delete category
+            </Button>
+          </>
+        )}
+      </Form>
     </ModalBase>
   );
 }

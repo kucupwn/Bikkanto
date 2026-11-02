@@ -1,109 +1,223 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
-import { useState, type Dispatch, type SetStateAction } from "react";
-import { useTheme, type Themes } from "../ThemeProvider";
+import { Link, NavLink } from "react-router-dom";
+import { type Dispatch, type SetStateAction } from "react";
+import {
+  Dumbbell,
+  History,
+  House,
+  LogIn,
+  LogOut,
+  Moon,
+  Shuffle,
+  Sun,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
+import { useTheme } from "../ThemeProvider";
 
-const Nav = styled.nav`
+/* Desktop: steel side rail. Phone: slim top bar + bottom tab bar. */
+
+const Rail = styled.aside`
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--rail-w);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--main-black);
-  margin-bottom: 1rem;
+  flex-direction: column;
+  background: #1d1f23;
+  border-right: 1px solid #000;
+  color: var(--board-ink);
+  z-index: 50;
 
-  @media (max-width: 768px) {
-    justify-content: left;
-  }
-`;
-
-const NavList = styled.ul<{ $isOpen: boolean }>`
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  z-index: 998;
-
-  @media (max-width: 768px) {
-    display: ${(props) => (props.$isOpen ? "flex" : "none")};
-    flex-direction: column;
-    position: absolute;
-    top: 110px;
-    left: 0;
+  @media (max-width: 900px) {
+    position: sticky;
+    inset: 0 0 auto 0;
     width: 100%;
-    padding: 1rem;
-    background-color: var(--main-black);
+    height: 56px;
+    flex-direction: row;
+    align-items: center;
+    border-right: 0;
+    border-bottom: 1px solid #000;
   }
 `;
 
-const Hamburger = styled.button`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-`;
-
-const StyledNavLink = styled(NavLink)`
-  color: var(--main-white);
-  font-size: 24px;
+const Wordmark = styled(Link)`
+  display: block;
+  padding: 1.75rem 1.5rem 1.5rem;
+  font-family: var(--font-board);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--board-ink);
   text-decoration: none;
+  border-bottom: 1px solid #2a2d31;
+
+  @media (max-width: 900px) {
+    padding: 0 1rem;
+    font-size: 20px;
+    border-bottom: 0;
+    margin-right: auto;
+  }
+`;
+
+const NavList = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  @media (max-width: 900px) {
+    position: fixed;
+    inset: auto 0 0 0;
+    height: var(--tabbar-h);
+    padding: 0 0.25rem env(safe-area-inset-bottom);
+    flex-direction: row;
+    justify-content: space-around;
+    background: #1d1f23;
+    border-top: 1px solid #000;
+  }
+`;
+
+const NavItem = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 44px;
+  padding: 0 0.875rem;
+  border-radius: var(--radius);
+  font-family: var(--font-board);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--board-ink-2);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    color: var(--board-ink);
+    background: #26292d;
+  }
 
   &.active {
-    font-weight: bold;
-    border-bottom: 2px solid var(--main-white);
+    color: var(--amber);
+    background: var(--board);
+  }
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 60px;
+    padding: 6px 4px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+
+    &.active {
+      background: transparent;
+    }
   }
 `;
 
-const AuthWrapper = styled.div`
-  position: absolute;
-  right: 1rem;
+const RailFoot = styled.div`
+  margin-top: auto;
+  padding: 1rem 0.75rem 1.25rem;
+  border-top: 1px solid #2a2d31;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 
-  @media (max-width: 768px) {
-    position: relative;
-    right: 0;
+  @media (max-width: 900px) {
+    margin: 0;
+    padding: 0 0.5rem;
+    border: 0;
+    flex-direction: row;
+    align-items: center;
   }
 `;
 
-const ThemeWrapper = styled.div`
-  position: absolute;
-  left: 1rem;
+const Signed = styled.div`
+  padding: 0 0.875rem 0.25rem;
+  font-family: var(--font-board);
+  font-size: 13px;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--board-ink-2);
 
-  @media (max-width: 768px) {
-    position: relative;
-    left: 0;
+  strong {
+    display: block;
+    font-size: 16px;
+    color: var(--board-ink);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    display: none;
   }
 `;
 
-const LoginButton = styled.button<{ $isLoggedIn: boolean }>`
-  font-size: 16px;
-  background-color: ${({ $isLoggedIn }) =>
-    $isLoggedIn ? "var(--dark-black)" : "var(--button-blue)"};
-  border: ${({ $isLoggedIn }) =>
-    $isLoggedIn ? "1px solid var(--main-white)" : "none"};
+const FootButton = styled.button<{ $accent?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 40px;
+  padding: 0 0.875rem;
+  border: 1px solid ${({ $accent }) => ($accent ? "var(--amber)" : "#2f3237")};
+  border-radius: var(--radius);
+  background: ${({ $accent }) => ($accent ? "var(--amber)" : "transparent")};
+  color: ${({ $accent }) => ($accent ? "var(--amber-ink)" : "var(--board-ink-2)")};
+  font-family: var(--font-board);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    color: ${({ $accent }) => ($accent ? "var(--amber-ink)" : "var(--board-ink)")};
+    background: ${({ $accent }) => ($accent ? "var(--amber-hover)" : "#26292d")};
+  }
+
+  @media (max-width: 900px) {
+    min-height: 36px;
+    padding: 0 0.625rem;
+    gap: 0.5rem;
+
+    span {
+      display: ${({ $accent }) => ($accent ? "inline" : "none")};
+    }
+  }
 `;
 
-const ThemeButton = styled.button<{ $theme: Themes }>`
-  border-radius: 25px;
-  padding: 0.4rem;
-  background-color: ${({ $theme }) =>
-    $theme === "light" ? "var(--dark-black)" : "var(--main-white)"};
-`;
-
-const links = [
-  { name: "Home", path: "/" },
-  { name: "Exercises", path: "/exercises" },
-  { name: "Workout", path: "/workout" },
-  { name: "History", path: "/history" },
-  { name: "Profile", path: "/profile" },
+const links: { name: string; path: string; icon: LucideIcon }[] = [
+  { name: "Home", path: "/", icon: House },
+  { name: "Exercises", path: "/exercises", icon: Dumbbell },
+  { name: "Workout", path: "/workout", icon: Shuffle },
+  { name: "History", path: "/history", icon: History },
+  { name: "Profile", path: "/profile", icon: UserRound },
 ];
 
 interface Props {
   isLoggedIn: boolean;
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
   setIsLoginOpen: Dispatch<SetStateAction<boolean>>;
+  username: string;
 }
 
-export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-
+export function Navbar({
+  isLoggedIn,
+  setIsLoggedIn,
+  setIsLoginOpen,
+  username,
+}: Props) {
   const { theme, setTheme } = useTheme();
 
   function handleLogout() {
@@ -120,42 +234,53 @@ export function Navbar({ isLoggedIn, setIsLoggedIn, setIsLoginOpen }: Props) {
   }
 
   return (
-    <Nav>
-      <Hamburger onClick={() => setIsMenuOpen((prev) => !prev)}>☰</Hamburger>
-      <NavList $isOpen={isMenuOpen}>
-        {links.map((link) => (
-          <li key={link.path}>
-            <StyledNavLink to={link.path} onClick={() => setIsMenuOpen(false)}>
-              {link.name}
-            </StyledNavLink>
-          </li>
-        ))}
+    <Rail>
+      <Wordmark to="/" aria-label="Bikkanto home">
+        BIKKANTO
+      </Wordmark>
+      <nav aria-label="Main">
+        <NavList>
+          {links.map(({ name, path, icon: Icon }) => (
+            <li key={path}>
+              <NavItem to={path} end={path === "/"}>
+                <Icon size={20} strokeWidth={1.75} aria-hidden="true" />
+                {name}
+              </NavItem>
+            </li>
+          ))}
+        </NavList>
+      </nav>
 
-        <ThemeWrapper>
-          <ThemeButton
-            $theme={theme}
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-          >
-            {theme === "light" ? "🌙" : "☀️"}
-          </ThemeButton>
-        </ThemeWrapper>
-
-        <AuthWrapper>
-          {isLoggedIn ? (
-            <LoginButton onClick={handleLogout} $isLoggedIn={isLoggedIn}>
-              Logout
-            </LoginButton>
+      <RailFoot>
+        {isLoggedIn && username && (
+          <Signed>
+            Signed in
+            <strong>{username}</strong>
+          </Signed>
+        )}
+        <FootButton
+          onClick={toggleTheme}
+          aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+        >
+          {theme === "light" ? (
+            <Moon size={18} strokeWidth={1.75} aria-hidden="true" />
           ) : (
-            <LoginButton
-              onClick={() => setIsLoginOpen(true)}
-              $isLoggedIn={isLoggedIn}
-            >
-              Login
-            </LoginButton>
+            <Sun size={18} strokeWidth={1.75} aria-hidden="true" />
           )}
-        </AuthWrapper>
-      </NavList>
-    </Nav>
+          <span>{theme === "light" ? "Dark" : "Light"}</span>
+        </FootButton>
+        {isLoggedIn ? (
+          <FootButton onClick={handleLogout} aria-label="Log out">
+            <LogOut size={18} strokeWidth={1.75} aria-hidden="true" />
+            <span>Log out</span>
+          </FootButton>
+        ) : (
+          <FootButton $accent onClick={() => setIsLoginOpen(true)}>
+            <LogIn size={18} strokeWidth={1.75} aria-hidden="true" />
+            <span>Log in</span>
+          </FootButton>
+        )}
+      </RailFoot>
+    </Rail>
   );
 }

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/nav/Navbar";
 import { Home } from "./pages/Home";
 import { Workout } from "./pages/Workout";
@@ -14,24 +14,14 @@ import { api } from "./api/api";
 import { useTheme } from "./components/ThemeProvider";
 import { useRibbon } from "./components/feedbackRibbon/RibbonProvider";
 
-const TitleContainer = styled.div`
-  width: 100%;
-  background-color: var(--dark-black);
-  color: var(--main-white);
-`;
+const Content = styled.div`
+  margin-left: var(--rail-w);
+  min-height: 100vh;
 
-const Title = styled.h1`
-  font-size: 48px;
-  font-family: "Times New Roman", Times, serif;
-  justify-self: center;
-  letter-spacing: 10px;
-  margin: 0;
-  padding: 10px;
-`;
-
-const TitleLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
+  @media (max-width: 900px) {
+    margin-left: 0;
+    min-height: calc(100vh - 56px);
+  }
 `;
 
 export type Themes = "light" | "dark";
@@ -61,7 +51,7 @@ export function App() {
 
         setCurrentUser(data);
       } catch (err: any) {
-        const message = err.response.data.detail || "No user logged in.";
+        const message = err.response?.data?.detail || "No user logged in.";
         showRibbon("error", message);
 
         localStorage.removeItem("token");
@@ -88,57 +78,66 @@ export function App() {
     document.body.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
+  const openLogin = () => setIsLoginOpen(true);
+
   return (
     <>
-      <TitleContainer>
-        <TitleLink to="/">
-          <Title>BIKKANTO</Title>
-        </TitleLink>
-      </TitleContainer>
       <Navbar
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
         setIsLoginOpen={setIsLoginOpen}
+        username={currentUser.username}
       />
 
-      <Routes>
-        <Route path="/" element={<Home currentUser={currentUser} />} />
-        <Route
-          path="/workout"
-          element={
-            <ProtectedRoute>
-              <Workout />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/exercises"
-          element={
-            <ProtectedRoute>
-              <Exercises />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <History />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile
+      <Content>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
                 currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
+                isLoggedIn={isLoggedIn}
+                onLogin={openLogin}
               />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+            }
+          />
+          <Route
+            path="/workout"
+            element={
+              <ProtectedRoute onLogin={openLogin}>
+                <Workout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercises"
+            element={
+              <ProtectedRoute onLogin={openLogin}>
+                <Exercises />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute onLogin={openLogin}>
+                <History />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute onLogin={openLogin}>
+                <Profile
+                  currentUser={currentUser}
+                  setCurrentUser={setCurrentUser}
+                />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Content>
       {isLoginOpen && <Login onClose={() => setIsLoginOpen(false)} />}
     </>
   );

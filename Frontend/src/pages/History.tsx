@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ChartColumn, Shuffle } from "lucide-react";
 import { api } from "../api/api";
 import {
   HISTORY_COLUMN_ORDER,
@@ -8,20 +10,16 @@ import { capitalize } from "../utils";
 import { DataTable } from "../components/DataTable";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Loader } from "../components/Loader";
-import styled from "styled-components";
 import { StatsModal } from "../components/stats/StatsModal";
-
-const HistoryContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const StatButton = styled.button`
-  width: 100px;
-  font-size: 18px;
-  margin-bottom: 1rem;
-`;
+import { FlapText } from "../components/FlapText";
+import { EmptyState } from "../components/exercise/OwnExerciseTable";
+import {
+  Button,
+  Page,
+  PageHeader,
+  PageLede,
+  PageTitle,
+} from "../components/ui";
 
 export function History() {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
@@ -47,7 +45,7 @@ export function History() {
         setColumns(cols);
       }
     } catch (err: any) {
-      const message = err.response.data.detail || "Could not fetch history.";
+      const message = err.response?.data?.detail || "Could not fetch history.";
       showRibbon("error", message);
     } finally {
       setIsLoading(false);
@@ -59,11 +57,36 @@ export function History() {
   }, []);
 
   return (
-    <HistoryContainer>
-      <StatButton onClick={() => setIsStatOpen(true)}>Statistics</StatButton>
+    <Page>
+      <PageHeader>
+        <div>
+          <PageTitle>History</PageTitle>
+          <PageLede>Every exercise from every finished workout.</PageLede>
+        </div>
+        <Button onClick={() => setIsStatOpen(true)}>
+          <ChartColumn size={18} aria-hidden="true" />
+          Statistics
+        </Button>
+      </PageHeader>
+
       {isLoading && <Loader />}
-      {!isLoading && <DataTable data={history} columns={columns} />}
+      {!isLoading && history.length > 0 && (
+        <DataTable data={history} columns={columns} />
+      )}
+      {!isLoading && history.length === 0 && (
+        <EmptyState>
+          <FlapText text="No arrivals" cells size="md" tone="muted" />
+          <p>
+            Finished workouts land here. Roll one, accept it, and log your
+            cycles when you're done.
+          </p>
+          <Button $variant="primary" as={Link} to="/workout" style={{ textDecoration: "none" }}>
+            <Shuffle size={18} aria-hidden="true" />
+            Roll a workout
+          </Button>
+        </EmptyState>
+      )}
       <StatsModal isOpen={isStatOpen} onClose={() => setIsStatOpen(false)} />
-    </HistoryContainer>
+    </Page>
   );
 }

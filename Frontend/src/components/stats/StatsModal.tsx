@@ -1,19 +1,18 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import styled from "styled-components";
 import { ModalBase } from "../ModalBase";
 import HistoryRangePicker from "./HistoryRangePicker";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import type { WorkoutHistory } from "../../types/historyTypes";
 import { Statistics } from "./Statistics";
-import styled from "styled-components";
-import { HorizontalLine } from "../../utils";
+import { Button, Field, FieldLabel } from "../ui";
 
-const Title = styled.h2`
-  margin-bottom: 1rem;
-`;
-
-const GetButton = styled.button`
-  margin: 1rem;
+const Form = styled.form`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: end;
 `;
 
 interface Props {
@@ -21,18 +20,28 @@ interface Props {
   onClose: () => void;
 }
 
-export function StatsModal({ isOpen, onClose }: Props) {
-  if (!isOpen) return null;
+export function StatsModal(props: Props) {
+  if (!props.isOpen) return null;
+  return <StatsModalContent {...props} />;
+}
 
+function StatsModalContent({ onClose }: Props) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     new Date(),
     new Date(),
   ]);
   const [historyEntries, setHistoryEntries] = useState<WorkoutHistory[]>([]);
+  const [shownRange, setShownRange] = useState<[Date | null, Date | null]>([
+    null,
+    null,
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { showRibbon } = useRibbon();
 
-  async function getHistoryInRange() {
+  async function getHistoryInRange(e: FormEvent) {
+    e.preventDefault();
+
     try {
       const [start, end] = dateRange;
 
@@ -41,6 +50,7 @@ export function StatsModal({ isOpen, onClose }: Props) {
         return;
       }
 
+      setIsLoading(true);
       const res = await api.get("/history/range", {
         params: {
           start_date: start.toISOString().split("T")[0],
@@ -54,24 +64,33 @@ export function StatsModal({ isOpen, onClose }: Props) {
       }
 
       setHistoryEntries(res.data);
+      setShownRange([start, end]);
     } catch (err: any) {
       const message =
-        err.response.data.detail || "Could not fetch history range.";
+        err.response?.data?.detail || "Could not fetch history range.";
       showRibbon("error", message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   return (
-    <ModalBase onClose={onClose}>
-      <Title>Statistics</Title>
-      <HistoryRangePicker dateRange={dateRange} setDateRange={setDateRange} />
-      <GetButton onClick={getHistoryInRange}>Get</GetButton>
+    <ModalBase onClose={onClose} title="Statistics" width="480px">
+      <Form onSubmit={getHistoryInRange}>
+        <Field as="div">
+          <FieldLabel>Date range</FieldLabel>
+          <HistoryRangePicker
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          />
+        </Field>
+        <Button type="submit" $variant="primary" disabled={isLoading}>
+          Show
+        </Button>
+      </Form>
 
       {historyEntries.length > 0 && (
-        <>
-          <HorizontalLine $width="200px" />
-          <Statistics dateRange={dateRange} historyEntries={historyEntries} />
-        </>
+        <Statistics dateRange={shownRange} historyEntries={historyEntries} />
       )}
     </ModalBase>
   );

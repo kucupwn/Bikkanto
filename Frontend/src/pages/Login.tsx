@@ -1,42 +1,70 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, type FormEvent } from "react";
 import styled from "styled-components";
 import { api } from "../api/api";
 import type { AuthResponse } from "../types/userTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { ModalBase } from "../components/ModalBase";
+import { Button, Field, FieldLabel, Input } from "../components/ui";
 
 interface Props {
   onClose: () => void;
 }
 
-const UserInputWrapper = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
-  max-width: 300px;
-  margin-bottom: 1rem;
-`;
-
-const SwitchLink = styled.span`
-  cursor: pointer;
-  color: blue;
-`;
-
-const SwitchText = styled.p`
-  margin: 1rem;
-`;
-
-const ModalTitle = styled.h2`
-  margin-bottom: 1rem;
-`;
-
-const LoginFooter = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 1rem;
 `;
 
+const TwoCol = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Hint = styled.p`
+  color: var(--ink-2);
+  font-size: 15px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink-2);
+  font-size: 15px;
+`;
+
+const SwitchLink = styled.button`
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--amber);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+
+  &:hover {
+    color: var(--focus);
+  }
+`;
+
 type AuthMode = "login" | "register" | "forgotPW";
+
+const titles: Record<AuthMode, string> = {
+  login: "Log in",
+  register: "Create account",
+  forgotPW: "Reset password",
+};
 
 export function Login({ onClose }: Props) {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -47,8 +75,7 @@ export function Login({ onClose }: Props) {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-
-  const usernameInputRef = useRef<HTMLInputElement | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { showRibbon } = useRibbon();
 
@@ -91,7 +118,7 @@ export function Login({ onClose }: Props) {
     }
 
     try {
-      api.post("/users/register", {
+      await api.post("/users/register", {
         username,
         password,
         email,
@@ -104,131 +131,159 @@ export function Login({ onClose }: Props) {
       showRibbon("success", "Successful registration.");
     } catch (err: any) {
       const message =
-        err.response.data.detail || "Could not register the new account.";
+        err.response?.data?.detail || "Could not register the new account.";
       showRibbon("error", message);
     }
   }
 
-  useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        handleLogin();
-      }
-    };
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (mode === "forgotPW") return;
 
-    document.addEventListener("keydown", handleKeydown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeydown);
-    };
-  }, [handleLogin]);
-
-  useEffect(() => {
-    usernameInputRef.current?.focus();
-  }, []);
+    setIsSubmitting(true);
+    try {
+      if (mode === "login") await handleLogin();
+      else await handleRegister();
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <ModalBase onClose={onClose}>
-      {mode === "login" ? (
-        <ModalTitle>Login</ModalTitle>
-      ) : mode === "register" ? (
-        <ModalTitle>Register</ModalTitle>
-      ) : (
-        <ModalTitle>Forgot password</ModalTitle>
-      )}
+    <ModalBase
+      onClose={onClose}
+      title={titles[mode]}
+      width={mode === "register" ? "520px" : "420px"}
+    >
+      <Form onSubmit={handleSubmit}>
+        {mode !== "forgotPW" && (
+          <>
+            <Field>
+              <FieldLabel>Username</FieldLabel>
+              <Input
+                type="text"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Password</FieldLabel>
+              <Input
+                type="password"
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Field>
+          </>
+        )}
 
-      {mode === "login" && (
-        <>
-          <UserInputWrapper>
-            <span>Username</span>
-            <input
-              type="text"
-              ref={usernameInputRef}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </UserInputWrapper>
-          <UserInputWrapper>
-            <span>Password</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </UserInputWrapper>
-        </>
-      )}
+        {mode === "register" && (
+          <>
+            <Field>
+              <FieldLabel>Verify password</FieldLabel>
+              <Input
+                type="password"
+                autoComplete="new-password"
+                value={verifyPassword}
+                onChange={(e) => setVerifyPassword(e.target.value)}
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Email</FieldLabel>
+              <Input
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </Field>
+            <TwoCol>
+              <Field>
+                <FieldLabel>First name</FieldLabel>
+                <Input
+                  autoComplete="given-name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel>Last name</FieldLabel>
+                <Input
+                  autoComplete="family-name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </Field>
+            </TwoCol>
+          </>
+        )}
 
-      {mode === "register" && (
-        <>
-          <UserInputWrapper>
-            <span>Verify password</span>
-            <input
-              type="password"
-              value={verifyPassword}
-              onChange={(e) => setVerifyPassword(e.target.value)}
-            />
-          </UserInputWrapper>
-          <UserInputWrapper>
-            <span>Email</span>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} />
-          </UserInputWrapper>
+        {mode === "forgotPW" && (
+          <>
+            <Hint>
+              Enter the email on your account. Password reset is not
+              available yet.
+            </Hint>
+            <Field>
+              <FieldLabel>Email</FieldLabel>
+              <Input
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Field>
+          </>
+        )}
 
-          <UserInputWrapper>
-            <span>First Name</span>
-            <input
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </UserInputWrapper>
+        <Button
+          type="submit"
+          $variant="primary"
+          $block
+          disabled={isSubmitting || mode === "forgotPW"}
+        >
+          {mode === "login"
+            ? "Log in"
+            : mode === "register"
+              ? "Create account"
+              : "Send reset link"}
+        </Button>
+      </Form>
 
-          <UserInputWrapper>
-            <span>Last Name</span>
-            <input
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </UserInputWrapper>
-        </>
-      )}
-
-      {mode === "forgotPW" && (
-        <UserInputWrapper>
-          <span>Email</span>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
-        </UserInputWrapper>
-      )}
-
-      {mode === "login" ? (
-        <button onClick={handleLogin}>Login</button>
-      ) : mode === "register" ? (
-        <button onClick={handleRegister}>Register</button>
-      ) : (
-        <button>Submit</button>
-      )}
-
-      <SwitchText>
+      <Footer>
         {mode === "login" ? (
-          <LoginFooter>
-            <div>
-              Don't have an account?{" "}
-              <SwitchLink onClick={() => setMode("register")}>
-                Register
+          <>
+            <span>
+              New here?{" "}
+              <SwitchLink type="button" onClick={() => setMode("register")}>
+                Create an account
               </SwitchLink>
-            </div>
-            <SwitchLink onClick={() => setMode("forgotPW")}>
+            </span>
+            <SwitchLink type="button" onClick={() => setMode("forgotPW")}>
               Forgot password
             </SwitchLink>
-          </LoginFooter>
-        ) : mode === "register" ? (
-          <>
-            Already have an account?{" "}
-            <SwitchLink onClick={() => setMode("login")}>Login</SwitchLink>
           </>
+        ) : mode === "register" ? (
+          <span>
+            Already have an account?{" "}
+            <SwitchLink type="button" onClick={() => setMode("login")}>
+              Log in
+            </SwitchLink>
+          </span>
         ) : (
-          <SwitchLink onClick={() => setMode("login")}>Back</SwitchLink>
+          <SwitchLink type="button" onClick={() => setMode("login")}>
+            Back to log in
+          </SwitchLink>
         )}
-      </SwitchText>
+      </Footer>
     </ModalBase>
   );
 }

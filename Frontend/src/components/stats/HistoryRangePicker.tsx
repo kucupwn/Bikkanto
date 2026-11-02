@@ -1,5 +1,6 @@
 import { type Dispatch, type SetStateAction } from "react";
 import DatePicker from "react-datepicker";
+import { Input } from "../ui";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -18,6 +19,8 @@ export default function HistoryRangePicker({ dateRange, setDateRange }: Props) {
       endDate={endDate}
       onChange={(update) => setDateRange(update as [Date | null, Date | null])}
       dateFormat="yyyy-MM-dd"
+      maxDate={new Date()}
+      customInput={<Input aria-label="Date range" />}
     />
   );
 }

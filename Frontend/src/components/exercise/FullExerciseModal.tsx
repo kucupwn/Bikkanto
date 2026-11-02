@@ -1,18 +1,22 @@
 import styled from "styled-components";
 import { type Exercise, type Category } from "../../types/exerciseTypes";
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { capitalize } from "../../utils";
 import { ExercisePropsInput } from "./ExercisePropsInput";
 import { api } from "../../api/api";
 import { ModalBase } from "../ModalBase";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
+import { Button, Field, FieldLabel, Input, Select } from "../ui";
 
-const Title = styled.h2`
-  margin-bottom: 1rem;
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 `;
 
-const Button = styled.button`
-  margin-top: 1rem;
+const Note = styled.p`
+  color: var(--ink-2);
+  font-size: 14px;
 `;
 
 interface Props {
@@ -24,16 +28,30 @@ interface Props {
   onSuccess: () => Promise<void>;
 }
 
-export function FullExerciseModal({
-  isOpen,
+const titleLabels = {
+  add: "Add exercise",
+  edit: "Edit exercise",
+  delete: "Delete exercise",
+};
+
+const submitLabels = {
+  add: "Add exercise",
+  edit: "Save changes",
+  delete: "Delete exercise",
+};
+
+export function FullExerciseModal(props: Props) {
+  if (!props.isOpen) return null;
+  return <FullExerciseModalContent {...props} />;
+}
+
+function FullExerciseModalContent({
   onClose,
   exercises,
   categories,
   mode,
   onSuccess,
 }: Props) {
-  if (!isOpen) return null;
-
   const [exercise, setExercise] = useState<Exercise>(
     mode === "edit" || mode === "delete"
       ? exercises[0]
@@ -50,14 +68,9 @@ export function FullExerciseModal({
           category_name: categories[0]?.category_name ?? "",
         },
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { showRibbon } = useRibbon();
-
-  const titleLabels = {
-    add: "Add",
-    edit: "Edit",
-    delete: "Delete",
-  };
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
@@ -94,7 +107,10 @@ export function FullExerciseModal({
     });
   }
 
-  async function handleSubmitExercise() {
+  async function handleSubmitExercise(e: FormEvent) {
+    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
       if (mode === "add") {
         const existing = exercises.find(
@@ -119,39 +135,80 @@ export function FullExerciseModal({
       await onSuccess();
       onClose();
     } catch (err: any) {
-      const message = err.response.data.detail || "Exercise operation failed.";
-      showRibbon("success", message);
+      const message =
+        err.response?.data?.detail || "Exercise operation failed.";
+      showRibbon("error", message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <ModalBase onClose={onClose}>
-      <Title>{titleLabels[mode]} exercise</Title>
-      {mode === "edit" || mode === "delete" ? (
-        <select name="exercise_id" value={exercise.id} onChange={handleChange}>
-          {exercises.map((ex) => (
-            <option key={ex.id} value={ex.id}>
-              {capitalize(ex.exercise_name)}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <input
-          name="exercise_name"
-          type="text"
-          placeholder="Exercise name..."
-          value={exercise.exercise_name}
-          onChange={handleChange}
-        />
-      )}
-      {mode !== "delete" && (
-        <ExercisePropsInput
-          exercise={exercise}
-          categories={categories}
-          onHandleChange={handleChange}
-        />
-      )}
-      <Button onClick={handleSubmitExercise}>Submit</Button>
+    <ModalBase
+      onClose={onClose}
+      title={titleLabels[mode]}
+      width={mode === "delete" ? "440px" : "520px"}
+    >
+      <Form onSubmit={handleSubmitExercise}>
+        {mode === "edit" || mode === "delete" ? (
+          <Field>
+            <FieldLabel>Exercise</FieldLabel>
+            <Select
+              name="exercise_id"
+              value={exercise.id}
+              onChange={handleChange}
+            >
+              {exercises.map((ex) => (
+                <option key={ex.id} value={ex.id}>
+                  {capitalize(ex.exercise_name)}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        ) : (
+          <Field>
+            <FieldLabel>Name</FieldLabel>
+            <Input
+              name="exercise_name"
+              type="text"
+              placeholder="e.g. diamond push up"
+              value={exercise.exercise_name}
+              onChange={handleChange}
+              required
+            />
+          </Field>
+        )}
+
+        {mode === "add" && (
+          <Note>The name can't be changed after the exercise is created.</Note>
+        )}
+
+        {mode !== "delete" && (
+          <ExercisePropsInput
+            exercise={exercise}
+            categories={categories}
+            onHandleChange={handleChange}
+          />
+        )}
+
+        {mode === "delete" && (
+          <Note>
+            Deleting {capitalize(exercise.exercise_name)} also removes it from
+            every workout in your history. This can't be undone.
+          </Note>
+        )}
+
+        <Button
+          type="submit"
+          $variant={mode === "delete" ? "danger" : "primary"}
+          $block
+          disabled={
+            isSubmitting || (mode === "add" && !exercise.exercise_name.trim())
+          }
+        >
+          {submitLabels[mode]}
+        </Button>
+      </Form>
     </ModalBase>
   );
 }

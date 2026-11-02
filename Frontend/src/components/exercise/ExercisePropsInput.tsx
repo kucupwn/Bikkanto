@@ -6,19 +6,44 @@ import {
 } from "../../types/exerciseTypes";
 import { capitalize } from "../../utils";
 import type { ChangeEvent } from "react";
+import { Field, FieldLabel, Input, Select } from "../ui";
 
-const InputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+const TwoCol = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 `;
 
-const ExercisePropsContainer = styled.div`
+const Ranges = styled.fieldset`
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+
+  legend {
+    padding: 0;
+    margin-bottom: 0.5rem;
+  }
+`;
+
+const RangeGrid = styled.div`
   display: grid;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+`;
+
+const ColHead = styled.span`
+  font-size: 13px;
+  color: var(--ink-3);
+`;
+
+const RowHead = styled.span`
+  font-family: var(--font-board);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
 `;
 
 interface Props {
@@ -29,95 +54,101 @@ interface Props {
   ) => void;
 }
 
+const levels = ["easy", "medium", "hard"] as const;
+
 export function ExercisePropsInput({
   exercise,
   categories,
   onHandleChange,
 }: Props) {
   return (
-    <ExercisePropsContainer>
-      <InputWrapper>
-        <span>Category</span>
-        <select
-          name="category_id"
-          value={exercise.category_id}
-          onChange={onHandleChange}
-        >
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {capitalize(cat.category_name)}
-            </option>
+    <>
+      <TwoCol>
+        <Field>
+          <FieldLabel>Category</FieldLabel>
+          <Select
+            name="category_id"
+            value={exercise.category_id}
+            onChange={onHandleChange}
+          >
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {capitalize(cat.category_name)}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field>
+          <FieldLabel>Difficulty</FieldLabel>
+          <Select
+            name="difficulty"
+            value={exercise.difficulty}
+            onChange={onHandleChange}
+          >
+            {exerciseDifficultyOptions.map((diff) => (
+              <option key={diff} value={diff}>
+                {capitalize(diff)}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      </TwoCol>
+
+      <Ranges>
+        <legend>
+          <FieldLabel>Rep ranges</FieldLabel>
+        </legend>
+        <RangeGrid>
+          <span />
+          <ColHead>Min reps</ColHead>
+          <ColHead>Max reps</ColHead>
+          {levels.map((level) => (
+            <RangeRow
+              key={level}
+              level={level}
+              exercise={exercise}
+              onHandleChange={onHandleChange}
+            />
           ))}
-        </select>
-      </InputWrapper>
-      <InputWrapper>
-        <span>Difficulty</span>
-        <select
-          name="difficulty"
-          value={exercise.difficulty}
-          onChange={onHandleChange}
-        >
-          {exerciseDifficultyOptions.map((diff) => (
-            <option key={diff} value={diff}>
-              {capitalize(diff)}
-            </option>
-          ))}
-        </select>
-      </InputWrapper>
-      <InputWrapper>
-        <span>Easy min reps</span>
-        <input
-          name="easy_min"
-          type="number"
-          value={exercise.easy_min}
-          onChange={onHandleChange}
-        />
-      </InputWrapper>
-      <InputWrapper>
-        <span>Easy max reps</span>
-        <input
-          name="easy_max"
-          type="number"
-          value={exercise.easy_max}
-          onChange={onHandleChange}
-        />
-      </InputWrapper>
-      <InputWrapper>
-        <span>Medium min reps</span>
-        <input
-          name="medium_min"
-          type="number"
-          value={exercise.medium_min}
-          onChange={onHandleChange}
-        />
-      </InputWrapper>
-      <InputWrapper>
-        <span>Medium max reps</span>
-        <input
-          name="medium_max"
-          type="number"
-          value={exercise.medium_max}
-          onChange={onHandleChange}
-        />
-      </InputWrapper>
-      <InputWrapper>
-        <span>Hard min reps</span>
-        <input
-          name="hard_min"
-          type="number"
-          value={exercise.hard_min}
-          onChange={onHandleChange}
-        />
-      </InputWrapper>
-      <InputWrapper>
-        <span>Hard max reps</span>
-        <input
-          name="hard_max"
-          type="number"
-          value={exercise.hard_max}
-          onChange={onHandleChange}
-        />
-      </InputWrapper>
-    </ExercisePropsContainer>
+        </RangeGrid>
+      </Ranges>
+    </>
+  );
+}
+
+function RangeRow({
+  level,
+  exercise,
+  onHandleChange,
+}: {
+  level: (typeof levels)[number];
+  exercise: Exercise;
+  onHandleChange: Props["onHandleChange"];
+}) {
+  const minKey = `${level}_min` as const;
+  const maxKey = `${level}_max` as const;
+
+  return (
+    <>
+      <RowHead>{level}</RowHead>
+      <Input
+        name={minKey}
+        type="number"
+        min={0}
+        inputMode="numeric"
+        aria-label={`${capitalize(level)} min reps`}
+        value={exercise[minKey]}
+        onChange={onHandleChange}
+      />
+      <Input
+        name={maxKey}
+        type="number"
+        min={0}
+        inputMode="numeric"
+        aria-label={`${capitalize(level)} max reps`}
+        value={exercise[maxKey]}
+        onChange={onHandleChange}
+      />
+    </>
   );
 }

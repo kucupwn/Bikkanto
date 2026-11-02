@@ -14,19 +14,168 @@ import { SummaryTable } from "../components/workout/SummaryTable";
 import { StoredWorkout } from "../components/workout/StoredWorkout";
 import type { WorkoutHistory } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
+import { Link } from "react-router-dom";
+import { ArrowRight, Bookmark, History, Shuffle } from "lucide-react";
+import { FlapText } from "../components/FlapText";
+import {
+  Board,
+  BoardHead,
+  BoardNote,
+  BoardTitle,
+  Button,
+  Page,
+  PageHeader,
+  PageLede,
+  PageTitle,
+} from "../components/ui";
 
-const WorkoutContainer = styled.div`
+const Split = styled.div`
+  display: grid;
+  grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+
+  > :last-child {
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  @media (max-width: 1100px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    > :last-child {
+      position: static;
+    }
+  }
+`;
+
+const Choices = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 880px;
+
+  @media (max-width: 700px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+`;
+
+const Choice = styled.button`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 200px;
+  padding: 1.75rem;
+  text-align: left;
+  background: var(--board);
+  color: var(--board-ink);
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease;
+
+  svg {
+    color: var(--amber);
+  }
+
+  p {
+    color: var(--board-ink-2);
+    max-width: 36ch;
+  }
+
+  span:last-child {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-board);
+    font-weight: 600;
+    letter-spacing: var(--track);
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  &:hover {
+    border-color: var(--amber);
+  }
+
+  &:hover span:last-child svg {
+    transform: translateX(3px);
+  }
+
+  span:last-child svg {
+    transition: transform 0.2s var(--ease-out);
+  }
+`;
+
+const ChoiceTitle = styled.span`
+  font-family: var(--font-board);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+`;
+
+const EmptyBoard = styled(Board)`
+  min-height: 320px;
+  display: flex;
   flex-direction: column;
 `;
 
-const MainSelectButtonWrapper = styled.div`
+const EmptyBody = styled.div`
+  flex: 1;
   display: flex;
-  margin: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   gap: 1rem;
+  padding: 2rem 1.25rem;
+
+  p {
+    color: var(--board-ink-2);
+    max-width: 44ch;
+  }
 `;
+
+const Done = styled(Board)`
+  max-width: 720px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+
+  p {
+    color: var(--board-ink-2);
+  }
+`;
+
+const BoardActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+`;
+
+const BoardGhost = styled(Button)`
+  background: transparent;
+  color: var(--board-ink);
+  border-color: var(--board-line);
+  text-decoration: none;
+
+  &:hover:not(:disabled) {
+    background: var(--board-cell);
+    border-color: var(--board-ink-2);
+  }
+`;
+
+const ledes: Record<string, string> = {
+  null: "Roll a new workout from your library, or start from a saved preset.",
+  settings: "Set how many exercises and how hard, then roll.",
+  preview: "Reroll any row you don't like, then accept.",
+  accepted: "Train through it, then log how many cycles you finished.",
+  stored: "You have a workout waiting to be logged.",
+  select: "Start from a workout you saved earlier.",
+};
 
 export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
 export type WorkoutCreationType = "random" | "preset" | null;
@@ -39,7 +188,7 @@ export function Workout() {
     ProperySelection[]
   >([]);
   const [workoutCreationMode, setWorkoutCreationMode] =
-    useState<WorkoutCreationType>(null);
+    useState<WorkoutCreationType>("random");
   const [workout, setWorkout] = useState<WorkoutEntry[] | null>(null);
   const [hasAcceptedWorkout, setHasAcceptedWorkout] = useState<boolean>(false);
   const [mode, setMode] = useState<ViewModes>(null);
@@ -203,7 +352,7 @@ export function Workout() {
 
         setCategories(categories);
       } catch (err) {
-        showRibbon("error", "Could not fetch exercises.");
+        showRibbon("error", "Could not fetch categories.");
       }
     }
 
@@ -218,7 +367,7 @@ export function Workout() {
 
         setExercises(exercises);
       } catch (err) {
-        showRibbon("error", "Could not fetch categories.");
+        showRibbon("error", "Could not fetch exercises.");
       }
     }
 
@@ -244,7 +393,7 @@ export function Workout() {
   }, []);
 
   useEffect(() => {
-    setTitle("Create a workout OR Select a workout");
+    setTitle("Start a workout");
   }, []);
 
   useEffect(() => {
@@ -255,49 +404,159 @@ export function Workout() {
     }
   }, [mode]);
 
+  function startAnother() {
+    setWorkout(null);
+    setHasAcceptedWorkout(false);
+    setIsFinished(false);
+    setCycles("");
+    setWorkoutDate(new Date());
+    setMode("settings");
+  }
+
+  const showBuilder =
+    !isFinished &&
+    (mode === "settings" || (mode === "preview" && !hasAcceptedWorkout));
+
+  const summary = (
+    <SummaryTable
+      workout={workout}
+      setWorkout={setWorkout}
+      setMode={setMode}
+      hasAcceptedWorkout={hasAcceptedWorkout}
+      setHasAcceptedWorkout={setHasAcceptedWorkout}
+      cycles={cycles}
+      setCycles={setCycles}
+      onPostFinishedWorkout={postFinishedWorkout}
+      selectedProperties={selectedProperties}
+      onGetRandomExercise={getRandomExercise}
+      workoutDate={workoutDate}
+      setWorkoutDate={setWorkoutDate}
+      setTitle={setTitle}
+    />
+  );
+
   return (
-    <WorkoutContainer>
-      {!isFinished && <h2>{title}</h2>}
+    <Page>
+      <PageHeader>
+        <div>
+          <PageTitle>{isFinished ? "Workout saved" : title}</PageTitle>
+          {!isFinished && (
+            <PageLede>
+              {ledes[
+                mode === "preview" && hasAcceptedWorkout ? "accepted" : String(mode)
+              ]}
+            </PageLede>
+          )}
+        </div>
+        {(mode === "settings" || mode === "select") && !isFinished && (
+          <Button $variant="ghost" onClick={() => setMode(null)}>
+            Back
+          </Button>
+        )}
+      </PageHeader>
 
-      {mode === null && (
-        <MainSelectButtonWrapper>
-          <button onClick={() => setMode("settings")}>Create</button>
-          <button onClick={() => setMode("select")}>Select</button>
-        </MainSelectButtonWrapper>
+      {isFinished && (
+        <Done as="section">
+          <FlapText text="Finished" cells size="lg" tone="amber" animateOnMount />
+          <p>
+            Good job. {workout?.length ?? 0} exercises ×{" "}
+            {typeof cycles === "number" ? cycles : 0} cycles went into your
+            history.
+          </p>
+          <BoardActions>
+            <Button $variant="primary" onClick={startAnother}>
+              <Shuffle size={18} aria-hidden="true" />
+              Roll another
+            </Button>
+            <BoardGhost as={Link} to="/history">
+              <History size={18} aria-hidden="true" />
+              View history
+            </BoardGhost>
+          </BoardActions>
+        </Done>
       )}
 
-      {mode === "settings" && (
-        <WorkoutSettings
-          exerciseCount={exerciseCount}
-          setExerciseCount={setExerciseCount}
-          categories={categories}
-          exercises={exercises}
-          selectedProperties={selectedProperties}
-          setSelectedProperties={setSelectedProperties}
-          workoutCreationMode={workoutCreationMode}
-          setWorkoutCreationMode={setWorkoutCreationMode}
-          onGetWorkout={getWorkout}
-        />
-      )}
-      {mode === "preview" && (
-        <SummaryTable
-          workout={workout}
-          setWorkout={setWorkout}
-          setMode={setMode}
-          hasAcceptedWorkout={hasAcceptedWorkout}
-          setHasAcceptedWorkout={setHasAcceptedWorkout}
-          setCycles={setCycles}
-          onPostFinishedWorkout={postFinishedWorkout}
-          isFinished={isFinished}
-          selectedProperties={selectedProperties}
-          onGetRandomExercise={getRandomExercise}
-          workoutDate={workoutDate}
-          setWorkoutDate={setWorkoutDate}
-          setTitle={setTitle}
-        />
+      {!isFinished && mode === null && (
+        <Choices>
+          <Choice onClick={() => setMode("settings")}>
+            <Shuffle size={28} aria-hidden="true" />
+            <ChoiceTitle>Create</ChoiceTitle>
+            <p>
+              Roll random exercises by category and difficulty, or pick each
+              one yourself.
+            </p>
+            <span>
+              Build a workout <ArrowRight size={18} aria-hidden="true" />
+            </span>
+          </Choice>
+          <Choice onClick={() => setMode("select")}>
+            <Bookmark size={28} aria-hidden="true" />
+            <ChoiceTitle>Select</ChoiceTitle>
+            <p>Start from a workout you saved as a preset.</p>
+            <span>
+              Browse presets <ArrowRight size={18} aria-hidden="true" />
+            </span>
+          </Choice>
+        </Choices>
       )}
 
-      {mode === "stored" && (
+      {!isFinished && mode === "select" && (
+        <EmptyBoard as="section" aria-labelledby="presets-title">
+          <BoardHead>
+            <BoardTitle id="presets-title">Presets</BoardTitle>
+            <BoardNote>0 saved</BoardNote>
+          </BoardHead>
+          <EmptyBody>
+            <FlapText text="No presets" cells size="md" tone="muted" />
+            <p>
+              Saving workouts as presets is coming soon. For now, build one
+              from scratch.
+            </p>
+            <Button $variant="primary" onClick={() => setMode("settings")}>
+              <Shuffle size={18} aria-hidden="true" />
+              Create a workout
+            </Button>
+          </EmptyBody>
+        </EmptyBoard>
+      )}
+
+      {showBuilder && (
+        <Split>
+          <WorkoutSettings
+            exerciseCount={exerciseCount}
+            setExerciseCount={setExerciseCount}
+            categories={categories}
+            exercises={exercises}
+            selectedProperties={selectedProperties}
+            setSelectedProperties={setSelectedProperties}
+            workoutCreationMode={workoutCreationMode}
+            setWorkoutCreationMode={setWorkoutCreationMode}
+            onGetWorkout={getWorkout}
+            hasWorkout={mode === "preview"}
+          />
+          {mode === "preview" ? (
+            summary
+          ) : (
+            <EmptyBoard as="section" aria-labelledby="empty-board-title">
+              <BoardHead>
+                <BoardTitle id="empty-board-title">Today's board</BoardTitle>
+                <BoardNote>Waiting for a roll</BoardNote>
+              </BoardHead>
+              <EmptyBody>
+                <FlapText text="Ready" cells size="lg" tone="muted" />
+                <p>
+                  Your rolled exercises and reps land here. You can reroll
+                  single rows before you accept.
+                </p>
+              </EmptyBody>
+            </EmptyBoard>
+          )}
+        </Split>
+      )}
+
+      {!isFinished && mode === "preview" && hasAcceptedWorkout && summary}
+
+      {!isFinished && mode === "stored" && (
         <StoredWorkout
           workout={workout}
           setWorkout={setWorkout}
@@ -306,6 +565,6 @@ export function Workout() {
           setTitle={setTitle}
         />
       )}
-    </WorkoutContainer>
+    </Page>
   );
 }

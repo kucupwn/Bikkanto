@@ -1,13 +1,26 @@
 import type { ReactNode } from "react";
 import styled from "styled-components";
+import { LogIn } from "lucide-react";
+import { Board, Button, Page } from "../components/ui";
+import { FlapText } from "../components/FlapText";
 
 interface Props {
   children: ReactNode;
+  onLogin: () => void;
 }
 
-const LoginNote = styled.h2`
-  justify-self: center;
-  margin: 1rem;
+const Notice = styled(Board)`
+  max-width: 640px;
+  margin: 4rem auto 0;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+
+  p {
+    color: var(--board-ink-2);
+  }
 `;
 
 export function isTokenExpired() {
@@ -17,7 +30,7 @@ export function isTokenExpired() {
   return Date.now() > Number(expiry);
 }
 
-export function ProtectedRoute({ children }: Props) {
+export function ProtectedRoute({ children, onLogin }: Props) {
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
   const expired = isTokenExpired();
@@ -26,7 +39,18 @@ export function ProtectedRoute({ children }: Props) {
     localStorage.removeItem("token");
     localStorage.removeItem("token_expiry");
 
-    return <LoginNote>Please log in to access this page!</LoginNote>;
+    return (
+      <Page>
+        <Notice>
+          <FlapText text="Boarding closed" cells size="md" tone="amber" />
+          <p>Log in to see your exercises, workouts and history.</p>
+          <Button $variant="primary" onClick={onLogin}>
+            <LogIn size={18} aria-hidden="true" />
+            Log in
+          </Button>
+        </Notice>
+      </Page>
+    );
   }
 
   return <>{children}</>;

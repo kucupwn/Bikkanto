@@ -1,5 +1,6 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
+import { Minus, Plus, Shuffle } from "lucide-react";
 import {
   exerciseDifficultyOptions,
   repsDifficultyOptions,
@@ -8,63 +9,111 @@ import {
   type ExerciseDifficulty,
   type RepsDifficulty,
 } from "../../types/exerciseTypes";
-import { capitalize, HorizontalLine } from "../../utils";
+import { capitalize } from "../../utils";
 import { ExerciseSelection } from "./ExerciseSelection";
 import type { WorkoutCreationType } from "../../pages/Workout";
 import { InfoTooltip } from "../InfoTooltip";
+import {
+  Button,
+  Field,
+  FieldLabel,
+  Panel,
+  SectionTitle,
+  SegmentButton,
+  Segmented,
+  Select,
+} from "../ui";
 
-const WorkoutSettingsContainer = styled.div`
+const ModeRow = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
 `;
 
-const WorkoutBasePropertiesWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin: 1rem;
-  gap: 3rem;
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+`;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 1rem;
+const Stepper = styled.div`
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--control);
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 1px var(--focus);
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: var(--ink-2);
+
+    &:hover:not(:disabled) {
+      background: var(--control-hover);
+      color: var(--ink);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+    }
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-inline: 1px solid var(--line-soft);
+    background: transparent;
+    text-align: center;
+    font-family: var(--font-board);
+    font-size: 20px;
+    font-weight: 700;
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 `;
 
-const SettingButtonsWrapper = styled.div`
-  display: flex;
-  margin: 1rem;
-  gap: 1rem;
+const Rows = styled.ol`
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
 `;
 
-const SettingsButton = styled.button<{
-  active: boolean;
-}>`
-  width: 100px;
-  background-color: ${({ active }) =>
-    active ? "var(--button-blue)" : "var(--main-black)"};
+const Empty = styled.p`
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink-2);
 `;
 
-const ExerciseCountWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-`;
+const RollBar = styled.div`
+  margin-top: 1.25rem;
 
-const GlobalRepsDifficultyWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const GlobalExerciseDifficultyWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const GetButton = styled.button`
-  font-size: 20px;
-  padding: 0.3rem 0.5rem;
-  margin: 1rem;
+  @media (max-width: 900px) {
+    position: sticky;
+    bottom: calc(var(--tabbar-h) + 0.75rem);
+    z-index: 5;
+  }
 `;
 
 export interface ProperySelection {
@@ -76,6 +125,8 @@ export interface ProperySelection {
 
 type GlobalPropertyType = "exercise" | "reps";
 
+const MAX_COUNT = 100;
+
 interface Props {
   exerciseCount: number | "";
   setExerciseCount: Dispatch<SetStateAction<number | "">>;
@@ -86,6 +137,7 @@ interface Props {
   workoutCreationMode: WorkoutCreationType;
   setWorkoutCreationMode: Dispatch<SetStateAction<WorkoutCreationType>>;
   onGetWorkout: () => void;
+  hasWorkout: boolean;
 }
 
 export function WorkoutSettings({
@@ -98,14 +150,13 @@ export function WorkoutSettings({
   workoutCreationMode,
   setWorkoutCreationMode,
   onGetWorkout,
+  hasWorkout,
 }: Props) {
   const safeCount = typeof exerciseCount == "number" ? exerciseCount : 0;
   const globalExerciseDifficulty = getGlobalDifficulty("exercise");
   const globalRepsDifficulty = getGlobalDifficulty("reps");
 
-  function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
-    const currentValue = Number(e.target.value);
-
+  function applyExerciseCount(currentValue: number) {
     if (currentValue <= 0) {
       setExerciseCount("");
       setSelectedProperties([]);
@@ -130,6 +181,10 @@ export function WorkoutSettings({
         return newArray;
       });
     }
+  }
+
+  function handleExerciseCountChange(e: ChangeEvent<HTMLInputElement>) {
+    applyExerciseCount(Math.min(Number(e.target.value), MAX_COUNT));
   }
 
   function updatePropertyAtIndex(index: number, newValue: ProperySelection) {
@@ -172,53 +227,84 @@ export function WorkoutSettings({
   }
 
   return (
-    <>
-      <SettingButtonsWrapper>
-        <SettingsButton
-          active={workoutCreationMode === "random"}
-          onClick={() => setWorkoutCreationMode("random")}
-        >
-          Random
-        </SettingsButton>
-        <SettingsButton
-          active={workoutCreationMode === "preset"}
-          onClick={() => setWorkoutCreationMode("preset")}
-        >
-          Preset
-        </SettingsButton>
+    <Panel aria-labelledby="build-title">
+      <SectionTitle id="build-title">Build</SectionTitle>
+      <ModeRow>
+        <Segmented role="radiogroup" aria-label="Creation mode">
+          <SegmentButton
+            role="radio"
+            aria-checked={workoutCreationMode === "random"}
+            $active={workoutCreationMode === "random"}
+            onClick={() => setWorkoutCreationMode("random")}
+          >
+            Random
+          </SegmentButton>
+          <SegmentButton
+            role="radio"
+            aria-checked={workoutCreationMode === "preset"}
+            $active={workoutCreationMode === "preset"}
+            onClick={() => setWorkoutCreationMode("preset")}
+          >
+            Preset
+          </SegmentButton>
+        </Segmented>
         <InfoTooltip
+          label="About creation modes"
           text={
             <>
-              Random: Randomly selects exercises based on your chosen category,
-              difficulty, and reps difficulty.
+              <strong>Random</strong> picks exercises for you from your
+              chosen category, difficulty and reps difficulty.
               <br />
-              Preset: Choose exercises manually. Your selected category,
-              difficulty, and reps difficulty filter the available exercises.
+              <br />
+              <strong>Preset</strong> lets you choose each exercise yourself;
+              category and difficulty filter the list.
             </>
           }
         />
-      </SettingButtonsWrapper>
+      </ModeRow>
 
-      <HorizontalLine />
-
-      {workoutCreationMode !== null && (
-        <WorkoutSettingsContainer>
-          <ExerciseCountWrapper>
-            <span>Exercise Count:</span>
-            <input
-              type="number"
-              value={exerciseCount}
-              onChange={handleExerciseCountChange}
-              style={{ width: "40px" }}
-              max={100}
-            />
-          </ExerciseCountWrapper>
-          <WorkoutBasePropertiesWrapper>
-            <GlobalExerciseDifficultyWrapper>
-              <span>Global Exercise Difficulty:</span>
-              <select
+      {workoutCreationMode === null ? (
+        <Empty>Choose Random or Preset to start building.</Empty>
+      ) : (
+        <>
+          <Grid>
+            <Field as="div" style={{ gridColumn: "1 / -1" }}>
+              <FieldLabel id="count-label">Exercises</FieldLabel>
+              <Stepper>
+                <button
+                  type="button"
+                  aria-label="One fewer exercise"
+                  disabled={safeCount <= 0}
+                  onClick={() => applyExerciseCount(safeCount - 1)}
+                >
+                  <Minus size={18} aria-hidden="true" />
+                </button>
+                <input
+                  type="number"
+                  aria-labelledby="count-label"
+                  inputMode="numeric"
+                  min={0}
+                  max={MAX_COUNT}
+                  placeholder="0"
+                  value={exerciseCount}
+                  onChange={handleExerciseCountChange}
+                />
+                <button
+                  type="button"
+                  aria-label="One more exercise"
+                  disabled={safeCount >= MAX_COUNT}
+                  onClick={() => applyExerciseCount(safeCount + 1)}
+                >
+                  <Plus size={18} aria-hidden="true" />
+                </button>
+              </Stepper>
+            </Field>
+            <Field>
+              <FieldLabel>Difficulty, all rows</FieldLabel>
+              <Select
                 name="exercise-difficulty"
-                value={globalExerciseDifficulty}
+                value={globalExerciseDifficulty ?? ""}
+                disabled={safeCount === 0}
                 onChange={(e) =>
                   setGlobalPropertySettings(
                     "exercise",
@@ -231,16 +317,17 @@ export function WorkoutSettings({
                     {capitalize(diff)}
                   </option>
                 ))}
-                <option key="custom" value="custom">
-                  Custom
+                <option key="custom" value="custom" disabled>
+                  Mixed
                 </option>
-              </select>
-            </GlobalExerciseDifficultyWrapper>
-            <GlobalRepsDifficultyWrapper>
-              <span>Global Repetitions Difficulty:</span>
-              <select
+              </Select>
+            </Field>
+            <Field>
+              <FieldLabel>Reps, all rows</FieldLabel>
+              <Select
                 name="reps-difficulty"
-                value={globalRepsDifficulty}
+                value={globalRepsDifficulty ?? ""}
+                disabled={safeCount === 0}
                 onChange={(e) =>
                   setGlobalPropertySettings(
                     "reps",
@@ -253,26 +340,52 @@ export function WorkoutSettings({
                     {capitalize(diff)}
                   </option>
                 ))}
-                <option key="custom" value="custom">
-                  Custom
+                <option key="custom" value="custom" disabled>
+                  Mixed
                 </option>
-              </select>
-            </GlobalRepsDifficultyWrapper>
-          </WorkoutBasePropertiesWrapper>
-          {Array.from({ length: safeCount }).map((_, index) => (
-            <ExerciseSelection
-              key={index}
-              currentCount={index + 1}
-              categories={categories}
-              exercises={exercises}
-              value={selectedProperties[index]}
-              onChange={(newValue) => updatePropertyAtIndex(index, newValue)}
-              workoutCreationMode={workoutCreationMode}
-            />
-          ))}
-          {safeCount > 0 && <GetButton onClick={onGetWorkout}>Get</GetButton>}
-        </WorkoutSettingsContainer>
+              </Select>
+            </Field>
+          </Grid>
+
+          {safeCount > 0 ? (
+            <Rows aria-label="Exercises">
+              {Array.from({ length: safeCount }).map((_, index) => (
+                <ExerciseSelection
+                  key={index}
+                  currentCount={index + 1}
+                  categories={categories}
+                  exercises={exercises}
+                  value={selectedProperties[index]}
+                  onChange={(newValue) =>
+                    updatePropertyAtIndex(index, newValue)
+                  }
+                  workoutCreationMode={workoutCreationMode}
+                />
+              ))}
+            </Rows>
+          ) : (
+            <Empty>
+              {categories.length === 0
+                ? "You have no categories yet. Add some on the Exercises page first."
+                : "Add exercises with the + button, then set each row."}
+            </Empty>
+          )}
+
+          {safeCount > 0 && (
+            <RollBar>
+              <Button
+                $variant="primary"
+                $size="lg"
+                $block
+                onClick={onGetWorkout}
+              >
+                <Shuffle size={20} aria-hidden="true" />
+                {hasWorkout ? "Roll again" : "Roll workout"}
+              </Button>
+            </RollBar>
+          )}
+        </>
       )}
-    </>
+    </Panel>
   );
 }

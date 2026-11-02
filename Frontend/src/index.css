@@ -1,44 +1,261 @@
 :root {
-  --main-black: #242424;
-  --dark-black: #151515;
+  /* Board: always flap black, in both themes */
+  --board: #0b0b0d;
+  --board-cell: #17181b;
+  --board-cell-hi: #1f2024;
+  --board-line: #2a2d31;
+  --board-ink: #f2f2f2;
+  --board-ink-2: #a7aaaf;
+  --amber: #ffb000;
+  --amber-hover: #ffc233;
+  --amber-ink: #0b0b0d;
+  --red: #ff5a4f;
+  --red-solid: #b00020;
+  --green: #3ccf6e;
 
-  --main-white: #ecebeb;
+  /* Frame: light steel */
+  --ground: #dcdee1;
+  --panel: #eceef0;
+  --panel-2: #f7f8f9;
+  --line: #b4b8bd;
+  --line-soft: #ccd0d4;
+  --ink: #0e0f11;
+  --ink-2: #474b51;
+  --ink-3: #686c73;
+  --control: #ffffff;
+  --control-hover: #f1f2f4;
+  --focus: #b07800;
+  --overlay: rgba(11, 11, 13, 0.6);
 
-  --button-blue: #3848f8;
+  --font-ui: "Barlow", system-ui, sans-serif;
+  --font-board: "Barlow Condensed", "Barlow", system-ui, sans-serif;
+  --track: 0.12em;
+  --radius: 4px;
+  --rail-w: 232px;
+  --tabbar-h: 64px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+body.dark {
+  --ground: #16181b;
+  --panel: #1f2226;
+  --panel-2: #24272b;
+  --line: #3a3e44;
+  --line-soft: #2e3136;
+  --ink: #f2f2f2;
+  --ink-2: #b4b7bc;
+  --ink-3: #8d9197;
+  --control: #121316;
+  --control-hover: #1a1c20;
+  --focus: #ffb000;
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  background-color: var(--main-white);
-  color: var(--dark-black);
-  transition: 0.3s;
+  min-height: 100vh;
+  background-color: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-body.dark {
+h1,
+h2,
+h3,
+p {
   margin: 0;
-  padding: 0;
-  background-color: var(--dark-black);
-  color: var(--main-white);
 }
 
-p,
-h2 {
-  margin: 0;
-  padding: 0;
+h1,
+h2,
+h3 {
+  font-family: var(--font-board);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--amber);
+  color: var(--amber-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
 }
 
 button {
-  background-color: var(--button-blue);
-  color: white;
-  border-radius: 10px;
-  border: none;
   cursor: pointer;
-  padding: 5px 10px;
 }
 
-select,
-input {
-  background-color: rgb(245, 255, 255);
-  border-radius: 5px;
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+select {
+  caret-color: var(--amber);
+  accent-color: var(--amber);
+}
+
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* react-datepicker, set on the board */
+.react-datepicker-wrapper {
+  display: block;
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: var(--font-ui) !important;
+  background: var(--board) !important;
+  color: var(--board-ink) !important;
+  border: 1px solid var(--board-line) !important;
+  border-radius: var(--radius) !important;
+}
+
+.react-datepicker__header {
+  background: var(--board-cell) !important;
+  border-bottom: 1px solid var(--board-line) !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__day {
+  color: var(--board-ink) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.react-datepicker__current-month {
+  font-family: var(--font-board);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+}
+
+.react-datepicker__day-name {
+  color: var(--board-ink-2) !important;
+}
+
+.react-datepicker__day:hover {
+  background: var(--board-cell-hi) !important;
+  border-radius: 2px !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--keyboard-selected {
+  background: var(--amber) !important;
+  color: var(--amber-ink) !important;
+  border-radius: 2px !important;
+}
+
+.react-datepicker__day--outside-month,
+.react-datepicker__day--disabled {
+  color: #5b5e63 !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: var(--board-ink-2) !important;
+}
+
+.react-datepicker__triangle {
+  display: none;
+}
+
+/* Handsontable, set on the board */
+.bk-table.ht-theme-main-dark,
+.bk-table.ht-theme-main {
+  --ht-font-family: var(--font-ui);
+  --ht-font-size: 14px;
+  --ht-line-height: 20px;
+  --ht-background-color: var(--board);
+  --ht-background-secondary-color: var(--board-cell);
+  --ht-foreground-color: var(--board-ink);
+  --ht-foreground-secondary-color: var(--board-ink-2);
+  --ht-border-color: var(--board-line);
+  --ht-accent-color: var(--amber);
+  --ht-cell-horizontal-border-color: var(--board-line);
+  --ht-cell-vertical-border-color: var(--board-line);
+  --ht-cell-read-only-background-color: var(--board);
+  --ht-cell-selection-border-color: var(--amber);
+  --ht-cell-selection-background-color: rgba(255, 176, 0, 0.14);
+  --ht-header-background-color: var(--board-cell);
+  --ht-header-foreground-color: var(--board-ink-2);
+  --ht-header-active-background-color: var(--amber);
+  --ht-header-active-foreground-color: var(--amber-ink);
+  --ht-header-highlighted-background-color: var(--board-cell-hi);
+  --ht-header-highlighted-foreground-color: var(--board-ink);
+  --ht-header-row-background-color: var(--board-cell);
+  --ht-header-row-foreground-color: var(--board-ink-2);
+  --ht-row-header-odd-background-color: var(--board-cell);
+  --ht-row-header-even-background-color: var(--board-cell);
+  --ht-row-cell-odd-background-color: var(--board);
+  --ht-row-cell-even-background-color: var(--board);
+  --ht-menu-item-active-color: var(--board-cell-hi);
+  --ht-menu-border-color: var(--board-line);
+  --ht-menu-item-hover-color: var(--board-cell-hi);
+  --ht-icon-button-hover-background-color: var(--board-cell-hi);
+  --ht-input-background-color: var(--board);
+  --ht-input-border-color: var(--board-line);
+  --ht-input-focus-border-color: var(--amber);
+  --ht-input-foreground-color: var(--board-ink);
+  --ht-checkbox-checked-background-color: var(--amber);
+  --ht-checkbox-checked-border-color: var(--amber);
+  --ht-checkbox-checked-icon-color: var(--amber-ink);
+  --ht-primary-button-background-color: var(--amber);
+  --ht-primary-button-foreground-color: var(--amber-ink);
+  --ht-wrapper-border-color: var(--board-line);
+  font-variant-numeric: tabular-nums;
+}
+
+.bk-table .handsontable thead th {
+  font-family: var(--font-board);
+  font-weight: 600;
+  letter-spacing: var(--track);
+  text-transform: uppercase;
 }

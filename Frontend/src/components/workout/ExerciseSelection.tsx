@@ -11,28 +11,37 @@ import { capitalize } from "../../utils";
 import type { ProperySelection } from "./WorkoutSettings";
 import type { ChangeEvent } from "react";
 import type { WorkoutCreationType } from "../../pages/Workout";
+import { Select } from "../ui";
 
-const SelectionContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: var(--main-black);
-  border-radius: 10px;
-  padding: 0 1rem;
-  margin: 0.2rem;
+const SelectionRow = styled.li`
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.875rem 0;
+  border-top: 1px solid var(--line-soft);
 `;
 
-const SelectGroup = styled.div<{ workoutCreationMode: WorkoutCreationType }>`
-  display: flex;
-  justify-content: space-around;
-  gap: 1rem;
-  margin: 1rem;
+const RowNo = styled.span`
+  display: grid;
+  place-items: center;
+  height: 40px;
+  border-radius: 2px;
+  background: var(--board);
+  color: var(--board-ink);
+  font-family: var(--font-board);
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+`;
 
-  @media (max-width: 768px) {
-    ${({ workoutCreationMode }) =>
-      workoutCreationMode === "preset" &&
-      `display: grid;
-      grid-template-columns: 1fr 1fr;`}
+const SelectGroup = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+
+  > :first-child {
+    grid-column: 1 / -1;
   }
 `;
 
@@ -120,11 +129,12 @@ export function ExerciseSelection({
   }
 
   return (
-    <SelectionContainer>
-      <span style={{ color: "white" }}>Exercise {currentCount}:</span>
-      <SelectGroup workoutCreationMode={workoutCreationMode}>
-        <select
+    <SelectionRow>
+      <RowNo aria-hidden="true">{currentCount}</RowNo>
+      <SelectGroup>
+        <Select
           name="category-select"
+          aria-label={`Exercise ${currentCount} category`}
           value={value.categoryId}
           onChange={handleCategoryChange}
         >
@@ -133,12 +143,14 @@ export function ExerciseSelection({
               {capitalize(cat.category_name)}
             </option>
           ))}
-        </select>
+        </Select>
         {workoutCreationMode === "preset" && (
-          <select
+          <Select
             name="exercise-select"
+            aria-label={`Exercise ${currentCount}`}
             value={value.exerciseId}
             onChange={handleExerciseChange}
+            style={{ gridColumn: "1 / -1" }}
           >
             {filteredExercises.length > 0 ? (
               filteredExercises.map((exc) => (
@@ -147,12 +159,13 @@ export function ExerciseSelection({
                 </option>
               ))
             ) : (
-              <option value={0}>N/A</option>
+              <option value={0}>No exercise at this difficulty</option>
             )}
-          </select>
+          </Select>
         )}
-        <select
+        <Select
           name="exercise-difficulty-select"
+          aria-label={`Exercise ${currentCount} difficulty`}
           value={value.exerciseDifficulty}
           onChange={handleExerciseDifficultyChange}
         >
@@ -161,19 +174,20 @@ export function ExerciseSelection({
               {capitalize(diff)}
             </option>
           ))}
-        </select>
-        <select
+        </Select>
+        <Select
           name="reps-difficulty-select"
+          aria-label={`Exercise ${currentCount} reps difficulty`}
           value={value.repsDifficulty}
           onChange={handleRepsDifficultyChange}
         >
           {repsDifficultyOptions.map((diff) => (
             <option key={diff} value={diff}>
-              {capitalize(diff)}
+              {capitalize(diff)} reps
             </option>
           ))}
-        </select>
+        </Select>
       </SelectGroup>
-    </SelectionContainer>
+    </SelectionRow>
   );
 }

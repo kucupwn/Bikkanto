@@ -1,45 +1,82 @@
 import type { ReactNode } from "react";
 import styled from "styled-components";
+import { Info } from "lucide-react";
 
-const InfoIcon = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+const Wrap = styled.span`
   position: relative;
-  cursor: help;
+  display: inline-flex;
 `;
 
-const Tooltip = styled.div`
-  position: absolute;
-  bottom: 30px;
+const Trigger = styled.button`
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: help;
 
-  width: 200px;
-  padding: 8px 10px;
-
-  background: var(--main-black);
-  color: var(--main-white);
-  border-radius: 5px;
-
-  font-size: 12px;
-
-  z-index: 999;
-
-  border: 1px solid var(--main-white);
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s;
-
-  ${InfoIcon}:hover & {
-    opacity: 1;
+  &:hover,
+  &:focus-visible {
+    color: var(--ink);
   }
 `;
 
-export function InfoTooltip({ text }: { text: ReactNode }) {
+const Tip = styled.span`
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translate(-50%, -4px);
+  width: 280px;
+  padding: 0.75rem 0.875rem;
+  background: var(--board);
+  color: var(--board-ink);
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  line-height: 1.45;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+
+  ${Wrap}:hover &,
+  ${Trigger}:focus-visible + & {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (max-width: 600px) {
+    left: auto;
+    right: -0.5rem;
+    transform: translateY(-4px);
+
+    ${Wrap}:hover &,
+    ${Trigger}:focus-visible + & {
+      transform: none;
+    }
+  }
+`;
+
+export function InfoTooltip({
+  text,
+  label = "More info",
+}: {
+  text: ReactNode;
+  label?: string;
+}) {
   return (
-    <InfoIcon>
-      <span>ⓘ</span>
-      <Tooltip>{text}</Tooltip>
-    </InfoIcon>
+    <Wrap>
+      <Trigger type="button" aria-label={label}>
+        <Info size={18} aria-hidden="true" />
+      </Trigger>
+      <Tip role="tooltip">{text}</Tip>
+    </Wrap>
   );
 }
