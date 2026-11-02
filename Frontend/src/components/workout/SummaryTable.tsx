@@ -1,13 +1,25 @@
 import styled, { keyframes } from "styled-components";
-import type { WorkoutEntry } from "../../types/exerciseTypes";
+import type {
+  Exercise,
+  RepsDifficulty,
+  WorkoutEntry,
+} from "../../types/exerciseTypes";
 import {
   useEffect,
   type ChangeEvent,
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { Check, Flag, RotateCcw, Shuffle, Bookmark } from "lucide-react";
-import type { ViewModes } from "../../pages/Workout";
+import {
+  Check,
+  Flag,
+  RotateCcw,
+  Shuffle,
+  Bookmark,
+  Minus,
+  Plus,
+} from "lucide-react";
+import type { ViewModes, WorkoutCreationType } from "../../pages/Workout";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
 import { api } from "../../api/api";
@@ -38,9 +50,14 @@ const Layout = styled.div<{ $withLog: boolean }>`
   }
 `;
 
-const Head = styled.div`
+const columns = ({ $withReroll }: { $withReroll: boolean }) =>
+  $withReroll
+    ? "3rem minmax(0, 1fr) 9.5rem 6.5rem 40px"
+    : "3rem minmax(0, 1fr) 12.5rem 8.5rem";
+
+const Head = styled.div<{ $withReroll: boolean }>`
   display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr) 9.5rem 6.5rem 40px;
+  grid-template-columns: ${columns};
   gap: 1rem;
   padding: 0.625rem 1.25rem;
   border-bottom: 1px solid var(--board-line);
@@ -66,10 +83,10 @@ const lampOn = keyframes`
 `;
 
 /* A row that lands or changes lights up like a board row being updated. */
-const Row = styled.li`
+const Row = styled.li<{ $withReroll: boolean }>`
   animation: ${lampOn} 1.1s var(--ease-out);
   display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr) 9.5rem 6.5rem 40px;
+  grid-template-columns: ${columns};
   align-items: center;
   gap: 1rem;
   padding: 0.875rem 1.25rem;
@@ -141,6 +158,62 @@ const Tier = styled.span`
 
 const Reps = styled.div`
   justify-self: end;
+`;
+
+const RepsStepper = styled.div`
+  display: grid;
+  grid-template-columns: 32px 3.5rem 32px;
+  height: 48px;
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius);
+  background: var(--board-cell);
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--amber);
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: var(--board-ink-2);
+
+    &:hover:not(:disabled) {
+      color: var(--amber);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+    }
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-inline: 1px solid var(--board-line);
+    background: transparent;
+    color: var(--amber);
+    font-family: var(--font-board);
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
 
 const Reroll = styled.button`
@@ -230,6 +303,8 @@ interface Props {
   workoutDate: Date | null;
   setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
   setTitle: Dispatch<SetStateAction<string | null>>;
+  workoutCreationMode: WorkoutCreationType;
+  exercises: Exercise[];
 }
 
 export function SummaryTable({
@@ -246,6 +321,8 @@ export function SummaryTable({
   workoutDate,
   setWorkoutDate,
   setTitle,
+  workoutCreationMode,
+  exercises,
 }: Props) {
   const { showRibbon } = useRibbon();
 
@@ -272,6 +349,62 @@ export function SummaryTable({
 
   function handleCyclesInputChange(e: ChangeEvent<HTMLInputElement>) {
     setCycles(e.target.value === "" ? "" : Number(e.target.value));
+  }
+
+  function getExercise(entry: WorkoutEntry) {
+    return exercises.find((ex) => ex.id === entry.exercise_id);
+  }
+
+  function getRepsRange(entry: WorkoutEntry) {
+    const exercise = getExercise(entry);
+    if (!exercise) return null;
+
+    const min = exercise[`${entry.reps_difficulty}_min`];
+    const max = exercise[`${entry.reps_difficulty}_max`];
+
+    return `${min}-${max}`;
+  }
+
+  function getMinReps(entry: WorkoutEntry) {
+    return getExercise(entry)?.easy_min ?? 1;
+  }
+
+  // Ranges can have gaps, so a count above a tier's max moves to the next tier.
+  function getRepsDifficulty(
+    entry: WorkoutEntry,
+    reps: number,
+  ): RepsDifficulty {
+    const exercise = getExercise(entry);
+    if (!exercise) return entry.reps_difficulty;
+
+    if (reps <= exercise.easy_max) return "easy";
+    if (reps <= exercise.medium_max) return "medium";
+    return "hard";
+  }
+
+  function setRepsAtIndex(index: number, reps: number) {
+    if (!workout) return;
+
+    const updatedWorkout = [...workout];
+    const entry = updatedWorkout[index];
+    updatedWorkout[index] = {
+      ...entry,
+      reps,
+      reps_difficulty: getRepsDifficulty(entry, reps),
+    };
+
+    setWorkout(updatedWorkout);
+  }
+
+  function handleRepsChange(index: number, e: ChangeEvent<HTMLInputElement>) {
+    setRepsAtIndex(index, e.target.value === "" ? 0 : Number(e.target.value));
+  }
+
+  // Typing is left free so multi-digit counts can pass through low values;
+  // the floor is enforced once the field loses focus.
+  function handleRepsBlur(index: number, entry: WorkoutEntry) {
+    const minReps = getMinReps(entry);
+    if (entry.reps < minReps) setRepsAtIndex(index, minReps);
   }
 
   function handleReroll(index: number) {
@@ -313,6 +446,11 @@ export function SummaryTable({
   }, []);
 
   const entries = workout ?? [];
+  const isPreset = workoutCreationMode === "preset";
+  const canEditReps = isPreset && !hasAcceptedWorkout;
+  const withReroll = !isPreset;
+  const canAccept =
+    entries.length > 0 && entries.every((e) => e.reps >= getMinReps(e));
   const canFinish = typeof cycles === "number" && cycles > 0 && !!workoutDate;
 
   return (
@@ -325,16 +463,19 @@ export function SummaryTable({
             {hasAcceptedWorkout ? " · accepted" : " · not accepted"}
           </BoardNote>
         </BoardHead>
-        <Head aria-hidden="true">
+        <Head aria-hidden="true" $withReroll={withReroll}>
           <span>No</span>
           <span>Exercise</span>
           <span>Tier</span>
           <span>Reps</span>
-          <span />
+          {withReroll && <span />}
         </Head>
         <Rows>
           {entries.map((entry, index) => (
-            <Row key={`${index}-${entry.exercise_id}`}>
+            <Row
+              key={`${index}-${entry.exercise_id}`}
+              $withReroll={withReroll}
+            >
               <No>{String(index + 1).padStart(2, "0")}</No>
               <Name>
                 <FlapText
@@ -346,19 +487,49 @@ export function SummaryTable({
               </Name>
               <Tier>
                 <b>{entry.difficulty}</b> · {entry.reps_difficulty}
+                {isPreset && getRepsRange(entry) && ` (${getRepsRange(entry)})`}
               </Tier>
               <Reps>
-                <FlapText
-                  text={entry.reps}
-                  cells
-                  size="lg"
-                  pad={2}
-                  animateOnMount
-                  delay={index * 90 + 120}
-                  tone="amber"
-                />
+                {canEditReps ? (
+                  <RepsStepper>
+                    <button
+                      type="button"
+                      aria-label={`Fewer reps for exercise ${index + 1}`}
+                      disabled={entry.reps <= getMinReps(entry)}
+                      onClick={() => setRepsAtIndex(index, entry.reps - 1)}
+                    >
+                      <Minus size={16} aria-hidden="true" />
+                    </button>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={getMinReps(entry)}
+                      aria-label={`Reps for exercise ${index + 1}`}
+                      value={entry.reps || ""}
+                      onChange={(e) => handleRepsChange(index, e)}
+                      onBlur={() => handleRepsBlur(index, entry)}
+                    />
+                    <button
+                      type="button"
+                      aria-label={`More reps for exercise ${index + 1}`}
+                      onClick={() => setRepsAtIndex(index, entry.reps + 1)}
+                    >
+                      <Plus size={16} aria-hidden="true" />
+                    </button>
+                  </RepsStepper>
+                ) : (
+                  <FlapText
+                    text={entry.reps}
+                    cells
+                    size="lg"
+                    pad={2}
+                    animateOnMount
+                    delay={index * 90 + 120}
+                    tone="amber"
+                  />
+                )}
               </Reps>
-              {!hasAcceptedWorkout ? (
+              {!withReroll ? null : !hasAcceptedWorkout ? (
                 <Reroll
                   onClick={() => handleReroll(index)}
                   aria-label={`Reroll exercise ${index + 1}`}
@@ -378,7 +549,11 @@ export function SummaryTable({
               <RotateCcw size={18} aria-hidden="true" />
               Start over
             </BoardGhost>
-            <Button $variant="primary" onClick={acceptWorkout}>
+            <Button
+              $variant="primary"
+              onClick={acceptWorkout}
+              disabled={!canAccept}
+            >
               <Check size={18} aria-hidden="true" />
               Accept workout
             </Button>

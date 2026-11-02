@@ -1,6 +1,6 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
-import { Minus, Plus, Shuffle } from "lucide-react";
+import { ArrowRight, Minus, Plus, Shuffle } from "lucide-react";
 import {
   exerciseDifficultyOptions,
   repsDifficultyOptions,
@@ -379,8 +379,17 @@ export function WorkoutSettings({
                 $block
                 onClick={onGetWorkout}
               >
-                <Shuffle size={20} aria-hidden="true" />
-                {hasWorkout ? "Roll again" : "Roll workout"}
+                {workoutCreationMode === "preset" ? (
+                  <>
+                    <ArrowRight size={20} aria-hidden="true" />
+                    Get
+                  </>
+                ) : (
+                  <>
+                    <Shuffle size={20} aria-hidden="true" />
+                    {hasWorkout ? "Roll again" : "Roll workout"}
+                  </>
+                )}
               </Button>
             </RollBar>
           )}

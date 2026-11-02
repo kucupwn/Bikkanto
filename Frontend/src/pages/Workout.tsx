@@ -172,6 +172,7 @@ const ledes: Record<string, string> = {
   null: "Roll a new workout from your library, or start from a saved preset.",
   settings: "Set how many exercises and how hard, then roll.",
   preview: "Reroll any row you don't like, then accept.",
+  presetPreview: "Adjust the reps if you like, then accept.",
   accepted: "Train through it, then log how many cycles you finished.",
   stored: "You have a workout waiting to be logged.",
   select: "Start from a workout you saved earlier.",
@@ -432,6 +433,8 @@ export function Workout() {
       workoutDate={workoutDate}
       setWorkoutDate={setWorkoutDate}
       setTitle={setTitle}
+      workoutCreationMode={workoutCreationMode}
+      exercises={exercises}
     />
   );
 
@@ -443,7 +446,11 @@ export function Workout() {
           {!isFinished && (
             <PageLede>
               {ledes[
-                mode === "preview" && hasAcceptedWorkout ? "accepted" : String(mode)
+                mode === "preview" && hasAcceptedWorkout
+                  ? "accepted"
+                  : mode === "preview" && workoutCreationMode === "preset"
+                    ? "presetPreview"
+                    : String(mode)
               ]}
             </PageLede>
           )}
