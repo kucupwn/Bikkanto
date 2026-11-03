@@ -76,7 +76,8 @@ const Cells = styled.span<{ $size: FlapSize; $tone: Tone }>`
   gap: 2px;
   font-family: var(--font-board);
   font-weight: 700;
-  font-size: ${({ $size }) => sizes[$size].font};
+  /* --flap-fit lets a parent shrink the board to fit (see Home's FitName). */
+  font-size: calc(${({ $size }) => sizes[$size].font} * var(--flap-fit, 1));
   line-height: 1;
   font-variant-numeric: tabular-nums;
   color: ${({ $tone }) => toneColor[$tone]};

@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from "react";
 import type { User } from "../types/userTypes";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -108,20 +109,59 @@ const steps = [
   },
 ];
 
+const NameBox = styled.span`
+  display: block;
+  margin-top: 0.15em;
+`;
+
+/** The username on the board, scaled down until it fits the hero's width. */
+function FitName({ name }: { name: string }) {
+  const boxRef = useRef<HTMLSpanElement>(null);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+
+    const fit = () => {
+      box.style.setProperty("--flap-fit", "1");
+      // Cells scale with the font but their 2px gaps don't, so refine a few times.
+      let scale = 1;
+      for (let i = 0; i < 4 && box.scrollWidth > box.clientWidth; i++) {
+        // The 0.99 leaves room for subpixel rounding.
+        scale *= (box.clientWidth / box.scrollWidth) * 0.99;
+        box.style.setProperty("--flap-fit", String(scale));
+      }
+    };
+
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(box);
+    return () => observer.disconnect();
+  }, [name]);
+
+  return (
+    <NameBox ref={boxRef} aria-hidden="true">
+      <FlapText text={name} cells size="xl" animateOnMount delay={360} />
+    </NameBox>
+  );
+}
+
 export function Home({ currentUser, isLoggedIn, onLogin }: Props) {
   const signedIn = isLoggedIn && !!currentUser.username;
 
   return (
     <Page>
       <Hero as="section">
-        <h1>
-          <FlapText
-            text={signedIn ? `Welcome ${currentUser.username}` : "Bikkanto"}
-            cells
-            size="xl"
-            animateOnMount
-          />
-        </h1>
+        {signedIn ? (
+          <h1 aria-label={`Welcome ${currentUser.username}`}>
+            <FlapText text="Welcome" cells size="xl" animateOnMount />
+            <FitName name={currentUser.username} />
+          </h1>
+        ) : (
+          <h1>
+            <FlapText text="Bikkanto" cells size="xl" animateOnMount />
+          </h1>
+        )}
         {signedIn ? (
           <HeroText>
             Pick up where you left off. Build your library, roll today's
