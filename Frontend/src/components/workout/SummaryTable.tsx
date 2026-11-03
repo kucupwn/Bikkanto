@@ -18,6 +18,7 @@ import {
   Bookmark,
   Minus,
   Plus,
+  Trash2,
 } from "lucide-react";
 import type { ViewModes, WorkoutCreationType } from "../../pages/Workout";
 import { type ProperySelection } from "./WorkoutSettings";
@@ -333,6 +334,23 @@ export function SummaryTable({
     setTitle("Create a workout");
   }
 
+  async function discardWorkout() {
+    if (!workout?.length) return;
+
+    try {
+      await api.delete(`/history/draft/${workout[0].session_id}`);
+
+      setWorkout(null);
+      setMode(null);
+      setHasAcceptedWorkout(false);
+      setCycles("");
+      setWorkoutDate(new Date());
+      setTitle("Start a workout");
+    } catch {
+      showRibbon("error", "Could not delete workout draft.");
+    }
+  }
+
   async function acceptWorkout() {
     if (!workout?.length) return;
 
@@ -600,6 +618,10 @@ export function SummaryTable({
             <Button $block disabled title="Presets are coming soon">
               <Bookmark size={18} aria-hidden="true" />
               Save to presets
+            </Button>
+            <Button $variant="danger" $block onClick={discardWorkout}>
+              <Trash2 size={18} aria-hidden="true" />
+              Discard workout
             </Button>
           </LogStack>
         </Panel>

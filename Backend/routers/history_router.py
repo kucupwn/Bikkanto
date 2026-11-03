@@ -127,19 +127,17 @@ async def delete_draft_workout(
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    draft_model = (
+    deleted_count = (
         db.query(DraftWorkout)
         .filter(
             DraftWorkout.session_id == session_id,
             DraftWorkout.user_id == user.get("id"),
         )
-        .first()
+        .delete(synchronize_session=False)
     )
 
-    if draft_model is None:
+    if deleted_count == 0:
         raise HTTPException(status_code=404, detail="Session id not found.")
-
-    db.delete(draft_model)
 
     db.commit()
 
