@@ -253,6 +253,11 @@ input[type="number"] {
   font-variant-numeric: tabular-nums;
 }
 
+/* Display-only capitalization: "push up" renders as "Push up". */
+.bk-table .handsontable td.bk-cap::first-letter {
+  text-transform: uppercase;
+}
+
 .bk-table .handsontable thead th {
   font-family: var(--font-board);
   font-weight: 600;

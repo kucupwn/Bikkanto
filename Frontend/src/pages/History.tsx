@@ -38,9 +38,17 @@ export function History() {
       setHistory(history);
 
       if (history.length > 0) {
+        // Names are stored lowercase; capitalize them for display only.
+        const textColumns = new Set([
+          "exercise_name",
+          "category_name",
+          "difficulty",
+          "reps_difficulty",
+        ]);
         const cols = HISTORY_COLUMN_ORDER.map((key) => ({
           data: key,
           title: capitalize(key).replace("_", " "),
+          ...(textColumns.has(key) && { className: "htCenter bk-cap" }),
         }));
         setColumns(cols);
       }

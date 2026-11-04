@@ -37,9 +37,13 @@ export function Exercises() {
         ? POOL_EXERCISE_COLUMNS_ORDER
         : EXERCISE_COLUMNS_ORDER;
 
+    // Names are stored lowercase; capitalize them for display only.
+    const textColumns = new Set(["exercise_name", "category_name", "difficulty"]);
+
     return columnOrder.map((key) => ({
       data: key,
       title: capitalize(key).replace("_", " "),
+      ...(textColumns.has(key) && { className: "htCenter bk-cap" }),
     }));
   }, [activeTable]);
 
