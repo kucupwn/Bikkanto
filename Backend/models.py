@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, UniqueConstraint
+from datetime import datetime, timezone
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Date,
+    DateTime,
+    ForeignKey,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -79,29 +88,61 @@ class History(Base):
     category = relationship("Categories")
 
 
-class PresetWorkout(Base):
-    __tablename__ = "preset_workout"
+class Presets(Base):
+    __tablename__ = "presets"
+    __table_args__ = (
+        UniqueConstraint("preset_name", "user_id", name="uq_preset_user"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
-    preset_id = Column(String, nullable=False)
-    difficulty = Column(String)
-    reps_difficulty = Column(String)
+    preset_name = Column(String, nullable=False)
+    created_at = Column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
 
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+
+    user = relationship("Users", back_populates="presets")
+    exercises = relationship(
+        "PresetExercises",
+        back_populates="preset",
+        cascade="all, delete-orphan",
+        order_by="PresetExercises.position",
+    )
+
+
+class PresetExercises(Base):
+    __tablename__ = "preset_exercises"
+
+    id = Column(Integer, primary_key=True, index=True)
+    position = Column(Integer, nullable=False)
+    reps_difficulty = Column(String, nullable=False)
+    reps = Column(Integer, nullable=False)
+
+    preset_id = Column(Integer, ForeignKey("presets.id"), nullable=False, index=True)
     exercise_id = Column(
         Integer, ForeignKey("exercises.id"), nullable=False, index=True
     )
-    category_id = Column(
-        Integer, ForeignKey("categories.id"), nullable=False, index=True
-    )
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
 
-    exercise_name = Column(String, nullable=False)
-    category_name = Column(String, nullable=False)
-
-    user = relationship("Users", back_populates="preset_workout")
-
+    preset = relationship("Presets", back_populates="exercises")
     exercise = relationship("Exercises")
-    category = relationship("Categories")
+
+    # Read live from the exercise, so edits/renames show up in the preset
+    @property
+    def exercise_name(self):
+        return self.exercise.exercise_name if self.exercise else None
+
+    @property
+    def difficulty(self):
+        return self.exercise.difficulty if self.exercise else None
+
+    @property
+    def category_id(self):
+        return self.exercise.category_id if self.exercise else None
+
+    @property
+    def category_name(self):
+        return self.exercise.category_name if self.exercise else None
 
 
 class DraftWorkout(Base):
@@ -153,6 +194,6 @@ class Users(Base):
     draft_workout = relationship(
         "DraftWorkout", back_populates="user", cascade="all, delete-orphan"
     )
-    preset_workout = relationship(
-        "PresetWorkout", back_populates="user", cascade="all, delete-orphan"
+    presets = relationship(
+        "Presets", back_populates="user", cascade="all, delete-orphan"
     )
