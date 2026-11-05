@@ -12,13 +12,15 @@ class RepsDifficulty(str, Enum):
 
 class HistoryBase(BaseModel):
     date_complete: date
-    difficulty: Difficulty
     reps_difficulty: RepsDifficulty
     cycles: int = Field(gt=0)
     reps: int = Field(gt=0)
-    sum_repetitions: int = Field(gt=0)
+
+
+class HistoryCreate(HistoryBase):
+    # Only used to look up the user's exercise at save time; the name, category
+    # and difficulty are copied from it and the id itself is not stored.
     exercise_id: int = Field(gt=0)
-    category_id: int = Field(gt=0)
 
 
 class HistoryRead(HistoryBase):
@@ -26,13 +28,11 @@ class HistoryRead(HistoryBase):
     session: int
     exercise_name: str
     category_name: str
+    difficulty: Difficulty
+    sum_repetitions: int
 
     class Config:
         from_attributes = True
-
-
-class HistoryCreate(HistoryBase):
-    pass
 
 
 class DraftWorkoutBase(BaseModel):

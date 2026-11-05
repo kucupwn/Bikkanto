@@ -60,32 +60,32 @@ class Categories(Base):
 
 
 class History(Base):
+    # A self-contained snapshot of a finished workout row. It deliberately holds no
+    # reference to exercises or categories: deleting or editing an exercise later
+    # must never change or remove what was logged. Only the owner is referenced,
+    # so a user's history goes away with the user.
     __tablename__ = "history"
 
     id = Column(Integer, primary_key=True, index=True)
     session = Column(Integer, nullable=False)
     date_complete = Column(Date, nullable=False)
-    cycles = Column(Integer)
-    difficulty = Column(String)
-    reps_difficulty = Column(String)
-    reps = Column(Integer)
-    sum_repetitions = Column(Integer)
-
-    exercise_id = Column(
-        Integer, ForeignKey("exercises.id"), nullable=False, index=True
-    )
-    category_id = Column(
-        Integer, ForeignKey("categories.id"), nullable=False, index=True
-    )
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
 
     exercise_name = Column(String, nullable=False)
     category_name = Column(String, nullable=False)
+    difficulty = Column(String, nullable=False)
+    reps_difficulty = Column(String, nullable=False)
+    cycles = Column(Integer, nullable=False)
+    reps = Column(Integer, nullable=False)
+    sum_repetitions = Column(Integer, nullable=False)
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
 
     user = relationship("Users", back_populates="history")
-
-    exercise = relationship("Exercises")
-    category = relationship("Categories")
 
 
 class Presets(Base):
@@ -183,7 +183,10 @@ class Users(Base):
     hashed_password = Column(String)
 
     history = relationship(
-        "History", back_populates="user", cascade="all, delete-orphan"
+        "History",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
     exercise = relationship(
         "Exercises", back_populates="user", cascade="all, delete-orphan"

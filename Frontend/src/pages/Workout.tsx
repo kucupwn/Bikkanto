@@ -12,7 +12,7 @@ import {
 } from "../components/workout/WorkoutSettings";
 import { SummaryTable } from "../components/workout/SummaryTable";
 import { StoredWorkout } from "../components/workout/StoredWorkout";
-import type { WorkoutHistory } from "../types/historyTypes";
+import type { WorkoutHistoryCreate } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Link } from "react-router-dom";
 import { ArrowRight, Bookmark, History, Shuffle } from "lucide-react";
@@ -305,18 +305,15 @@ export function Workout() {
     setMode("preview");
   }
 
-  function getHistoryEntries(): WorkoutHistory[] | null {
+  function getHistoryEntries(): WorkoutHistoryCreate[] | null {
     if (!workout || !workoutDate) return null;
 
     return workout.map((entry) => ({
       date_complete: workoutDate.toISOString().split("T")[0],
       exercise_id: entry.exercise_id,
-      category_id: entry.category_id,
-      difficulty: entry.difficulty,
       reps_difficulty: entry.reps_difficulty,
       cycles: safeCycles,
       reps: entry.reps,
-      sum_repetitions: entry.reps * safeCycles,
     }));
   }
 

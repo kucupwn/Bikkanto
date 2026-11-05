@@ -1,12 +1,13 @@
 import uuid
 from typing import Annotated, List
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import Depends, APIRouter, HTTPException, Path
 from starlette import status
 from datetime import date
 from .auth import get_current_user
 from ..database import get_db
-from ..models import History, Exercises, Categories, DraftWorkout
+from ..models import History, Exercises, DraftWorkout
 from ..schemas.history_schema import (
     HistoryRead,
     HistoryCreate,
@@ -61,37 +62,43 @@ async def create_history_batch(
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
 
+    if not entries:
+        raise HTTPException(status_code=400, detail="No history entries given")
+
+    user_id = user.get("id")
+
+    last_session = (
+        db.query(func.max(History.session)).filter(History.user_id == user_id).scalar()
+    )
+    current_session = (last_session or 0) + 1
+
     history_models = []
 
-    prev_sessions = db.query(History).filter(History.user_id == user.get("id")).all()
-    prev_nums = [entry.session for entry in prev_sessions]
-    current_session = max(prev_nums, default=0) + 1
-
     for entry in entries:
-        exercise = db.get(Exercises, entry.exercise_id)
-        if not exercise:
-            raise HTTPException(status_code=400, detail=f"Invalid exercise id")
-
-        category = db.get(Categories, entry.category_id)
-        if not category:
-            raise HTTPException(status_code=400, detail=f"Invalid category id")
-
-        history = History(
-            session=current_session,
-            date_complete=entry.date_complete,
-            exercise_id=entry.exercise_id,
-            exercise_name=exercise.exercise_name,
-            category_id=entry.category_id,
-            category_name=category.category_name,
-            difficulty=entry.difficulty,
-            reps_difficulty=entry.reps_difficulty,
-            cycles=entry.cycles,
-            reps=entry.reps,
-            sum_repetitions=entry.sum_repetitions,
-            user_id=user.get("id"),
+        exercise = (
+            db.query(Exercises)
+            .filter(Exercises.id == entry.exercise_id, Exercises.user_id == user_id)
+            .first()
         )
+        if not exercise:
+            raise HTTPException(status_code=400, detail="Invalid exercise id")
 
-        history_models.append(history)
+        # Snapshot: copy the exercise as it is right now. Nothing links back to
+        # it, so later edits or deletes of the exercise leave this row alone.
+        history_models.append(
+            History(
+                session=current_session,
+                date_complete=entry.date_complete,
+                exercise_name=exercise.exercise_name,
+                category_name=exercise.category_name,
+                difficulty=exercise.difficulty,
+                reps_difficulty=entry.reps_difficulty.value,
+                cycles=entry.cycles,
+                reps=entry.reps,
+                sum_repetitions=entry.reps * entry.cycles,
+                user_id=user_id,
+            )
+        )
 
     db.add_all(history_models)
     db.commit()
@@ -158,20 +165,23 @@ async def create_draft_workout(
     session = uuid.uuid4().hex
 
     for entry in entries:
-        exercise = db.get(Exercises, entry.exercise_id)
+        exercise = (
+            db.query(Exercises)
+            .filter(
+                Exercises.id == entry.exercise_id,
+                Exercises.user_id == user.get("id"),
+            )
+            .first()
+        )
         if not exercise:
-            raise HTTPException(status_code=400, detail=f"Invalid exercise id")
-
-        category = db.get(Categories, entry.category_id)
-        if not category:
-            raise HTTPException(status_code=400, detail=f"Invalid category id")
+            raise HTTPException(status_code=400, detail="Invalid exercise id")
 
         draft = DraftWorkout(
             session_id=session,
-            exercise_id=entry.exercise_id,
+            exercise_id=exercise.id,
             exercise_name=exercise.exercise_name,
-            category_id=entry.category_id,
-            category_name=category.category_name,
+            category_id=exercise.category_id,
+            category_name=exercise.category_name,
             difficulty=entry.difficulty,
             reps_difficulty=entry.reps_difficulty,
             reps=entry.reps,
