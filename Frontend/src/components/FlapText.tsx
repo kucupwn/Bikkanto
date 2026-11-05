@@ -174,7 +174,9 @@ export function FlapText({
   }
 
   // Keep cell positions stable while the text cascades: split on the target's spaces.
-  const targetWords = value.split(" ");
+  // Padded values (e.g. reps " 6") stay one word so the blank cell sits flush
+  // against the digit, like a two-digit number, instead of a word gap away.
+  const targetWords = pad ? [value] : value.split(" ");
   const starts = targetWords.map((_, i) =>
     targetWords.slice(0, i).reduce((sum, w) => sum + w.length + 1, 0),
   );

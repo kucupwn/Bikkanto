@@ -53,7 +53,7 @@ const Layout = styled.div<{ $withLog: boolean }>`
 
 const columns = ({ $withReroll }: { $withReroll: boolean }) =>
   $withReroll
-    ? "3rem minmax(0, 1fr) 9.5rem 6.5rem 40px"
+    ? "3rem minmax(0, 1fr) 12.5rem 8.5rem 40px"
     : "3rem minmax(0, 1fr) 12.5rem 8.5rem";
 
 const Head = styled.div<{ $withReroll: boolean }>`
@@ -465,7 +465,7 @@ export function SummaryTable({
 
   const entries = workout ?? [];
   const isPreset = workoutCreationMode === "preset";
-  const canEditReps = isPreset && !hasAcceptedWorkout;
+  const canEditReps = !hasAcceptedWorkout;
   const withReroll = !isPreset;
   const canAccept =
     entries.length > 0 && entries.every((e) => e.reps >= getMinReps(e));
@@ -505,7 +505,9 @@ export function SummaryTable({
               </Name>
               <Tier>
                 <b>{entry.difficulty}</b> · {entry.reps_difficulty}
-                {isPreset && getRepsRange(entry) && ` (${getRepsRange(entry)})`}
+                {(isPreset || canEditReps) &&
+                  getRepsRange(entry) &&
+                  ` (${getRepsRange(entry)})`}
               </Tier>
               <Reps>
                 {canEditReps ? (
