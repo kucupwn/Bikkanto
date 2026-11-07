@@ -5,7 +5,7 @@ from starlette import status
 from collections import defaultdict, Counter
 from .auth import get_current_user
 from ..database import get_db
-from ..models import Exercises, Categories
+from ..models import Exercises, Categories, Presets, PresetExercises
 from ..schemas.exercises_schema import (
     ExerciseRead,
     ExerciseCreate,
@@ -230,6 +230,28 @@ async def delete_exercise(
 
     if not exercise_model:
         raise HTTPException(status_code=404, detail="Exercise not found")
+
+    # Presets link to exercises live, so drop the deleted exercise from them,
+    # and remove any preset that is left with no exercises.
+    affected_preset_ids = {
+        row.preset_id
+        for row in db.query(PresetExercises.preset_id).filter(
+            PresetExercises.exercise_id == exercise_id
+        )
+    }
+    db.query(PresetExercises).filter(
+        PresetExercises.exercise_id == exercise_id
+    ).delete(synchronize_session=False)
+
+    for preset_id in affected_preset_ids:
+        if (
+            not db.query(PresetExercises)
+            .filter(PresetExercises.preset_id == preset_id)
+            .first()
+        ):
+            db.query(Presets).filter(Presets.id == preset_id).delete(
+                synchronize_session=False
+            )
 
     db.delete(exercise_model)
 
