@@ -44,16 +44,15 @@ const Item = styled.li`
   }
 `;
 
-const Toggle = styled.button<{ $open: boolean }>`
+/* The toggle's ::after stretches over the whole header, so clicking anywhere
+   on the row (chevron included) opens it; the Select button sits above it. */
+const Header = styled.div<{ $open: boolean }>`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
-  width: 100%;
   padding: 1rem 1.25rem;
-  border: 0;
   background: ${({ $open }) => ($open ? "var(--board-cell)" : "transparent")};
-  color: var(--board-ink);
-  text-align: left;
   transition: background-color 0.15s ease;
 
   &:hover {
@@ -62,6 +61,7 @@ const Toggle = styled.button<{ $open: boolean }>`
 
   > svg {
     flex-shrink: 0;
+    pointer-events: none;
     color: ${({ $open }) => ($open ? "var(--amber)" : "var(--board-ink-2)")};
     transform: rotate(${({ $open }) => ($open ? "180deg" : "0deg")});
     transition:
@@ -70,8 +70,42 @@ const Toggle = styled.button<{ $open: boolean }>`
   }
 `;
 
-const PresetName = styled.span`
+const Toggle = styled.button`
   flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--board-ink);
+  text-align: left;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    outline: 2px solid var(--amber);
+    outline-offset: -2px;
+  }
+`;
+
+const SelectButton = styled(Button)`
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+`;
+
+const PresetName = styled.span`
   min-width: 0;
   font-family: var(--font-board);
   font-size: 22px;
@@ -96,7 +130,12 @@ const Detail = styled.div`
   animation: ${unfold} 0.22s var(--ease-out);
 `;
 
-export function PresetList({ onCreate }: { onCreate: () => void }) {
+interface Props {
+  onCreate: () => void;
+  onSelect?: (preset: Preset) => void;
+}
+
+export function PresetList({ onCreate, onSelect }: Props) {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
@@ -164,19 +203,28 @@ export function PresetList({ onCreate }: { onCreate: () => void }) {
 
           return (
             <Item key={preset.id}>
-              <Toggle
-                type="button"
-                $open={isOpen}
-                aria-expanded={isOpen}
-                aria-controls={detailId}
-                onClick={() => toggleOpen(preset.id)}
-              >
-                <PresetName>{preset.preset_name}</PresetName>
-                <BoardNote>
-                  {count} {count === 1 ? "exercise" : "exercises"}
-                </BoardNote>
+              <Header $open={isOpen}>
+                <Toggle
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={detailId}
+                  onClick={() => toggleOpen(preset.id)}
+                >
+                  <PresetName>{preset.preset_name}</PresetName>
+                  <BoardNote>
+                    {count} {count === 1 ? "exercise" : "exercises"}
+                  </BoardNote>
+                </Toggle>
+                <SelectButton
+                  type="button"
+                  $variant="primary"
+                  onClick={() => onSelect?.(preset)}
+                  aria-label={`Select preset ${preset.preset_name}`}
+                >
+                  Select
+                </SelectButton>
                 <ChevronDown size={20} aria-hidden="true" />
-              </Toggle>
+              </Header>
               {isOpen && (
                 <Detail id={detailId}>
                   <Head aria-hidden="true" $withReroll={false}>
