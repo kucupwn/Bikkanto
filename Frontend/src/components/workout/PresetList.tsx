@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { ChevronDown, Shuffle } from "lucide-react";
+import { ChevronDown, Pencil, Shuffle, Trash2 } from "lucide-react";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
@@ -130,12 +130,55 @@ const Detail = styled.div`
   animation: ${unfold} 0.22s var(--ease-out);
 `;
 
+const Actions = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--board-line);
+
+  @media (max-width: 700px) {
+    padding: 0.75rem 1rem;
+
+    > * {
+      flex: 1;
+    }
+  }
+`;
+
+/* Secondary button styled for the dark board. */
+const BoardGhost = styled(Button)`
+  background: transparent;
+  color: var(--board-ink);
+  border-color: var(--board-line);
+
+  &:hover:not(:disabled) {
+    background: var(--board-cell);
+    border-color: var(--board-ink-2);
+  }
+`;
+
+/* The board is always dark, so use the bright red in both themes. */
+const BoardDanger = styled(Button)`
+  background: transparent;
+  color: var(--red);
+  border-color: var(--red);
+
+  &:hover:not(:disabled) {
+    background: var(--red-solid);
+    border-color: var(--red-solid);
+    color: #fff;
+  }
+`;
+
 interface Props {
   onCreate: () => void;
   onSelect?: (preset: Preset) => void;
+  onEdit?: (preset: Preset) => void;
+  onDelete?: (preset: Preset) => void;
 }
 
-export function PresetList({ onCreate, onSelect }: Props) {
+export function PresetList({ onCreate, onSelect, onEdit, onDelete }: Props) {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
@@ -227,6 +270,24 @@ export function PresetList({ onCreate, onSelect }: Props) {
               </Header>
               {isOpen && (
                 <Detail id={detailId}>
+                  <Actions>
+                    <BoardDanger
+                      type="button"
+                      onClick={() => onDelete?.(preset)}
+                      aria-label={`Delete preset ${preset.preset_name}`}
+                    >
+                      <Trash2 size={18} aria-hidden="true" />
+                      Delete
+                    </BoardDanger>
+                    <BoardGhost
+                      type="button"
+                      onClick={() => onEdit?.(preset)}
+                      aria-label={`Edit preset ${preset.preset_name}`}
+                    >
+                      <Pencil size={18} aria-hidden="true" />
+                      Edit
+                    </BoardGhost>
+                  </Actions>
                   <Head aria-hidden="true" $withReroll={false}>
                     <span>No</span>
                     <span>Exercise</span>
