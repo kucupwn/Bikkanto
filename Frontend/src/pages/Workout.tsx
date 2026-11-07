@@ -12,6 +12,7 @@ import {
 } from "../components/workout/WorkoutSettings";
 import { SummaryTable } from "../components/workout/SummaryTable";
 import { StoredWorkout } from "../components/workout/StoredWorkout";
+import { PresetList } from "../components/workout/PresetList";
 import type { WorkoutHistoryCreate } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Link } from "react-router-dom";
@@ -505,23 +506,7 @@ export function Workout() {
       )}
 
       {!isFinished && mode === "select" && (
-        <EmptyBoard as="section" aria-labelledby="presets-title">
-          <BoardHead>
-            <BoardTitle id="presets-title">Presets</BoardTitle>
-            <BoardNote>0 saved</BoardNote>
-          </BoardHead>
-          <EmptyBody>
-            <FlapText text="No presets" cells size="md" tone="muted" />
-            <p>
-              Saving workouts as presets is coming soon. For now, build one
-              from scratch.
-            </p>
-            <Button $variant="primary" onClick={() => setMode("settings")}>
-              <Shuffle size={18} aria-hidden="true" />
-              Create a workout
-            </Button>
-          </EmptyBody>
-        </EmptyBoard>
+        <PresetList onCreate={() => setMode("settings")} />
       )}
 
       {showBuilder && (

@@ -58,7 +58,7 @@ const columns = ({ $withReroll }: { $withReroll: boolean }) =>
     ? "3rem minmax(0, 1fr) 12.5rem 8.5rem 40px"
     : "3rem minmax(0, 1fr) 12.5rem 8.5rem";
 
-const Head = styled.div<{ $withReroll: boolean }>`
+export const Head = styled.div<{ $withReroll: boolean }>`
   display: grid;
   grid-template-columns: ${columns};
   gap: 1rem;
@@ -86,7 +86,7 @@ const lampOn = keyframes`
 `;
 
 /* A row that lands or changes lights up like a board row being updated. */
-const Row = styled.li<{ $withReroll: boolean }>`
+export const Row = styled.li<{ $withReroll: boolean }>`
   animation: ${lampOn} 1.1s var(--ease-out);
   display: grid;
   grid-template-columns: ${columns};
@@ -115,7 +115,7 @@ const Row = styled.li<{ $withReroll: boolean }>`
   }
 `;
 
-const No = styled.span`
+export const No = styled.span`
   font-family: var(--font-board);
   font-size: 22px;
   font-weight: 700;
@@ -123,7 +123,7 @@ const No = styled.span`
   font-variant-numeric: tabular-nums;
 `;
 
-const Name = styled.div`
+export const Name = styled.div`
   min-width: 0;
   font-family: var(--font-board);
   font-size: 22px;
@@ -146,7 +146,7 @@ const Name = styled.div`
   }
 `;
 
-const Tier = styled.span`
+export const Tier = styled.span`
   font-family: var(--font-board);
   font-size: 15px;
   letter-spacing: var(--track);
@@ -159,7 +159,7 @@ const Tier = styled.span`
   }
 `;
 
-const Reps = styled.div`
+export const Reps = styled.div`
   justify-self: end;
 `;
 
@@ -246,7 +246,7 @@ const Reroll = styled.button`
   }
 `;
 
-const Rows = styled.ol`
+export const Rows = styled.ol`
   list-style: none;
   margin: 0;
   padding: 0;
