@@ -6,6 +6,7 @@ import type {
 } from "../../types/exerciseTypes";
 import {
   useEffect,
+  useState,
   type ChangeEvent,
   type Dispatch,
   type SetStateAction,
@@ -23,6 +24,7 @@ import {
 import type { ViewModes, WorkoutCreationType } from "../../pages/Workout";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
+import { PresetNameModal } from "./PresetNameModal";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
@@ -326,6 +328,7 @@ export function SummaryTable({
   exercises,
 }: Props) {
   const { showRibbon } = useRibbon();
+  const [isPresetModalOpen, setIsPresetModalOpen] = useState<boolean>(false);
 
   function resetWorkout() {
     setWorkout(null);
@@ -617,7 +620,7 @@ export function SummaryTable({
               <Flag size={18} aria-hidden="true" />
               Finish and save
             </Button>
-            <Button $block disabled title="Presets are coming soon">
+            <Button $block onClick={() => setIsPresetModalOpen(true)}>
               <Bookmark size={18} aria-hidden="true" />
               Save to presets
             </Button>
@@ -628,6 +631,12 @@ export function SummaryTable({
           </LogStack>
         </Panel>
       )}
+
+      <PresetNameModal
+        isOpen={isPresetModalOpen}
+        onClose={() => setIsPresetModalOpen(false)}
+        workout={entries}
+      />
     </Layout>
   );
 }
