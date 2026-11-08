@@ -17,7 +17,8 @@ const Text = styled.p`
 
 interface Props {
   preset: Preset;
-  // Session id of an unlogged draft started from this preset, if any
+  // Session id of an unlogged draft started from this preset, if one slipped
+  // through; it is removed along with the preset so it can't dangle.
   draftSessionId: string | null;
   onClose: () => void;
   onDeleted: (presetId: number) => void;
@@ -42,12 +43,7 @@ export function PresetDeleteModal({
       }
       await api.delete(`/presets/${preset.id}`);
 
-      showRibbon(
-        "success",
-        draftSessionId
-          ? "Workout discarded and preset deleted."
-          : "Preset deleted.",
-      );
+      showRibbon("success", "Preset deleted.");
       onDeleted(preset.id);
     } catch {
       showRibbon("error", "Could not delete preset.");
@@ -57,24 +53,16 @@ export function PresetDeleteModal({
 
   return (
     <ModalBase onClose={onClose} title="Delete preset" width="440px">
-      {draftSessionId ? (
-        <Text>
-          You have an unlogged workout started from{" "}
-          <strong>{preset.preset_name}</strong>. Deleting the preset also
-          discards that workout. This can't be undone.
-        </Text>
-      ) : (
-        <Text>
-          Delete <strong>{preset.preset_name}</strong>? This can't be undone.
-        </Text>
-      )}
+      <Text>
+        Delete <strong>{preset.preset_name}</strong>? This can't be undone.
+      </Text>
       <ButtonRow $align="end">
         <Button $variant="ghost" onClick={onClose} disabled={isDeleting}>
           Cancel
         </Button>
         <Button $variant="danger" onClick={handleDelete} disabled={isDeleting}>
           <Trash2 size={18} aria-hidden="true" />
-          {draftSessionId ? "Discard and delete" : "Delete"}
+          Delete
         </Button>
       </ButtonRow>
     </ModalBase>

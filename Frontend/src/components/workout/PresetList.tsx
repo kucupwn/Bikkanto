@@ -101,10 +101,16 @@ const Toggle = styled.button`
   }
 `;
 
-const SelectButton = styled(Button)`
+/* Sits above the toggle's overlay; holds the tooltip, since a disabled
+   button gets no hover events. */
+const SelectWrap = styled.span`
   position: relative;
   z-index: 1;
   flex-shrink: 0;
+
+  button:disabled {
+    pointer-events: none;
+  }
 `;
 
 const PresetName = styled.span`
@@ -148,6 +154,19 @@ const Actions = styled.div`
   }
 `;
 
+/* Holds the tooltip for a disabled action button. */
+const ActionWrap = styled.span`
+  display: flex;
+
+  > button {
+    flex: 1;
+  }
+
+  button:disabled {
+    pointer-events: none;
+  }
+`;
+
 /* Secondary button styled for the dark board. */
 const BoardGhost = styled(Button)`
   background: transparent;
@@ -177,6 +196,12 @@ interface Props {
   onCreate: () => void;
   onSelect?: (preset: Preset) => void;
   onEdit?: (preset: Preset) => void;
+  // When set, Select is disabled and this is shown as its tooltip
+  selectDisabledReason?: string;
+  // Preset the workout in progress was started from; its Delete is disabled
+  inProgressPresetId?: number | null;
+  // Called after a delete also discarded the workout in progress
+  onDraftDiscarded?: () => void;
 }
 
 interface PendingDelete {
@@ -184,7 +209,14 @@ interface PendingDelete {
   draftSessionId: string | null;
 }
 
-export function PresetList({ onCreate, onSelect, onEdit }: Props) {
+export function PresetList({
+  onCreate,
+  onSelect,
+  onEdit,
+  selectDisabledReason,
+  inProgressPresetId,
+  onDraftDiscarded,
+}: Props) {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
@@ -193,8 +225,8 @@ export function PresetList({ onCreate, onSelect, onEdit }: Props) {
   );
   const { showRibbon } = useRibbon();
 
-  // Checks for an unlogged draft started from this preset before asking, so
-  // the modal can offer to discard it along with the preset.
+  // Delete is disabled while a workout is in progress, but if a draft from
+  // this preset still turns up (e.g. another tab), it is removed with it.
   async function requestDelete(preset: Preset) {
     try {
       const res = await api.get<WorkoutEntry[]>("/history/draft");
@@ -206,6 +238,7 @@ export function PresetList({ onCreate, onSelect, onEdit }: Props) {
   }
 
   function handleDeleted(presetId: number) {
+    if (pendingDelete?.draftSessionId) onDraftDiscarded?.();
     setPresets((prev) => prev.filter((p) => p.id !== presetId));
     setPendingDelete(null);
   }
@@ -249,10 +282,12 @@ export function PresetList({ onCreate, onSelect, onEdit }: Props) {
             Accept a workout, then use Save to presets to keep it here for
             next time.
           </p>
-          <Button $variant="primary" onClick={onCreate}>
-            <Shuffle size={18} aria-hidden="true" />
-            Create a workout
-          </Button>
+          {!selectDisabledReason && (
+            <Button $variant="primary" onClick={onCreate}>
+              <Shuffle size={18} aria-hidden="true" />
+              Create a workout
+            </Button>
+          )}
         </EmptyBody>
       </EmptyBoard>
     );
@@ -269,6 +304,7 @@ export function PresetList({ onCreate, onSelect, onEdit }: Props) {
           const isOpen = openIds.has(preset.id);
           const detailId = `preset-${preset.id}-exercises`;
           const count = preset.exercises.length;
+          const isInProgress = preset.id === inProgressPresetId;
 
           return (
             <Item key={preset.id}>
@@ -284,27 +320,39 @@ export function PresetList({ onCreate, onSelect, onEdit }: Props) {
                     {count} {count === 1 ? "exercise" : "exercises"}
                   </BoardNote>
                 </Toggle>
-                <SelectButton
-                  type="button"
-                  $variant="primary"
-                  onClick={() => onSelect?.(preset)}
-                  aria-label={`Select preset ${preset.preset_name}`}
-                >
-                  Select
-                </SelectButton>
+                <SelectWrap title={selectDisabledReason}>
+                  <Button
+                    type="button"
+                    $variant="primary"
+                    onClick={() => onSelect?.(preset)}
+                    disabled={!!selectDisabledReason}
+                    aria-label={`Select preset ${preset.preset_name}`}
+                  >
+                    Select
+                  </Button>
+                </SelectWrap>
                 <ChevronDown size={20} aria-hidden="true" />
               </Header>
               {isOpen && (
                 <Detail id={detailId}>
                   <Actions>
-                    <BoardDanger
-                      type="button"
-                      onClick={() => requestDelete(preset)}
-                      aria-label={`Delete preset ${preset.preset_name}`}
+                    <ActionWrap
+                      title={
+                        isInProgress
+                          ? "Finish or discard your workout in progress first"
+                          : undefined
+                      }
                     >
-                      <Trash2 size={18} aria-hidden="true" />
-                      Delete
-                    </BoardDanger>
+                      <BoardDanger
+                        type="button"
+                        onClick={() => requestDelete(preset)}
+                        disabled={isInProgress}
+                        aria-label={`Delete preset ${preset.preset_name}`}
+                      >
+                        <Trash2 size={18} aria-hidden="true" />
+                        Delete
+                      </BoardDanger>
+                    </ActionWrap>
                     <BoardGhost
                       type="button"
                       onClick={() => onEdit?.(preset)}

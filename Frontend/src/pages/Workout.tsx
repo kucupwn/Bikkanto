@@ -180,6 +180,8 @@ const ledes: Record<string, string> = {
   accepted: "Train through it, then log how many cycles you finished.",
   stored: "You have a workout waiting to be logged.",
   select: "Start from a workout you saved earlier.",
+  selectWithDraft:
+    "Browse your presets. Finish or discard your workout in progress to start one.",
 };
 
 export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
@@ -240,6 +242,14 @@ export function Workout() {
   function openCreate() {
     setSelectedPreset(null);
     setMode("settings");
+  }
+
+  // A preset delete discarded the unlogged workout, so forget it here too.
+  function clearDraft() {
+    setWorkout(null);
+    setHasAcceptedWorkout(false);
+    setCycles("");
+    setWorkoutDate(new Date());
   }
 
   function getRandomExercise(
@@ -440,6 +450,8 @@ export function Workout() {
       setTitle("Create a workout");
     } else if (mode === "select") {
       setTitle("Select a workout");
+    } else if (mode === null) {
+      setTitle("Start a workout");
     }
   }, [mode]);
 
@@ -495,13 +507,20 @@ export function Workout() {
                   ? "accepted"
                   : mode === "preview" && origin !== "random"
                     ? "presetPreview"
-                    : String(mode)
+                    : mode === "select" && hasAcceptedWorkout
+                      ? "selectWithDraft"
+                      : String(mode)
               ]}
             </PageLede>
           )}
         </div>
         {(mode === "settings" || mode === "select") && !isFinished && (
-          <Button $variant="ghost" onClick={() => setMode(null)}>
+          <Button
+            $variant="ghost"
+            onClick={() =>
+              setMode(mode === "select" && hasAcceptedWorkout ? "stored" : null)
+            }
+          >
             Back
           </Button>
         )}
@@ -558,7 +577,19 @@ export function Workout() {
       )}
 
       {!isFinished && mode === "select" && (
-        <PresetList onCreate={openCreate} onSelect={selectPreset} />
+        <PresetList
+          onCreate={openCreate}
+          onSelect={selectPreset}
+          selectDisabledReason={
+            hasAcceptedWorkout
+              ? "Finish or discard your workout in progress first"
+              : undefined
+          }
+          inProgressPresetId={
+            hasAcceptedWorkout ? (workout?.[0]?.preset_id ?? null) : null
+          }
+          onDraftDiscarded={clearDraft}
+        />
       )}
 
       {showBuilder && (
@@ -608,6 +639,7 @@ export function Workout() {
           setMode={setMode}
           setHasAcceptedWorkout={setHasAcceptedWorkout}
           setTitle={setTitle}
+          onBrowsePresets={() => setMode("select")}
         />
       )}
     </Page>
