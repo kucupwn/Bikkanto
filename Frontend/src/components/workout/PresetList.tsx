@@ -8,6 +8,8 @@ import { Loader } from "../Loader";
 import { Board, BoardHead, BoardNote, BoardTitle, Button } from "../ui";
 import { Head, Name, No, Reps, Row, Rows, Tier } from "./SummaryTable";
 import type { Preset } from "../../types/presetTypes";
+import type { WorkoutEntry } from "../../types/exerciseTypes";
+import { PresetDeleteModal } from "./PresetDeleteModal";
 
 const EmptyBoard = styled(Board)`
   min-height: 320px;
@@ -175,14 +177,38 @@ interface Props {
   onCreate: () => void;
   onSelect?: (preset: Preset) => void;
   onEdit?: (preset: Preset) => void;
-  onDelete?: (preset: Preset) => void;
 }
 
-export function PresetList({ onCreate, onSelect, onEdit, onDelete }: Props) {
+interface PendingDelete {
+  preset: Preset;
+  draftSessionId: string | null;
+}
+
+export function PresetList({ onCreate, onSelect, onEdit }: Props) {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
+    null,
+  );
   const { showRibbon } = useRibbon();
+
+  // Checks for an unlogged draft started from this preset before asking, so
+  // the modal can offer to discard it along with the preset.
+  async function requestDelete(preset: Preset) {
+    try {
+      const res = await api.get<WorkoutEntry[]>("/history/draft");
+      const draft = res.data.find((entry) => entry.preset_id === preset.id);
+      setPendingDelete({ preset, draftSessionId: draft?.session_id ?? null });
+    } catch {
+      showRibbon("error", "Could not check for a workout in progress.");
+    }
+  }
+
+  function handleDeleted(presetId: number) {
+    setPresets((prev) => prev.filter((p) => p.id !== presetId));
+    setPendingDelete(null);
+  }
 
   useEffect(() => {
     async function fetchPresets() {
@@ -273,7 +299,7 @@ export function PresetList({ onCreate, onSelect, onEdit, onDelete }: Props) {
                   <Actions>
                     <BoardDanger
                       type="button"
-                      onClick={() => onDelete?.(preset)}
+                      onClick={() => requestDelete(preset)}
                       aria-label={`Delete preset ${preset.preset_name}`}
                     >
                       <Trash2 size={18} aria-hidden="true" />
@@ -329,6 +355,14 @@ export function PresetList({ onCreate, onSelect, onEdit, onDelete }: Props) {
           );
         })}
       </Items>
+      {pendingDelete && (
+        <PresetDeleteModal
+          preset={pendingDelete.preset}
+          draftSessionId={pendingDelete.draftSessionId}
+          onClose={() => setPendingDelete(null)}
+          onDeleted={handleDeleted}
+        />
+      )}
     </Board>
   );
 }
