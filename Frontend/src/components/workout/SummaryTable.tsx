@@ -496,9 +496,14 @@ export function SummaryTable({
   }, []);
 
   const entries = workout ?? [];
-  const isPreset = workoutCreationMode === "preset" || origin === "preset";
-  // Read from the saved draft so it still holds after Resume
-  const isAlreadyPreset = entries[0]?.origin === "preset";
+  // Read from the saved draft so these still hold after Resume
+  const draftOrigin = entries[0]?.origin;
+  const isAlreadyPreset = draftOrigin === "preset";
+  const isPreset =
+    workoutCreationMode === "preset" ||
+    origin === "preset" ||
+    draftOrigin === "preset" ||
+    draftOrigin === "custom";
   const canEditReps = !hasAcceptedWorkout;
   const withReroll = !isPreset;
   const canAccept =
