@@ -268,6 +268,13 @@ async def delete_exercise(
                 synchronize_session=False
             )
 
+    # Same for an unlogged workout: drop the exercise's rows. A draft left with
+    # no rows simply no longer exists, since drafts are just their rows.
+    db.query(DraftWorkout).filter(
+        DraftWorkout.exercise_id == exercise_id,
+        DraftWorkout.user_id == user.get("id"),
+    ).delete(synchronize_session=False)
+
     db.delete(exercise_model)
 
     db.commit()
