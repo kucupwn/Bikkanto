@@ -7,12 +7,13 @@ from starlette import status
 from datetime import date
 from .auth import get_current_user
 from ..database import get_db
-from ..models import History, Exercises, DraftWorkout
+from ..models import History, Exercises, DraftWorkout, Presets
 from ..schemas.history_schema import (
     HistoryRead,
     HistoryCreate,
     DraftWorkoutRead,
     DraftWorkoutCreate,
+    WorkoutOrigin,
 )
 
 router = APIRouter(prefix="/history", tags=["history"])
@@ -164,6 +165,23 @@ async def create_draft_workout(
 
     session = uuid.uuid4().hex
 
+    # A draft is one workout, so its origin is read from the first entry
+    origin = entries[0].origin if entries else WorkoutOrigin.RANDOM
+    preset_id = None
+
+    if origin == WorkoutOrigin.PRESET:
+        preset = (
+            db.query(Presets)
+            .filter(
+                Presets.id == entries[0].preset_id,
+                Presets.user_id == user.get("id"),
+            )
+            .first()
+        )
+        if not preset:
+            raise HTTPException(status_code=400, detail="Invalid preset id")
+        preset_id = preset.id
+
     for entry in entries:
         exercise = (
             db.query(Exercises)
@@ -186,6 +204,8 @@ async def create_draft_workout(
             reps_difficulty=entry.reps_difficulty,
             reps=entry.reps,
             user_id=user.get("id"),
+            origin=origin.value,
+            preset_id=preset_id,
         )
 
         draft_models.append(draft)

@@ -165,6 +165,10 @@ class DraftWorkout(Base):
     exercise_name = Column(String, nullable=False)
     category_name = Column(String, nullable=False)
 
+    # "random" | "custom" | "preset"; preset_id is set only for "preset"
+    origin = Column(String, nullable=False, default="random", server_default="random")
+    preset_id = Column(Integer, ForeignKey("presets.id"), nullable=True)
+
     user = relationship("Users", back_populates="draft_workout")
 
     exercise = relationship("Exercises")

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from enum import Enum
+from typing import Optional
 from datetime import date
 from .exercises_schema import Difficulty
 
@@ -35,12 +36,20 @@ class HistoryRead(HistoryBase):
         from_attributes = True
 
 
+class WorkoutOrigin(str, Enum):
+    RANDOM = "random"  # Create -> Random
+    CUSTOM = "custom"  # Create -> Preset, exercises picked by hand
+    PRESET = "preset"  # Started from a saved preset on the Select page
+
+
 class DraftWorkoutBase(BaseModel):
     difficulty: Difficulty
     reps_difficulty: RepsDifficulty
     reps: int = Field(gt=0)
     exercise_id: int = Field(gt=0)
     category_id: int = Field(gt=0)
+    origin: WorkoutOrigin = WorkoutOrigin.RANDOM
+    preset_id: Optional[int] = None
 
 
 class DraftWorkoutRead(DraftWorkoutBase):
