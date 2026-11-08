@@ -3,6 +3,7 @@ import type {
   Exercise,
   RepsDifficulty,
   WorkoutEntry,
+  WorkoutOrigin,
 } from "../../types/exerciseTypes";
 import {
   useEffect,
@@ -289,6 +290,15 @@ const Hint = styled.p`
   font-size: 14px;
 `;
 
+/* A disabled button gets no hover events, so the tooltip sits on a wrapper. */
+const TooltipWrap = styled.span`
+  display: block;
+
+  button:disabled {
+    pointer-events: none;
+  }
+`;
+
 interface Props {
   workout: WorkoutEntry[] | null;
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
@@ -307,6 +317,10 @@ interface Props {
   setWorkoutDate: Dispatch<SetStateAction<Date | null>>;
   setTitle: Dispatch<SetStateAction<string | null>>;
   workoutCreationMode: WorkoutCreationType;
+  origin: WorkoutOrigin;
+  presetId: number | null;
+  // Replaces the default "back to Create" reset, e.g. back to the preset list
+  onStartOver?: () => void;
   exercises: Exercise[];
 }
 
@@ -325,12 +339,20 @@ export function SummaryTable({
   setWorkoutDate,
   setTitle,
   workoutCreationMode,
+  origin,
+  presetId,
+  onStartOver,
   exercises,
 }: Props) {
   const { showRibbon } = useRibbon();
   const [isPresetModalOpen, setIsPresetModalOpen] = useState<boolean>(false);
 
   function resetWorkout() {
+    if (onStartOver) {
+      onStartOver();
+      return;
+    }
+
     setWorkout(null);
     setMode("settings");
     setHasAcceptedWorkout(false);
@@ -358,7 +380,14 @@ export function SummaryTable({
     if (!workout?.length) return;
 
     try {
-      const res = await api.post("/history/draft", workout);
+      const res = await api.post(
+        "/history/draft",
+        workout.map((entry) => ({
+          ...entry,
+          origin,
+          preset_id: origin === "preset" ? presetId : null,
+        })),
+      );
       // Re-set for session_id (backend returns DraftWorkoutRead model)
       setWorkout(res.data);
       setHasAcceptedWorkout(true);
@@ -467,7 +496,9 @@ export function SummaryTable({
   }, []);
 
   const entries = workout ?? [];
-  const isPreset = workoutCreationMode === "preset";
+  const isPreset = workoutCreationMode === "preset" || origin === "preset";
+  // Read from the saved draft so it still holds after Resume
+  const isAlreadyPreset = entries[0]?.origin === "preset";
   const canEditReps = !hasAcceptedWorkout;
   const withReroll = !isPreset;
   const canAccept =
@@ -620,10 +651,18 @@ export function SummaryTable({
               <Flag size={18} aria-hidden="true" />
               Finish and save
             </Button>
-            <Button $block onClick={() => setIsPresetModalOpen(true)}>
-              <Bookmark size={18} aria-hidden="true" />
-              Save to presets
-            </Button>
+            <TooltipWrap
+              title={isAlreadyPreset ? "It is already a preset" : undefined}
+            >
+              <Button
+                $block
+                onClick={() => setIsPresetModalOpen(true)}
+                disabled={isAlreadyPreset}
+              >
+                <Bookmark size={18} aria-hidden="true" />
+                Save to presets
+              </Button>
+            </TooltipWrap>
             <Button $variant="danger" $block onClick={discardWorkout}>
               <Trash2 size={18} aria-hidden="true" />
               Discard workout

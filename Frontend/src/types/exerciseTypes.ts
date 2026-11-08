@@ -28,8 +28,14 @@ export const exerciseDifficultyOptions = [
 ] as const;
 export type ExerciseDifficulty = (typeof exerciseDifficultyOptions)[number];
 
+// Where a workout came from: Create -> Random, Create -> Preset (hand-picked),
+// or a saved preset chosen on the Select page.
+export type WorkoutOrigin = "random" | "custom" | "preset";
+
 export interface WorkoutEntry {
   session_id?: string;
+  origin?: WorkoutOrigin;
+  preset_id?: number | null;
   exercise_id: number;
   exercise_name?: string;
   category_id: number;

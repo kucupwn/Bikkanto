@@ -5,7 +5,10 @@ import {
   type Category,
   type Exercise,
   type WorkoutEntry,
+  type WorkoutOrigin,
 } from "../types/exerciseTypes";
+import type { Preset } from "../types/presetTypes";
+import { SelectedPresetPanel } from "../components/workout/SelectedPresetPanel";
 import {
   WorkoutSettings,
   type ProperySelection,
@@ -198,9 +201,46 @@ export function Workout() {
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [workoutDate, setWorkoutDate] = useState<Date | null>(new Date());
   const [title, setTitle] = useState<string | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null);
   const { showRibbon } = useRibbon();
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
+  const origin: WorkoutOrigin = selectedPreset
+    ? "preset"
+    : workoutCreationMode === "preset"
+      ? "custom"
+      : "random";
+
+  // Copies the preset's rows into a fresh workout; reps edits never touch the
+  // saved preset.
+  function selectPreset(preset: Preset) {
+    setSelectedPreset(preset);
+    setWorkout(
+      preset.exercises.map((entry) => ({
+        exercise_id: entry.exercise_id,
+        exercise_name: entry.exercise_name,
+        category_id: entry.category_id,
+        category_name: entry.category_name,
+        difficulty: entry.difficulty,
+        reps_difficulty: entry.reps_difficulty,
+        reps: entry.reps,
+      })),
+    );
+    setHasAcceptedWorkout(false);
+    setMode("preview");
+  }
+
+  function backToPresets() {
+    setSelectedPreset(null);
+    setWorkout(null);
+    setHasAcceptedWorkout(false);
+    setMode("select");
+  }
+
+  function openCreate() {
+    setSelectedPreset(null);
+    setMode("settings");
+  }
 
   function getRandomExercise(
     selectedProp: ProperySelection,
@@ -404,6 +444,7 @@ export function Workout() {
   }, [mode]);
 
   function startAnother() {
+    setSelectedPreset(null);
     setWorkout(null);
     setHasAcceptedWorkout(false);
     setIsFinished(false);
@@ -432,9 +473,15 @@ export function Workout() {
       setWorkoutDate={setWorkoutDate}
       setTitle={setTitle}
       workoutCreationMode={workoutCreationMode}
+      origin={origin}
+      presetId={selectedPreset?.id ?? null}
+      onStartOver={selectedPreset ? backToPresets : undefined}
       exercises={exercises}
     />
   );
+
+  const isPresetReview =
+    !!selectedPreset && mode === "preview" && !hasAcceptedWorkout;
 
   return (
     <Page>
@@ -446,7 +493,7 @@ export function Workout() {
               {ledes[
                 mode === "preview" && hasAcceptedWorkout
                   ? "accepted"
-                  : mode === "preview" && workoutCreationMode === "preset"
+                  : mode === "preview" && origin !== "random"
                     ? "presetPreview"
                     : String(mode)
               ]}
@@ -455,6 +502,11 @@ export function Workout() {
         </div>
         {(mode === "settings" || mode === "select") && !isFinished && (
           <Button $variant="ghost" onClick={() => setMode(null)}>
+            Back
+          </Button>
+        )}
+        {isPresetReview && !isFinished && (
+          <Button $variant="ghost" onClick={backToPresets}>
             Back
           </Button>
         )}
@@ -483,7 +535,7 @@ export function Workout() {
 
       {!isFinished && mode === null && (
         <Choices>
-          <Choice onClick={() => setMode("settings")}>
+          <Choice onClick={openCreate}>
             <Shuffle size={28} aria-hidden="true" />
             <ChoiceTitle>Create</ChoiceTitle>
             <p>
@@ -506,23 +558,27 @@ export function Workout() {
       )}
 
       {!isFinished && mode === "select" && (
-        <PresetList onCreate={() => setMode("settings")} />
+        <PresetList onCreate={openCreate} onSelect={selectPreset} />
       )}
 
       {showBuilder && (
         <Split>
-          <WorkoutSettings
-            exerciseCount={exerciseCount}
-            setExerciseCount={setExerciseCount}
-            categories={categories}
-            exercises={exercises}
-            selectedProperties={selectedProperties}
-            setSelectedProperties={setSelectedProperties}
-            workoutCreationMode={workoutCreationMode}
-            setWorkoutCreationMode={setWorkoutCreationMode}
-            onGetWorkout={getWorkout}
-            hasWorkout={mode === "preview"}
-          />
+          {selectedPreset ? (
+            <SelectedPresetPanel preset={selectedPreset} />
+          ) : (
+            <WorkoutSettings
+              exerciseCount={exerciseCount}
+              setExerciseCount={setExerciseCount}
+              categories={categories}
+              exercises={exercises}
+              selectedProperties={selectedProperties}
+              setSelectedProperties={setSelectedProperties}
+              workoutCreationMode={workoutCreationMode}
+              setWorkoutCreationMode={setWorkoutCreationMode}
+              onGetWorkout={getWorkout}
+              hasWorkout={mode === "preview"}
+            />
+          )}
           {mode === "preview" ? (
             summary
           ) : (
