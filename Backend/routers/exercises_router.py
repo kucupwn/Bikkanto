@@ -5,7 +5,7 @@ from starlette import status
 from collections import defaultdict, Counter
 from .auth import get_current_user
 from ..database import get_db
-from ..models import Exercises, Categories, Presets, PresetExercises
+from ..models import Exercises, Categories, Presets, PresetExercises, DraftWorkout
 from ..schemas.exercises_schema import (
     ExerciseRead,
     ExerciseCreate,
@@ -204,6 +204,21 @@ async def update_exercise(
 
     for key, value in update_data.items():
         setattr(exercise_model, key, value)
+
+    # Draft rows keep a copy of the exercise's details, so bring an unlogged
+    # workout in line with the edit; reps stay as the user set them.
+    db.query(DraftWorkout).filter(
+        DraftWorkout.exercise_id == exercise_id,
+        DraftWorkout.user_id == user.get("id"),
+    ).update(
+        {
+            DraftWorkout.exercise_name: exercise_model.exercise_name,
+            DraftWorkout.difficulty: exercise_model.difficulty,
+            DraftWorkout.category_id: category.id,
+            DraftWorkout.category_name: category.category_name,
+        },
+        synchronize_session=False,
+    )
 
     db.commit()
     db.refresh(exercise_model)
