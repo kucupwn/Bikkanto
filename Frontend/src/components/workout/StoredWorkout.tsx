@@ -1,6 +1,6 @@
 import { useEffect, type Dispatch, type SetStateAction } from "react";
 import styled from "styled-components";
-import { Bookmark, Play, Trash2 } from "lucide-react";
+import { Play, Trash2 } from "lucide-react";
 import type { ViewModes } from "../../pages/Workout";
 import type { WorkoutEntry } from "../../types/exerciseTypes";
 import { api } from "../../api/api";
@@ -44,24 +44,12 @@ const BoardGhost = styled(Button)`
   }
 `;
 
-const BoardNeutral = styled(Button)`
-  background: transparent;
-  color: var(--board-ink);
-  border-color: var(--board-line);
-
-  &:hover:not(:disabled) {
-    background: var(--board-cell);
-    border-color: var(--board-ink-2);
-  }
-`;
-
 interface Props {
   workout: WorkoutEntry[] | null;
   setWorkout: Dispatch<SetStateAction<WorkoutEntry[] | null>>;
   setMode: Dispatch<SetStateAction<ViewModes>>;
   setHasAcceptedWorkout: Dispatch<SetStateAction<boolean>>;
   setTitle: Dispatch<SetStateAction<string | null>>;
-  onBrowsePresets: () => void;
 }
 
 export function StoredWorkout({
@@ -70,7 +58,6 @@ export function StoredWorkout({
   setMode,
   setHasAcceptedWorkout,
   setTitle,
-  onBrowsePresets,
 }: Props) {
   const { showRibbon } = useRibbon();
 
@@ -122,10 +109,6 @@ export function StoredWorkout({
           <Play size={18} aria-hidden="true" />
           Resume workout
         </Button>
-        <BoardNeutral onClick={onBrowsePresets}>
-          <Bookmark size={18} aria-hidden="true" />
-          Presets
-        </BoardNeutral>
         <BoardGhost onClick={discardWorkout}>
           <Trash2 size={18} aria-hidden="true" />
           Discard
