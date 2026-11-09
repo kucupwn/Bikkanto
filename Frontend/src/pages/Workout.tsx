@@ -18,7 +18,7 @@ import { StoredWorkout } from "../components/workout/StoredWorkout";
 import { PresetList } from "../components/workout/PresetList";
 import type { WorkoutHistoryCreate } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight, Bookmark, History, Shuffle } from "lucide-react";
 import { FlapText } from "../components/FlapText";
 import {
@@ -187,6 +187,10 @@ const ledes: Record<string, string> = {
 export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
 export type WorkoutCreationType = "random" | "preset" | null;
 
+// Lets other pages (e.g. the presets tab on Exercises) open the workout flow
+// at the create settings.
+export type WorkoutLocationState = { create: true } | null;
+
 export function Workout() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -205,6 +209,8 @@ export function Workout() {
   const [title, setTitle] = useState<string | null>(null);
   const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null);
   const { showRibbon } = useRibbon();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const safeCycles = typeof cycles == "number" ? cycles : 0;
   const origin: WorkoutOrigin = selectedPreset
@@ -443,6 +449,17 @@ export function Workout() {
 
   useEffect(() => {
     setTitle("Start a workout");
+  }, []);
+
+  // Picks up a create request from another page, then clears it so a reload
+  // or back navigation doesn't replay it.
+  useEffect(() => {
+    const state = location.state as WorkoutLocationState;
+    if (!state) return;
+
+    if (state.create) openCreate();
+
+    navigate(location.pathname, { replace: true, state: null });
   }, []);
 
   useEffect(() => {

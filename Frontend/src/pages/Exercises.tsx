@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import {
   EXERCISE_COLUMNS_ORDER,
   POOL_EXERCISE_COLUMNS_ORDER,
   type Category,
   type Exercise,
+  type WorkoutEntry,
 } from "../types/exerciseTypes";
+import type { WorkoutLocationState } from "./Workout";
+import { PresetList } from "../components/workout/PresetList";
+import { Loader } from "../components/Loader";
 import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
@@ -19,7 +24,7 @@ import {
   Segmented,
 } from "../components/ui";
 
-type ExercisesView = "own" | "pool" | null;
+type ExercisesView = "own" | "pool" | "presets" | null;
 export type ModalType = "category" | "add" | "edit" | "delete" | null;
 
 export function Exercises() {
@@ -28,8 +33,15 @@ export function Exercises() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeTable, setActiveTable] = useState<ExercisesView>("own");
+  // Workout in progress; null until fetched for the presets tab
+  const [draft, setDraft] = useState<WorkoutEntry[] | null>(null);
 
   const { showRibbon } = useRibbon();
+  const navigate = useNavigate();
+
+  function openWorkout(state: WorkoutLocationState) {
+    navigate("/workout", { state });
+  }
 
   const columns = useMemo(() => {
     const columnOrder =
@@ -53,7 +65,8 @@ export function Exercises() {
 
       let fetchedExercises: Exercise[] = [];
 
-      if (activeTable === "own") {
+      // Presets need the own library for their reps ranges
+      if (activeTable === "own" || activeTable === "presets") {
         const res = await api.get("/exercises");
         fetchedExercises = res.data;
       } else if (activeTable === "pool") {
@@ -82,10 +95,23 @@ export function Exercises() {
     }
   }
 
+  async function fetchDraft() {
+    try {
+      const res = await api.get<WorkoutEntry[]>("/history/draft");
+      setDraft(res.data);
+    } catch {
+      showRibbon("error", "Could not fetch workout draft.");
+      setDraft([]);
+    }
+  }
+
   useEffect(() => {
     fetchExercises();
     fetchCategories();
+    if (activeTable === "presets") fetchDraft();
   }, [activeTable]);
+
+  const hasDraft = !!draft && draft.length > 0;
 
   return (
     <Page>
@@ -95,7 +121,9 @@ export function Exercises() {
           <PageLede>
             {activeTable === "pool"
               ? "Every exercise shared across Bikkanto, with how many athletes use it."
-              : "Your library. Rep ranges here decide what a rolled workout asks of you."}
+              : activeTable === "presets"
+                ? "Workouts you saved. Open one to see, edit or delete it."
+                : "Your library. Rep ranges here decide what a rolled workout asks of you."}
           </PageLede>
         </div>
         <Segmented role="tablist" aria-label="Table view">
@@ -106,6 +134,14 @@ export function Exercises() {
             onClick={() => setActiveTable("own")}
           >
             My exercises
+          </SegmentButton>
+          <SegmentButton
+            role="tab"
+            aria-selected={activeTable === "presets"}
+            $active={activeTable === "presets"}
+            onClick={() => setActiveTable("presets")}
+          >
+            My presets
           </SegmentButton>
           <SegmentButton
             role="tab"
@@ -137,6 +173,17 @@ export function Exercises() {
           isLoading={isLoading}
         />
       )}
+      {activeTable === "presets" &&
+        (draft === null ? (
+          <Loader />
+        ) : (
+          <PresetList
+            exercises={exercises}
+            onCreate={() => openWorkout({ create: true })}
+            inProgressPresetId={hasDraft ? (draft[0].preset_id ?? null) : null}
+            onDraftDiscarded={() => setDraft([])}
+          />
+        ))}
     </Page>
   );
 }

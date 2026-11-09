@@ -283,6 +283,7 @@ interface Props {
   // Used to show each entry's reps range for its reps difficulty
   exercises: Exercise[];
   onCreate: () => void;
+  // Without it the list is browse-only and no Select button is shown
   onSelect?: (preset: Preset) => void;
   onEdit?: (preset: Preset) => void;
   // When set, Select is disabled and this is shown as its tooltip
@@ -443,17 +444,19 @@ export function PresetList({
                     {count} {count === 1 ? "exercise" : "exercises"}
                   </BoardNote>
                 </Toggle>
-                <SelectWrap title={selectDisabledReason}>
-                  <Button
-                    type="button"
-                    $variant="primary"
-                    onClick={() => onSelect?.(preset)}
-                    disabled={!!selectDisabledReason}
-                    aria-label={`Select preset ${preset.preset_name}`}
-                  >
-                    Select
-                  </Button>
-                </SelectWrap>
+                {onSelect && (
+                  <SelectWrap title={selectDisabledReason}>
+                    <Button
+                      type="button"
+                      $variant="primary"
+                      onClick={() => onSelect(preset)}
+                      disabled={!!selectDisabledReason}
+                      aria-label={`Select preset ${preset.preset_name}`}
+                    >
+                      Select
+                    </Button>
+                  </SelectWrap>
+                )}
                 <ChevronDown size={20} aria-hidden="true" />
               </Header>
               {isOpen && (
