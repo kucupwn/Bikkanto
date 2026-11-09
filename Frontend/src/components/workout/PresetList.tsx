@@ -418,6 +418,11 @@ export function PresetList({
           const count = preset.exercises.length;
           const isInProgress = preset.id === inProgressPresetId;
           const isEditing = preset.id === editingId;
+          const deleteDisabledReason = isInProgress
+            ? "Finish or discard your workout in progress first"
+            : isEditing
+              ? "Save or cancel your changes first"
+              : undefined;
 
           return (
             <Item key={preset.id} $editing={isEditing}>
@@ -449,17 +454,11 @@ export function PresetList({
               {isOpen && (
                 <Detail id={detailId} $editing={isEditing}>
                   <Actions>
-                    <ActionWrap
-                      title={
-                        isInProgress
-                          ? "Finish or discard your workout in progress first"
-                          : undefined
-                      }
-                    >
+                    <ActionWrap title={deleteDisabledReason}>
                       <BoardDanger
                         type="button"
                         onClick={() => requestDelete(preset)}
-                        disabled={isInProgress}
+                        disabled={!!deleteDisabledReason}
                         aria-label={`Delete preset ${preset.preset_name}`}
                       >
                         <Trash2 size={18} aria-hidden="true" />
