@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
-import { ChevronDown, Pencil, Shuffle, Trash2 } from "lucide-react";
+import styled, { css, keyframes } from "styled-components";
+import {
+  ChevronDown,
+  Pencil,
+  Plus,
+  Save,
+  Shuffle,
+  Trash2,
+  X,
+} from "lucide-react";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
@@ -38,8 +46,21 @@ const Items = styled.ul`
   padding: 0;
 `;
 
-const Item = styled.li`
+/* The edit outline is an overlay so the header's background can't cover it. */
+const Item = styled.li<{ $editing: boolean }>`
+  position: relative;
   border-bottom: 1px solid var(--board-line);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border: 2px solid
+      ${({ $editing }) => ($editing ? "var(--amber)" : "transparent")};
+    transition: border-color 0.15s ease;
+  }
 
   &:last-child {
     border-bottom: 0;
@@ -133,9 +154,24 @@ const unfold = keyframes`
   to { opacity: 1; transform: none; }
 `;
 
-const Detail = styled.div`
+/* In edit mode the first column widens to fit the remove button. */
+const Detail = styled.div<{ $editing: boolean }>`
   border-top: 1px solid var(--board-line);
   animation: ${unfold} 0.22s var(--ease-out);
+
+  ${({ $editing }) =>
+    $editing &&
+    css`
+      ${Head}, ${Row} {
+        grid-template-columns: 5.5rem minmax(0, 1fr) 12.5rem 8.5rem;
+      }
+
+      @media (max-width: 700px) {
+        ${Row} {
+          grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+        }
+      }
+    `}
 `;
 
 const Actions = styled.div`
@@ -146,11 +182,62 @@ const Actions = styled.div`
   border-bottom: 1px solid var(--board-line);
 
   @media (max-width: 700px) {
+    flex-wrap: wrap;
     padding: 0.75rem 1rem;
 
     > * {
       flex: 1;
     }
+  }
+`;
+
+/* Add and Save sit at the far end; on phones they take their own line. */
+const EditActions = styled.span`
+  display: flex;
+  gap: 0.75rem;
+  margin-left: auto;
+
+  @media (max-width: 700px) {
+    flex-basis: 100%;
+    margin-left: 0;
+
+    > * {
+      flex: 1;
+    }
+  }
+`;
+
+const NoCell = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+const RemoveButton = styled.button`
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--red);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: var(--red-solid);
+    border-color: var(--red-solid);
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
   }
 `;
 
@@ -223,6 +310,7 @@ export function PresetList({
   const [presets, setPresets] = useState<Preset[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [openIds, setOpenIds] = useState<Set<number>>(new Set());
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
     null,
   );
@@ -278,6 +366,17 @@ export function PresetList({
       else next.add(presetId);
       return next;
     });
+    // Collapsing a preset also leaves its edit mode
+    if (editingId === presetId) setEditingId(null);
+  }
+
+  function toggleEdit(preset: Preset) {
+    if (editingId === preset.id) {
+      setEditingId(null);
+      return;
+    }
+    setEditingId(preset.id);
+    onEdit?.(preset);
   }
 
   if (isLoading) return <Loader />;
@@ -318,9 +417,10 @@ export function PresetList({
           const detailId = `preset-${preset.id}-exercises`;
           const count = preset.exercises.length;
           const isInProgress = preset.id === inProgressPresetId;
+          const isEditing = preset.id === editingId;
 
           return (
-            <Item key={preset.id}>
+            <Item key={preset.id} $editing={isEditing}>
               <Header $open={isOpen}>
                 <Toggle
                   type="button"
@@ -347,7 +447,7 @@ export function PresetList({
                 <ChevronDown size={20} aria-hidden="true" />
               </Header>
               {isOpen && (
-                <Detail id={detailId}>
+                <Detail id={detailId} $editing={isEditing}>
                   <Actions>
                     <ActionWrap
                       title={
@@ -368,12 +468,39 @@ export function PresetList({
                     </ActionWrap>
                     <BoardGhost
                       type="button"
-                      onClick={() => onEdit?.(preset)}
-                      aria-label={`Edit preset ${preset.preset_name}`}
+                      onClick={() => toggleEdit(preset)}
+                      aria-label={
+                        isEditing
+                          ? `Cancel editing preset ${preset.preset_name}`
+                          : `Edit preset ${preset.preset_name}`
+                      }
                     >
-                      <Pencil size={18} aria-hidden="true" />
-                      Edit
+                      {isEditing ? (
+                        <X size={18} aria-hidden="true" />
+                      ) : (
+                        <Pencil size={18} aria-hidden="true" />
+                      )}
+                      {isEditing ? "Cancel" : "Edit"}
                     </BoardGhost>
+                    {isEditing && (
+                      <EditActions>
+                        <BoardGhost
+                          type="button"
+                          aria-label={`Add exercise to preset ${preset.preset_name}`}
+                        >
+                          <Plus size={18} aria-hidden="true" />
+                          Add
+                        </BoardGhost>
+                        <Button
+                          type="button"
+                          $variant="primary"
+                          aria-label={`Save preset ${preset.preset_name}`}
+                        >
+                          <Save size={18} aria-hidden="true" />
+                          Save
+                        </Button>
+                      </EditActions>
+                    )}
                   </Actions>
                   <Head aria-hidden="true" $withReroll={false}>
                     <span>No</span>
@@ -384,7 +511,19 @@ export function PresetList({
                   <Rows>
                     {preset.exercises.map((entry, index) => (
                       <Row key={entry.id} $withReroll={false}>
-                        <No>{String(index + 1).padStart(2, "0")}</No>
+                        {isEditing ? (
+                          <NoCell>
+                            <No>{String(index + 1).padStart(2, "0")}</No>
+                            <RemoveButton
+                              type="button"
+                              aria-label={`Remove ${entry.exercise_name} from preset`}
+                            >
+                              <X size={16} aria-hidden="true" />
+                            </RemoveButton>
+                          </NoCell>
+                        ) : (
+                          <No>{String(index + 1).padStart(2, "0")}</No>
+                        )}
                         <Name>
                           <FlapText
                             text={entry.exercise_name}
