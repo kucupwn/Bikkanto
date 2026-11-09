@@ -423,6 +423,11 @@ export function PresetList({
             : isEditing
               ? "Save or cancel your changes first"
               : undefined;
+          // Cancel stays available so an open edit can always be left
+          const editDisabledReason =
+            isInProgress && !isEditing
+              ? "Finish or discard your workout in progress first"
+              : undefined;
 
           return (
             <Item key={preset.id} $editing={isEditing}>
@@ -465,22 +470,25 @@ export function PresetList({
                         Delete
                       </BoardDanger>
                     </ActionWrap>
-                    <BoardGhost
-                      type="button"
-                      onClick={() => toggleEdit(preset)}
-                      aria-label={
-                        isEditing
-                          ? `Cancel editing preset ${preset.preset_name}`
-                          : `Edit preset ${preset.preset_name}`
-                      }
-                    >
-                      {isEditing ? (
-                        <X size={18} aria-hidden="true" />
-                      ) : (
-                        <Pencil size={18} aria-hidden="true" />
-                      )}
-                      {isEditing ? "Cancel" : "Edit"}
-                    </BoardGhost>
+                    <ActionWrap title={editDisabledReason}>
+                      <BoardGhost
+                        type="button"
+                        onClick={() => toggleEdit(preset)}
+                        disabled={!!editDisabledReason}
+                        aria-label={
+                          isEditing
+                            ? `Cancel editing preset ${preset.preset_name}`
+                            : `Edit preset ${preset.preset_name}`
+                        }
+                      >
+                        {isEditing ? (
+                          <X size={18} aria-hidden="true" />
+                        ) : (
+                          <Pencil size={18} aria-hidden="true" />
+                        )}
+                        {isEditing ? "Cancel" : "Edit"}
+                      </BoardGhost>
+                    </ActionWrap>
                     {isEditing && (
                       <EditActions>
                         <BoardGhost
