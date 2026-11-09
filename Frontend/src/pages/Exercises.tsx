@@ -11,17 +11,20 @@ import {
 import type { WorkoutLocationState } from "./Workout";
 import { PresetList } from "../components/presets/PresetList";
 import { Loader } from "../components/Loader";
+import { Plus } from "lucide-react";
 import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
 import { PoolExerciseTable } from "../components/exercise/PoolExerciseTable";
 import {
+  Button,
   Page,
   PageHeader,
   PageLede,
   PageTitle,
   SegmentButton,
   Segmented,
+  Toolbar,
 } from "../components/ui";
 
 type ExercisesView = "own" | "pool" | "presets" | null;
@@ -173,13 +176,23 @@ export function Exercises() {
           isLoading={isLoading}
         />
       )}
+      {activeTable === "presets" && (
+        <Toolbar>
+          <Button
+            $variant="primary"
+            onClick={() => openWorkout({ create: true, creationMode: "preset" })}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Create preset
+          </Button>
+        </Toolbar>
+      )}
       {activeTable === "presets" &&
         (draft === null ? (
           <Loader />
         ) : (
           <PresetList
             exercises={exercises}
-            onCreate={() => openWorkout({ create: true })}
             inProgressPresetId={hasDraft ? (draft[0].preset_id ?? null) : null}
             onDraftDiscarded={() => setDraft([])}
           />

@@ -234,6 +234,15 @@ export const ButtonRow = styled.div<{ $align?: "start" | "end" | "center" }>`
     $align === "end" ? "flex-end" : $align === "center" ? "center" : "flex-start"};
 `;
 
+/* Action row above a page's main board or table */
+export const Toolbar = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
 /* Segmented control: a standard radio group */
 export const Segmented = styled.div`
   display: inline-flex;

@@ -282,7 +282,8 @@ const BoardDanger = styled(Button)`
 interface Props {
   // Used to show each entry's reps range for its reps difficulty
   exercises: Exercise[];
-  onCreate: () => void;
+  // Without it the empty state shows a hint instead of a create button
+  onCreate?: () => void;
   // Without it the list is browse-only and no Select button is shown
   onSelect?: (preset: Preset) => void;
   onEdit?: (preset: Preset) => void;
@@ -391,15 +392,19 @@ export function PresetList({
         </BoardHead>
         <EmptyBody>
           <FlapText text="No presets" cells size="md" tone="muted" />
-          <p>
-            Accept a workout, then use Save to presets to keep it here for
-            next time.
-          </p>
-          {!selectDisabledReason && (
-            <Button $variant="primary" onClick={onCreate}>
-              <Shuffle size={18} aria-hidden="true" />
-              Create a workout
-            </Button>
+          {onCreate ? (
+            <>
+              <p>
+                Accept a workout, then use Save to presets to keep it here for
+                next time.
+              </p>
+              <Button $variant="primary" onClick={onCreate}>
+                <Shuffle size={18} aria-hidden="true" />
+                Create a workout
+              </Button>
+            </>
+          ) : (
+            <p>No presets yet. Use Create preset to build your first one.</p>
           )}
         </EmptyBody>
       </EmptyBoard>

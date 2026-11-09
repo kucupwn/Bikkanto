@@ -7,16 +7,8 @@ import { DataTable } from "../DataTable";
 import { CategoryModal } from "./CategoryModal";
 import { FullExerciseModal } from "./FullExerciseModal";
 import type { Category, Exercise } from "../../types/exerciseTypes";
-import { Board, Button } from "../ui";
+import { Board, Button, Toolbar } from "../ui";
 import { FlapText } from "../FlapText";
-
-const Toolbar = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-`;
 
 const Spacer = styled.div`
   flex: 1;

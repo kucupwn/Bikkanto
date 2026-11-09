@@ -186,8 +186,11 @@ export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
 export type WorkoutCreationType = "random" | "preset" | null;
 
 // Lets other pages (e.g. the presets tab on Exercises) open the workout flow
-// at the create settings.
-export type WorkoutLocationState = { create: true } | null;
+// at the create settings, optionally with a creation mode already picked.
+export type WorkoutLocationState = {
+  create: true;
+  creationMode?: "random" | "preset";
+} | null;
 
 export function Workout() {
   const [exerciseCount, setExerciseCount] = useState<number | "">("");
@@ -447,7 +450,10 @@ export function Workout() {
     const state = location.state as WorkoutLocationState;
     if (!state) return;
 
-    if (state.create) openCreate();
+    if (state.create) {
+      if (state.creationMode) setWorkoutCreationMode(state.creationMode);
+      openCreate();
+    }
 
     navigate(location.pathname, { replace: true, state: null });
   }, []);
