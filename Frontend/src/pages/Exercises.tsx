@@ -9,7 +9,7 @@ import {
   type WorkoutEntry,
 } from "../types/exerciseTypes";
 import type { WorkoutLocationState } from "./Workout";
-import { PresetList } from "../components/workout/PresetList";
+import { PresetList } from "../components/presets/PresetList";
 import { Loader } from "../components/Loader";
 import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";

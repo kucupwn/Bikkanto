@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import type {
   Exercise,
   RepsDifficulty,
@@ -25,10 +25,11 @@ import {
 import type { ViewModes, WorkoutCreationType } from "../../pages/Workout";
 import { type ProperySelection } from "./WorkoutSettings";
 import HistoryDatePicker from "./DatePicker";
-import { PresetNameModal } from "./PresetNameModal";
+import { PresetNameModal } from "../presets/PresetNameModal";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
+import { Head, Name, No, Reps, Row, Rows, Tier } from "../BoardRows";
 import {
   Board,
   BoardHead,
@@ -52,116 +53,6 @@ const Layout = styled.div<{ $withLog: boolean }>`
   @media (max-width: 1100px) {
     grid-template-columns: minmax(0, 1fr);
   }
-`;
-
-const columns = ({ $withReroll }: { $withReroll: boolean }) =>
-  $withReroll
-    ? "3rem minmax(0, 1fr) 12.5rem 8.5rem 40px"
-    : "3rem minmax(0, 1fr) 12.5rem 8.5rem";
-
-export const Head = styled.div<{ $withReroll: boolean }>`
-  display: grid;
-  grid-template-columns: ${columns};
-  gap: 1rem;
-  padding: 0.625rem 1.25rem;
-  border-bottom: 1px solid var(--board-line);
-  font-family: var(--font-board);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--amber);
-
-  > :nth-child(4) {
-    text-align: right;
-  }
-
-  @media (max-width: 700px) {
-    display: none;
-  }
-`;
-
-const lampOn = keyframes`
-  from { background-color: rgba(255, 176, 0, 0.16); }
-  to { background-color: transparent; }
-`;
-
-/* A row that lands or changes lights up like a board row being updated. */
-export const Row = styled.li<{ $withReroll: boolean }>`
-  animation: ${lampOn} 1.1s var(--ease-out);
-  display: grid;
-  grid-template-columns: ${columns};
-  align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 1.25rem;
-  border-bottom: 1px solid var(--board-line);
-
-  &:last-child {
-    border-bottom: 0;
-  }
-
-  @media (max-width: 700px) {
-    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
-    grid-template-areas:
-      "no name reps"
-      "no tier reroll";
-    gap: 0.25rem 0.75rem;
-    padding: 1rem;
-
-    > :nth-child(1) { grid-area: no; align-self: start; }
-    > :nth-child(2) { grid-area: name; }
-    > :nth-child(3) { grid-area: tier; }
-    > :nth-child(4) { grid-area: reps; }
-    > :nth-child(5) { grid-area: reroll; justify-self: end; }
-  }
-`;
-
-export const No = styled.span`
-  font-family: var(--font-board);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--board-ink-2);
-  font-variant-numeric: tabular-nums;
-`;
-
-export const Name = styled.div`
-  min-width: 0;
-  font-family: var(--font-board);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1.2;
-
-  small {
-    display: block;
-    margin-top: 2px;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: var(--track);
-    color: var(--board-ink-2);
-    text-transform: uppercase;
-  }
-
-  @media (max-width: 700px) {
-    font-size: 20px;
-  }
-`;
-
-export const Tier = styled.span`
-  font-family: var(--font-board);
-  font-size: 15px;
-  letter-spacing: var(--track);
-  text-transform: uppercase;
-  color: var(--board-ink-2);
-
-  b {
-    color: var(--board-ink);
-    font-weight: 600;
-  }
-`;
-
-export const Reps = styled.div`
-  justify-self: end;
 `;
 
 const RepsStepper = styled.div`
@@ -245,12 +136,6 @@ const Reroll = styled.button`
   svg {
     transition: transform 0.3s var(--ease-out);
   }
-`;
-
-export const Rows = styled.ol`
-  list-style: none;
-  margin: 0;
-  padding: 0;
 `;
 
 const BoardFoot = styled.div`

@@ -14,7 +14,7 @@ import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
 import { Loader } from "../Loader";
 import { Board, BoardHead, BoardNote, BoardTitle, Button } from "../ui";
-import { Head, Name, No, Reps, Row, Rows, Tier } from "./SummaryTable";
+import { Head, Name, No, Reps, Row, Rows, Tier } from "../BoardRows";
 import type { Preset, PresetExercise } from "../../types/presetTypes";
 import type { Exercise, WorkoutEntry } from "../../types/exerciseTypes";
 import { PresetDeleteModal } from "./PresetDeleteModal";

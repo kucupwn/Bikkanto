@@ -15,7 +15,7 @@ import {
 } from "../components/workout/WorkoutSettings";
 import { SummaryTable } from "../components/workout/SummaryTable";
 import { StoredWorkout } from "../components/workout/StoredWorkout";
-import { PresetList } from "../components/workout/PresetList";
+import { PresetList } from "../components/presets/PresetList";
 import type { WorkoutHistoryCreate } from "../types/historyTypes";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
