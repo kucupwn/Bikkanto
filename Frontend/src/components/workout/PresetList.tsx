@@ -7,8 +7,8 @@ import { FlapText } from "../FlapText";
 import { Loader } from "../Loader";
 import { Board, BoardHead, BoardNote, BoardTitle, Button } from "../ui";
 import { Head, Name, No, Reps, Row, Rows, Tier } from "./SummaryTable";
-import type { Preset } from "../../types/presetTypes";
-import type { WorkoutEntry } from "../../types/exerciseTypes";
+import type { Preset, PresetExercise } from "../../types/presetTypes";
+import type { Exercise, WorkoutEntry } from "../../types/exerciseTypes";
 import { PresetDeleteModal } from "./PresetDeleteModal";
 
 const EmptyBoard = styled(Board)`
@@ -193,6 +193,8 @@ const BoardDanger = styled(Button)`
 `;
 
 interface Props {
+  // Used to show each entry's reps range for its reps difficulty
+  exercises: Exercise[];
   onCreate: () => void;
   onSelect?: (preset: Preset) => void;
   onEdit?: (preset: Preset) => void;
@@ -210,6 +212,7 @@ interface PendingDelete {
 }
 
 export function PresetList({
+  exercises,
   onCreate,
   onSelect,
   onEdit,
@@ -257,6 +260,16 @@ export function PresetList({
 
     fetchPresets();
   }, []);
+
+  function getRepsRange(entry: PresetExercise) {
+    const exercise = exercises.find((ex) => ex.id === entry.exercise_id);
+    if (!exercise) return null;
+
+    const min = exercise[`${entry.reps_difficulty}_min`];
+    const max = exercise[`${entry.reps_difficulty}_max`];
+
+    return `${min}-${max}`;
+  }
 
   function toggleOpen(presetId: number) {
     setOpenIds((prev) => {
@@ -382,6 +395,7 @@ export function PresetList({
                         </Name>
                         <Tier>
                           <b>{entry.difficulty}</b> · {entry.reps_difficulty}
+                          {getRepsRange(entry) && ` (${getRepsRange(entry)})`}
                         </Tier>
                         <Reps>
                           <FlapText

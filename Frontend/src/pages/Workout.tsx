@@ -578,6 +578,7 @@ export function Workout() {
 
       {!isFinished && mode === "select" && (
         <PresetList
+          exercises={exercises}
           onCreate={openCreate}
           onSelect={selectPreset}
           selectDisabledReason={
