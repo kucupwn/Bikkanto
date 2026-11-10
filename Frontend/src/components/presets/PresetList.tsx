@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { KeyboardEvent, PointerEvent } from "react";
 import styled, { css, keyframes } from "styled-components";
 import {
   ChevronDown,
+  GripVertical,
   Pencil,
   Plus,
   Save,
@@ -154,7 +156,8 @@ const unfold = keyframes`
   to { opacity: 1; transform: none; }
 `;
 
-/* In edit mode the first column widens to fit the remove button. */
+/* In edit mode the first column widens to fit the drag handle and the
+   remove button. */
 const Detail = styled.div<{ $editing: boolean }>`
   border-top: 1px solid var(--board-line);
   animation: ${unfold} 0.22s var(--ease-out);
@@ -163,15 +166,70 @@ const Detail = styled.div<{ $editing: boolean }>`
     $editing &&
     css`
       ${Head}, ${Row} {
-        grid-template-columns: 5.5rem minmax(0, 1fr) 12.5rem 8.5rem;
+        grid-template-columns: 7.5rem minmax(0, 1fr) 12.5rem 8.5rem;
       }
 
       @media (max-width: 700px) {
         ${Row} {
-          grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+          grid-template-columns: 6.5rem minmax(0, 1fr) auto;
         }
       }
     `}
+`;
+
+/* In edit mode a row can be grabbed (anywhere with a mouse, by the handle on
+   touch) and dragged to a new place. */
+const SortableRow = styled(Row)<{ $sortable: boolean; $dragging: boolean }>`
+  position: relative;
+  transition: background-color 0.15s ease;
+
+  ${({ $sortable }) =>
+    $sortable &&
+    css`
+      cursor: grab;
+      user-select: none;
+
+      &:hover {
+        background: var(--board-cell);
+      }
+    `}
+
+  ${({ $dragging }) =>
+    $dragging &&
+    css`
+      z-index: 1;
+      cursor: grabbing;
+      background: var(--board-cell);
+      box-shadow:
+        inset 0 0 0 2px var(--amber),
+        0 8px 24px rgba(0, 0, 0, 0.45);
+    `}
+`;
+
+const DragHandle = styled.button<{ $dragging: boolean }>`
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: ${({ $dragging }) =>
+    $dragging ? "var(--amber)" : "var(--board-ink-2)"};
+  cursor: inherit;
+  touch-action: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--board-ink);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
 `;
 
 const Actions = styled.div`
@@ -316,6 +374,11 @@ export function PresetList({
   const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
     null,
   );
+  // Working copy of the edited preset's exercises; Cancel throws it away
+  const [draft, setDraft] = useState<PresetExercise[]>([]);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const rowEls = useRef<Map<number, HTMLLIElement>>(new Map());
   const { showRibbon } = useRibbon();
 
   // Delete is disabled while a workout is in progress, but if a draft from
@@ -369,16 +432,110 @@ export function PresetList({
       return next;
     });
     // Collapsing a preset also leaves its edit mode
-    if (editingId === presetId) setEditingId(null);
+    if (editingId === presetId) stopEditing();
+  }
+
+  function stopEditing() {
+    setEditingId(null);
+    setDraft([]);
+    setDraggingId(null);
   }
 
   function toggleEdit(preset: Preset) {
     if (editingId === preset.id) {
-      setEditingId(null);
+      stopEditing();
       return;
     }
     setEditingId(preset.id);
+    setDraft(preset.exercises);
+    setDraggingId(null);
     onEdit?.(preset);
+  }
+
+  function moveEntry(from: number, to: number) {
+    setDraft((prev) => {
+      if (to < 0 || to >= prev.length || from === to) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  }
+
+  function handleDragStart(e: PointerEvent<HTMLLIElement>, entryId: number) {
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement;
+    const onHandle = !!target.closest("[data-drag-handle]");
+    // Touch drags only from the handle so the page can still scroll
+    if (!onHandle && e.pointerType === "touch") return;
+    // Other buttons in the row (remove) keep their own click
+    if (!onHandle && target.closest("button")) return;
+
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setDraggingId(entryId);
+  }
+
+  // Swaps the dragged row past a neighbour once the pointer crosses its middle
+  function handleDragMove(e: PointerEvent<HTMLLIElement>) {
+    if (draggingId === null) return;
+    const index = draft.findIndex((entry) => entry.id === draggingId);
+    if (index === -1) return;
+
+    let to = index;
+    while (to > 0) {
+      const el = rowEls.current.get(draft[to - 1].id);
+      if (!el) break;
+      const rect = el.getBoundingClientRect();
+      if (e.clientY >= rect.top + rect.height / 2) break;
+      to--;
+    }
+    while (to === index && to < draft.length - 1) {
+      const el = rowEls.current.get(draft[to + 1].id);
+      if (!el) break;
+      const rect = el.getBoundingClientRect();
+      if (e.clientY <= rect.top + rect.height / 2) break;
+      to++;
+    }
+    if (to !== index) moveEntry(index, to);
+  }
+
+  function handleDragEnd() {
+    setDraggingId(null);
+  }
+
+  function handleHandleKey(e: KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    moveEntry(index, e.key === "ArrowUp" ? index - 1 : index + 1);
+  }
+
+  function isDraftChanged(preset: Preset) {
+    return draft.some((entry, i) => entry.id !== preset.exercises[i]?.id);
+  }
+
+  async function savePreset(preset: Preset) {
+    setIsSaving(true);
+    try {
+      const res = await api.put<Preset>(`/presets/${preset.id}`, {
+        preset_name: preset.preset_name,
+        // List order becomes each exercise's position
+        exercises: draft.map(({ exercise_id, reps_difficulty, reps }) => ({
+          exercise_id,
+          reps_difficulty,
+          reps,
+        })),
+      });
+      setPresets((prev) =>
+        prev.map((p) => (p.id === preset.id ? res.data : p)),
+      );
+      stopEditing();
+      showRibbon("success", "Preset saved.");
+    } catch {
+      showRibbon("error", "Could not save preset.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   if (isLoading) return <Loader />;
@@ -506,14 +663,24 @@ export function PresetList({
                           <Plus size={18} aria-hidden="true" />
                           Add
                         </BoardGhost>
-                        <Button
-                          type="button"
-                          $variant="primary"
-                          aria-label={`Save preset ${preset.preset_name}`}
+                        <ActionWrap
+                          title={
+                            isDraftChanged(preset)
+                              ? undefined
+                              : "No changes to save"
+                          }
                         >
-                          <Save size={18} aria-hidden="true" />
-                          Save
-                        </Button>
+                          <Button
+                            type="button"
+                            $variant="primary"
+                            onClick={() => savePreset(preset)}
+                            disabled={isSaving || !isDraftChanged(preset)}
+                            aria-label={`Save preset ${preset.preset_name}`}
+                          >
+                            <Save size={18} aria-hidden="true" />
+                            {isSaving ? "Saving" : "Save"}
+                          </Button>
+                        </ActionWrap>
                       </EditActions>
                     )}
                   </Actions>
@@ -524,10 +691,35 @@ export function PresetList({
                     <span>Reps</span>
                   </Head>
                   <Rows>
-                    {preset.exercises.map((entry, index) => (
-                      <Row key={entry.id} $withReroll={false}>
+                    {(isEditing ? draft : preset.exercises).map((entry, index) => (
+                      <SortableRow
+                        key={entry.id}
+                        $withReroll={false}
+                        $sortable={isEditing}
+                        $dragging={isEditing && draggingId === entry.id}
+                        ref={(el: HTMLLIElement | null) => {
+                          if (el) rowEls.current.set(entry.id, el);
+                          else rowEls.current.delete(entry.id);
+                        }}
+                        {...(isEditing && {
+                          onPointerDown: (e: PointerEvent<HTMLLIElement>) =>
+                            handleDragStart(e, entry.id),
+                          onPointerMove: handleDragMove,
+                          onPointerUp: handleDragEnd,
+                          onPointerCancel: handleDragEnd,
+                        })}
+                      >
                         {isEditing ? (
                           <NoCell>
+                            <DragHandle
+                              type="button"
+                              data-drag-handle
+                              $dragging={draggingId === entry.id}
+                              onKeyDown={(e) => handleHandleKey(e, index)}
+                              aria-label={`Reorder ${entry.exercise_name}, position ${index + 1} of ${draft.length}. Use arrow keys to move.`}
+                            >
+                              <GripVertical size={18} aria-hidden="true" />
+                            </DragHandle>
                             <No>{String(index + 1).padStart(2, "0")}</No>
                             <RemoveButton
                               type="button"
@@ -562,7 +754,7 @@ export function PresetList({
                             tone="amber"
                           />
                         </Reps>
-                      </Row>
+                      </SortableRow>
                     ))}
                   </Rows>
                 </Detail>
