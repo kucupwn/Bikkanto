@@ -32,6 +32,7 @@ import type { Preset, PresetExercise } from "../../types/presetTypes";
 import type { Exercise, WorkoutEntry } from "../../types/exerciseTypes";
 import { PresetDeleteModal } from "./PresetDeleteModal";
 import { PresetAddExerciseModal } from "./PresetAddExerciseModal";
+import { PresetRemoveExerciseModal } from "./PresetRemoveExerciseModal";
 
 const EmptyBoard = styled(Board)`
   min-height: 320px;
@@ -456,6 +457,9 @@ export function PresetList({
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
+  const [pendingRemove, setPendingRemove] = useState<PresetExercise | null>(
+    null,
+  );
   // Added rows have no server id yet, so they get negative ones until saved
   const nextTempId = useRef<number>(-1);
   const rowEls = useRef<Map<number, HTMLLIElement>>(new Map());
@@ -556,6 +560,12 @@ export function PresetList({
     setDraft([]);
     setDraggingId(null);
     setIsAddOpen(false);
+    setPendingRemove(null);
+  }
+
+  function removeEntry(entryId: number) {
+    setDraft((prev) => prev.filter((entry) => entry.id !== entryId));
+    setPendingRemove(null);
   }
 
   // New rows start at the easy tier's lowest count
@@ -811,7 +821,9 @@ export function PresetList({
                           title={
                             !isDraftChanged(preset)
                               ? "No changes to save"
-                              : !isDraftValid()
+                              : draft.length === 0
+                                ? "A preset needs at least one exercise"
+                                : !isDraftValid()
                                 ? "Reps can't be below the easy minimum"
                                 : undefined
                           }
@@ -823,6 +835,7 @@ export function PresetList({
                             disabled={
                               isSaving ||
                               !isDraftChanged(preset) ||
+                              draft.length === 0 ||
                               !isDraftValid()
                             }
                             aria-label={`Save preset ${preset.preset_name}`}
@@ -873,6 +886,7 @@ export function PresetList({
                             <No>{String(index + 1).padStart(2, "0")}</No>
                             <RemoveButton
                               type="button"
+                              onClick={() => setPendingRemove(entry)}
                               aria-label={`Remove ${entry.exercise_name} from preset`}
                             >
                               <X size={16} aria-hidden="true" />
@@ -960,6 +974,16 @@ export function PresetList({
           usedIds={new Set(draft.map((entry) => entry.exercise_id))}
           onClose={() => setIsAddOpen(false)}
           onAdd={addEntry}
+        />
+      )}
+      {pendingRemove && (
+        <PresetRemoveExerciseModal
+          entry={pendingRemove}
+          presetName={
+            presets.find((p) => p.id === editingId)?.preset_name ?? "preset"
+          }
+          onClose={() => setPendingRemove(null)}
+          onRemove={removeEntry}
         />
       )}
     </Board>
