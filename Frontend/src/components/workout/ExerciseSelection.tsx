@@ -86,7 +86,7 @@ export function ExerciseSelection({
     onChange({
       ...value,
       categoryId,
-      ...(workoutCreationMode === "preset"
+      ...(workoutCreationMode === "custom"
         ? {
             exerciseId: getFirstMatchingExerciseId(
               categoryId,
@@ -110,7 +110,7 @@ export function ExerciseSelection({
     onChange({
       ...value,
       exerciseDifficulty: difficulty,
-      ...(workoutCreationMode === "preset"
+      ...(workoutCreationMode === "custom"
         ? {
             exerciseId: getFirstMatchingExerciseId(
               value.categoryId,
@@ -144,7 +144,7 @@ export function ExerciseSelection({
             </option>
           ))}
         </Select>
-        {workoutCreationMode === "preset" && (
+        {workoutCreationMode === "custom" && (
           <Select
             name="exercise-select"
             aria-label={`Exercise ${currentCount}`}

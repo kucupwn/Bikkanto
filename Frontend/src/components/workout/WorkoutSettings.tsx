@@ -241,11 +241,11 @@ export function WorkoutSettings({
           </SegmentButton>
           <SegmentButton
             role="radio"
-            aria-checked={workoutCreationMode === "preset"}
-            $active={workoutCreationMode === "preset"}
-            onClick={() => setWorkoutCreationMode("preset")}
+            aria-checked={workoutCreationMode === "custom"}
+            $active={workoutCreationMode === "custom"}
+            onClick={() => setWorkoutCreationMode("custom")}
           >
-            Preset
+            Custom
           </SegmentButton>
         </Segmented>
         <InfoTooltip
@@ -256,7 +256,7 @@ export function WorkoutSettings({
               chosen category, difficulty and reps difficulty.
               <br />
               <br />
-              <strong>Preset</strong> lets you choose each exercise yourself;
+              <strong>Custom</strong> lets you choose each exercise yourself;
               category and difficulty filter the list.
             </>
           }
@@ -264,7 +264,7 @@ export function WorkoutSettings({
       </ModeRow>
 
       {workoutCreationMode === null ? (
-        <Empty>Choose Random or Preset to start building.</Empty>
+        <Empty>Choose Random or Custom to start building.</Empty>
       ) : (
         <>
           <Grid>
@@ -379,7 +379,7 @@ export function WorkoutSettings({
                 $block
                 onClick={onGetWorkout}
               >
-                {workoutCreationMode === "preset" ? (
+                {workoutCreationMode === "custom" ? (
                   <>
                     <ArrowRight size={20} aria-hidden="true" />
                     Get

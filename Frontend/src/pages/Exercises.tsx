@@ -180,7 +180,7 @@ export function Exercises() {
         <Toolbar>
           <Button
             $variant="primary"
-            onClick={() => openWorkout({ create: true, creationMode: "preset" })}
+            onClick={() => openWorkout({ create: true, creationMode: "custom" })}
           >
             <Plus size={18} aria-hidden="true" />
             Create preset

@@ -184,13 +184,13 @@ const ledes: Record<string, string> = {
 };
 
 export type ViewModes = "settings" | "preview" | "stored" | "select" | null;
-export type WorkoutCreationType = "random" | "preset" | null;
+export type WorkoutCreationType = "random" | "custom" | null;
 
 // Lets other pages (e.g. the presets tab on Exercises) open the workout flow
 // at the create settings, optionally with a creation mode already picked.
 export type WorkoutLocationState = {
   create: true;
-  creationMode?: "random" | "preset";
+  creationMode?: "random" | "custom";
 } | null;
 
 export function Workout() {
@@ -217,7 +217,7 @@ export function Workout() {
   const safeCycles = typeof cycles == "number" ? cycles : 0;
   const origin: WorkoutOrigin = selectedPreset
     ? "preset"
-    : workoutCreationMode === "preset"
+    : workoutCreationMode === "custom"
       ? "custom"
       : "random";
 
@@ -334,7 +334,7 @@ export function Workout() {
 
     const rolledWorkout: WorkoutEntry[] = selectedProperties
       .map((selectedProp) => {
-        if (workoutCreationMode === "preset") {
+        if (workoutCreationMode === "custom") {
           return getPresetExercise(selectedProp);
         }
 

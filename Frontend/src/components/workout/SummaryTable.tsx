@@ -328,7 +328,7 @@ export function SummaryTable({
   const draftOrigin = entries[0]?.origin;
   const isAlreadyPreset = draftOrigin === "preset";
   const isPreset =
-    workoutCreationMode === "preset" ||
+    workoutCreationMode === "custom" ||
     origin === "preset" ||
     draftOrigin === "preset" ||
     draftOrigin === "custom";
