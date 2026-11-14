@@ -31,6 +31,7 @@ import { getRepsDifficulty } from "../../utils";
 import type { Preset, PresetExercise } from "../../types/presetTypes";
 import type { Exercise, WorkoutEntry } from "../../types/exerciseTypes";
 import { PresetDeleteModal } from "./PresetDeleteModal";
+import { PresetAddExerciseModal } from "./PresetAddExerciseModal";
 
 const EmptyBoard = styled(Board)`
   min-height: 320px;
@@ -389,6 +390,9 @@ export function PresetList({
   const [draft, setDraft] = useState<PresetExercise[]>([]);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
+  // Added rows have no server id yet, so they get negative ones until saved
+  const nextTempId = useRef<number>(-1);
   const rowEls = useRef<Map<number, HTMLLIElement>>(new Map());
   const { showRibbon } = useRibbon();
 
@@ -486,6 +490,25 @@ export function PresetList({
     setEditingId(null);
     setDraft([]);
     setDraggingId(null);
+    setIsAddOpen(false);
+  }
+
+  // New rows start at the easy tier's lowest count
+  function addEntry(exercise: Exercise) {
+    if (exercise.id === undefined) return;
+    const entry: PresetExercise = {
+      id: nextTempId.current--,
+      position: draft.length,
+      exercise_id: exercise.id,
+      exercise_name: exercise.exercise_name,
+      difficulty: exercise.difficulty,
+      category_id: exercise.category_id,
+      category_name: exercise.category_name,
+      reps_difficulty: "easy",
+      reps: exercise.easy_min,
+    };
+    setDraft((prev) => [...prev, entry]);
+    setIsAddOpen(false);
   }
 
   function toggleEdit(preset: Preset) {
@@ -558,6 +581,7 @@ export function PresetList({
   }
 
   function isDraftChanged(preset: Preset) {
+    if (draft.length !== preset.exercises.length) return true;
     return draft.some((entry, i) => {
       const saved = preset.exercises[i];
       return entry.id !== saved?.id || entry.reps !== saved.reps;
@@ -712,6 +736,7 @@ export function PresetList({
                       <EditActions>
                         <BoardGhost
                           type="button"
+                          onClick={() => setIsAddOpen(true)}
                           aria-label={`Add exercise to preset ${preset.preset_name}`}
                         >
                           <Plus size={18} aria-hidden="true" />
@@ -862,6 +887,14 @@ export function PresetList({
           draftSessionId={pendingDelete.draftSessionId}
           onClose={() => setPendingDelete(null)}
           onDeleted={handleDeleted}
+        />
+      )}
+      {isAddOpen && editingId !== null && (
+        <PresetAddExerciseModal
+          exercises={exercises}
+          usedIds={new Set(draft.map((entry) => entry.exercise_id))}
+          onClose={() => setIsAddOpen(false)}
+          onAdd={addEntry}
         />
       )}
     </Board>
