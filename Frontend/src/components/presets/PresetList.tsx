@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import type { KeyboardEvent, PointerEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, PointerEvent } from "react";
 import styled, { css, keyframes } from "styled-components";
 import {
   ChevronDown,
   GripVertical,
+  Minus,
   Pencil,
   Plus,
   Save,
@@ -16,7 +17,17 @@ import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
 import { Loader } from "../Loader";
 import { Board, BoardHead, BoardNote, BoardTitle, Button } from "../ui";
-import { Head, Name, No, Reps, Row, Rows, Tier } from "../BoardRows";
+import {
+  Head,
+  Name,
+  No,
+  Reps,
+  RepsStepper,
+  Row,
+  Rows,
+  Tier,
+} from "../BoardRows";
+import { getRepsDifficulty } from "../../utils";
 import type { Preset, PresetExercise } from "../../types/presetTypes";
 import type { Exercise, WorkoutEntry } from "../../types/exerciseTypes";
 import { PresetDeleteModal } from "./PresetDeleteModal";
@@ -414,8 +425,44 @@ export function PresetList({
     fetchPresets();
   }, []);
 
+  function getExercise(entry: PresetExercise) {
+    return exercises.find((ex) => ex.id === entry.exercise_id);
+  }
+
+  function getMinReps(entry: PresetExercise) {
+    return getExercise(entry)?.easy_min ?? 1;
+  }
+
+  // The tier follows the count, the same as on the workout board
+  function setDraftReps(entryId: number, reps: number) {
+    setDraft((prev) =>
+      prev.map((entry) => {
+        if (entry.id !== entryId) return entry;
+        const exercise = getExercise(entry);
+        return {
+          ...entry,
+          reps,
+          reps_difficulty: exercise
+            ? getRepsDifficulty(exercise, reps)
+            : entry.reps_difficulty,
+        };
+      }),
+    );
+  }
+
+  function handleRepsChange(entryId: number, e: ChangeEvent<HTMLInputElement>) {
+    setDraftReps(entryId, e.target.value === "" ? 0 : Number(e.target.value));
+  }
+
+  // Typing is left free so multi-digit counts can pass through low values;
+  // the floor is enforced once the field loses focus.
+  function handleRepsBlur(entry: PresetExercise) {
+    const minReps = getMinReps(entry);
+    if (entry.reps < minReps) setDraftReps(entry.id, minReps);
+  }
+
   function getRepsRange(entry: PresetExercise) {
-    const exercise = exercises.find((ex) => ex.id === entry.exercise_id);
+    const exercise = getExercise(entry);
     if (!exercise) return null;
 
     const min = exercise[`${entry.reps_difficulty}_min`];
@@ -468,8 +515,8 @@ export function PresetList({
     const onHandle = !!target.closest("[data-drag-handle]");
     // Touch drags only from the handle so the page can still scroll
     if (!onHandle && e.pointerType === "touch") return;
-    // Other buttons in the row (remove) keep their own click
-    if (!onHandle && target.closest("button")) return;
+    // Other controls in the row (remove, reps stepper) keep their own input
+    if (!onHandle && target.closest("button, input")) return;
 
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -511,7 +558,14 @@ export function PresetList({
   }
 
   function isDraftChanged(preset: Preset) {
-    return draft.some((entry, i) => entry.id !== preset.exercises[i]?.id);
+    return draft.some((entry, i) => {
+      const saved = preset.exercises[i];
+      return entry.id !== saved?.id || entry.reps !== saved.reps;
+    });
+  }
+
+  function isDraftValid() {
+    return draft.every((entry) => entry.reps >= getMinReps(entry));
   }
 
   async function savePreset(preset: Preset) {
@@ -665,16 +719,22 @@ export function PresetList({
                         </BoardGhost>
                         <ActionWrap
                           title={
-                            isDraftChanged(preset)
-                              ? undefined
-                              : "No changes to save"
+                            !isDraftChanged(preset)
+                              ? "No changes to save"
+                              : !isDraftValid()
+                                ? "Reps can't be below the easy minimum"
+                                : undefined
                           }
                         >
                           <Button
                             type="button"
                             $variant="primary"
                             onClick={() => savePreset(preset)}
-                            disabled={isSaving || !isDraftChanged(preset)}
+                            disabled={
+                              isSaving ||
+                              !isDraftChanged(preset) ||
+                              !isDraftValid()
+                            }
                             aria-label={`Save preset ${preset.preset_name}`}
                           >
                             <Save size={18} aria-hidden="true" />
@@ -744,15 +804,48 @@ export function PresetList({
                           {getRepsRange(entry) && ` (${getRepsRange(entry)})`}
                         </Tier>
                         <Reps>
-                          <FlapText
-                            text={entry.reps}
-                            cells
-                            size="lg"
-                            pad={2}
-                            animateOnMount
-                            delay={index * 90 + 120}
-                            tone="amber"
-                          />
+                          {isEditing ? (
+                            <RepsStepper>
+                              <button
+                                type="button"
+                                aria-label={`Fewer reps for ${entry.exercise_name}`}
+                                disabled={entry.reps <= getMinReps(entry)}
+                                onClick={() =>
+                                  setDraftReps(entry.id, entry.reps - 1)
+                                }
+                              >
+                                <Minus size={16} aria-hidden="true" />
+                              </button>
+                              <input
+                                type="number"
+                                inputMode="numeric"
+                                min={getMinReps(entry)}
+                                aria-label={`Reps for ${entry.exercise_name}`}
+                                value={entry.reps || ""}
+                                onChange={(e) => handleRepsChange(entry.id, e)}
+                                onBlur={() => handleRepsBlur(entry)}
+                              />
+                              <button
+                                type="button"
+                                aria-label={`More reps for ${entry.exercise_name}`}
+                                onClick={() =>
+                                  setDraftReps(entry.id, entry.reps + 1)
+                                }
+                              >
+                                <Plus size={16} aria-hidden="true" />
+                              </button>
+                            </RepsStepper>
+                          ) : (
+                            <FlapText
+                              text={entry.reps}
+                              cells
+                              size="lg"
+                              pad={2}
+                              animateOnMount
+                              delay={index * 90 + 120}
+                              tone="amber"
+                            />
+                          )}
                         </Reps>
                       </SortableRow>
                     ))}

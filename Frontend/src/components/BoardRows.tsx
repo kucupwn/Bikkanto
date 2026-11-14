@@ -118,3 +118,60 @@ export const Tier = styled.span`
 export const Reps = styled.div`
   justify-self: end;
 `;
+
+/* − / count / + control for editing a row's reps. */
+export const RepsStepper = styled.div`
+  display: grid;
+  grid-template-columns: 32px 3.5rem 32px;
+  height: 48px;
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius);
+  background: var(--board-cell);
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: var(--amber);
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: var(--board-ink-2);
+
+    &:hover:not(:disabled) {
+      color: var(--amber);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+    }
+  }
+
+  input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-inline: 1px solid var(--board-line);
+    background: transparent;
+    color: var(--amber);
+    font-family: var(--font-board);
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`;

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import type {
   Exercise,
-  RepsDifficulty,
   WorkoutEntry,
   WorkoutOrigin,
 } from "../../types/exerciseTypes";
@@ -29,7 +28,17 @@ import { PresetNameModal } from "../presets/PresetNameModal";
 import { api } from "../../api/api";
 import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import { FlapText } from "../FlapText";
-import { Head, Name, No, Reps, Row, Rows, Tier } from "../BoardRows";
+import {
+  Head,
+  Name,
+  No,
+  Reps,
+  RepsStepper,
+  Row,
+  Rows,
+  Tier,
+} from "../BoardRows";
+import { getRepsDifficulty } from "../../utils";
 import {
   Board,
   BoardHead,
@@ -52,62 +61,6 @@ const Layout = styled.div<{ $withLog: boolean }>`
 
   @media (max-width: 1100px) {
     grid-template-columns: minmax(0, 1fr);
-  }
-`;
-
-const RepsStepper = styled.div`
-  display: grid;
-  grid-template-columns: 32px 3.5rem 32px;
-  height: 48px;
-  border: 1px solid var(--board-line);
-  border-radius: var(--radius);
-  background: var(--board-cell);
-  overflow: hidden;
-
-  &:focus-within {
-    border-color: var(--amber);
-  }
-
-  button {
-    display: grid;
-    place-items: center;
-    border: 0;
-    background: transparent;
-    color: var(--board-ink-2);
-
-    &:hover:not(:disabled) {
-      color: var(--amber);
-    }
-
-    &:disabled {
-      opacity: 0.35;
-    }
-  }
-
-  input {
-    width: 100%;
-    min-width: 0;
-    border: 0;
-    border-inline: 1px solid var(--board-line);
-    background: transparent;
-    color: var(--amber);
-    font-family: var(--font-board);
-    font-size: 26px;
-    font-weight: 700;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-    appearance: textfield;
-    -moz-appearance: textfield;
-
-    &:focus {
-      outline: none;
-    }
-  }
-
-  input::-webkit-inner-spin-button,
-  input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
   }
 `;
 
@@ -304,28 +257,18 @@ export function SummaryTable({
     return getExercise(entry)?.easy_min ?? 1;
   }
 
-  // Ranges can have gaps, so a count above a tier's max moves to the next tier.
-  function getRepsDifficulty(
-    entry: WorkoutEntry,
-    reps: number,
-  ): RepsDifficulty {
-    const exercise = getExercise(entry);
-    if (!exercise) return entry.reps_difficulty;
-
-    if (reps <= exercise.easy_max) return "easy";
-    if (reps <= exercise.medium_max) return "medium";
-    return "hard";
-  }
-
   function setRepsAtIndex(index: number, reps: number) {
     if (!workout) return;
 
     const updatedWorkout = [...workout];
     const entry = updatedWorkout[index];
+    const exercise = getExercise(entry);
     updatedWorkout[index] = {
       ...entry,
       reps,
-      reps_difficulty: getRepsDifficulty(entry, reps),
+      reps_difficulty: exercise
+        ? getRepsDifficulty(exercise, reps)
+        : entry.reps_difficulty,
     };
 
     setWorkout(updatedWorkout);
