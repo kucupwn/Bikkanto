@@ -169,7 +169,8 @@ const unfold = keyframes`
 `;
 
 /* In edit mode the first column widens to fit the drag handle and the
-   remove button. */
+   remove button. On phones the remove button drops under the number and the
+   stepper stands upright, spanning both lines, to leave room for the name. */
 const Detail = styled.div<{ $editing: boolean }>`
   border-top: 1px solid var(--board-line);
   animation: ${unfold} 0.22s var(--ease-out);
@@ -183,7 +184,42 @@ const Detail = styled.div<{ $editing: boolean }>`
 
       @media (max-width: 700px) {
         ${Row} {
-          grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          grid-template-areas:
+            "no name reps"
+            "no tier reps";
+        }
+
+        ${Row} > :nth-child(1) {
+          align-self: stretch;
+        }
+
+        ${Row} > :nth-child(4) {
+          align-self: center;
+        }
+
+        ${RepsStepper} {
+          grid-template-columns: 3rem;
+          grid-template-rows: 32px 44px 32px;
+          grid-template-areas:
+            "plus"
+            "count"
+            "minus";
+          height: auto;
+
+          > :nth-child(1) {
+            grid-area: minus;
+          }
+
+          > :nth-child(2) {
+            grid-area: count;
+            border-inline: 0;
+            border-block: 1px solid var(--board-line);
+          }
+
+          > :nth-child(3) {
+            grid-area: plus;
+          }
         }
       }
     `}
@@ -277,10 +313,39 @@ const EditActions = styled.span`
   }
 `;
 
+/* Handle, number, remove in a line. On phones the cell fills the row's
+   height: the handle is centred, the number lines up with the exercise name
+   and the remove button sits at the bottom. */
 const NoCell = styled.span`
   display: flex;
   align-items: center;
   gap: 0.625rem;
+
+  @media (max-width: 700px) {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "handle no"
+      "handle remove";
+    justify-items: center;
+    gap: 0.5rem 0.375rem;
+
+    > :nth-child(1) {
+      grid-area: handle;
+      align-self: center;
+    }
+
+    > :nth-child(2) {
+      grid-area: no;
+      margin-top: 4px;
+    }
+
+    > :nth-child(3) {
+      grid-area: remove;
+      align-self: end;
+    }
+  }
 `;
 
 const RemoveButton = styled.button`
