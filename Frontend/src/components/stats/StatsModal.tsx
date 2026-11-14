@@ -7,6 +7,7 @@ import { useRibbon } from "../feedbackRibbon/RibbonProvider";
 import type { WorkoutHistory } from "../../types/historyTypes";
 import { Statistics } from "./Statistics";
 import { Button, Field, FieldLabel } from "../ui";
+import { toLocalDateString } from "../../utils";
 
 const Form = styled.form`
   display: grid;
@@ -53,8 +54,8 @@ function StatsModalContent({ onClose }: Props) {
       setIsLoading(true);
       const res = await api.get("/history/range", {
         params: {
-          start_date: start.toISOString().split("T")[0],
-          end_date: end.toISOString().split("T")[0],
+          start_date: toLocalDateString(start),
+          end_date: toLocalDateString(end),
         },
       });
 

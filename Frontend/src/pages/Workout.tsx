@@ -32,6 +32,7 @@ import {
   PageLede,
   PageTitle,
 } from "../components/ui";
+import { toLocalDateString } from "../utils";
 
 const Split = styled.div`
   display: grid;
@@ -359,7 +360,7 @@ export function Workout() {
     if (!workout || !workoutDate) return null;
 
     return workout.map((entry) => ({
-      date_complete: workoutDate.toISOString().split("T")[0],
+      date_complete: toLocalDateString(workoutDate),
       exercise_id: entry.exercise_id,
       reps_difficulty: entry.reps_difficulty,
       cycles: safeCycles,
