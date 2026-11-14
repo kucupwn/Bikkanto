@@ -108,13 +108,26 @@ const Header = styled.div<{ $open: boolean }>`
   }
 `;
 
-const Toggle = styled.button`
+/* Name, the pencil button in edit mode, then the exercise count. The count
+   sits under the toggle's overlay, so clicking it still opens the preset. */
+const TitleLine = styled.div`
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.25rem 1rem;
+`;
+
+const NameGroup = styled.span`
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+`;
+
+const Toggle = styled.button`
+  min-width: 0;
   padding: 0;
   border: 0;
   background: transparent;
@@ -149,18 +162,69 @@ const SelectWrap = styled.span`
   }
 `;
 
-const PresetName = styled.span`
-  min-width: 0;
+const presetNameType = css`
   font-family: var(--font-board);
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 1.2;
   text-transform: uppercase;
-  overflow-wrap: anywhere;
 
   @media (max-width: 700px) {
     font-size: 20px;
+  }
+`;
+
+const PresetName = styled.span`
+  min-width: 0;
+  overflow-wrap: anywhere;
+  ${presetNameType}
+`;
+
+/* Sits above the toggle's overlay, like the Select button. */
+const NameEditButton = styled.button`
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--board-ink-2);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: var(--board-cell);
+    border-color: var(--board-ink-2);
+    color: var(--board-ink);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+`;
+
+const NameInput = styled.input`
+  flex: 1;
+  min-width: 0;
+  max-width: 24rem;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid var(--amber);
+  border-radius: var(--radius);
+  background: var(--board-cell);
+  color: var(--board-ink);
+  ${presetNameType}
+
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -454,6 +518,10 @@ export function PresetList({
   );
   // Working copy of the edited preset's exercises; Cancel throws it away
   const [draft, setDraft] = useState<PresetExercise[]>([]);
+  const [draftName, setDraftName] = useState<string>("");
+  const [isNameEditing, setIsNameEditing] = useState<boolean>(false);
+  // Name when the input opened, so Escape can put it back
+  const nameBeforeEdit = useRef<string>("");
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
@@ -558,6 +626,8 @@ export function PresetList({
   function stopEditing() {
     setEditingId(null);
     setDraft([]);
+    setDraftName("");
+    setIsNameEditing(false);
     setDraggingId(null);
     setIsAddOpen(false);
     setPendingRemove(null);
@@ -593,6 +663,7 @@ export function PresetList({
     }
     setEditingId(preset.id);
     setDraft(preset.exercises);
+    setDraftName(preset.preset_name);
     setDraggingId(null);
     onEdit?.(preset);
   }
@@ -655,7 +726,40 @@ export function PresetList({
     moveEntry(index, e.key === "ArrowUp" ? index - 1 : index + 1);
   }
 
+  function startNameEdit() {
+    nameBeforeEdit.current = draftName;
+    setIsNameEditing(true);
+  }
+
+  // An emptied name falls back to the saved one rather than blocking Save
+  function finishNameEdit(preset: Preset) {
+    setDraftName((prev) => prev.trim() || preset.preset_name);
+    setIsNameEditing(false);
+  }
+
+  function handleNameKey(e: KeyboardEvent<HTMLInputElement>, preset: Preset) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      finishNameEdit(preset);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setDraftName(nameBeforeEdit.current);
+      setIsNameEditing(false);
+    }
+  }
+
+  // The server stores names trimmed and lowercased
+  function normalizeName(name: string) {
+    return name.trim().toLowerCase();
+  }
+
+  function isNameTaken(preset: Preset) {
+    const name = normalizeName(draftName);
+    return presets.some((p) => p.id !== preset.id && p.preset_name === name);
+  }
+
   function isDraftChanged(preset: Preset) {
+    if (normalizeName(draftName) !== preset.preset_name) return true;
     if (draft.length !== preset.exercises.length) return true;
     return draft.some((entry, i) => {
       const saved = preset.exercises[i];
@@ -671,7 +775,7 @@ export function PresetList({
     setIsSaving(true);
     try {
       const res = await api.put<Preset>(`/presets/${preset.id}`, {
-        preset_name: preset.preset_name,
+        preset_name: draftName.trim(),
         // List order becomes each exercise's position
         exercises: draft.map(({ exercise_id, reps_difficulty, reps }) => ({
           exercise_id,
@@ -731,9 +835,9 @@ export function PresetList({
         {presets.map((preset) => {
           const isOpen = openIds.has(preset.id);
           const detailId = `preset-${preset.id}-exercises`;
-          const count = preset.exercises.length;
           const isInProgress = preset.id === inProgressPresetId;
           const isEditing = preset.id === editingId;
+          const count = (isEditing ? draft : preset.exercises).length;
           const deleteDisabledReason = isInProgress
             ? "Finish or discard your workout in progress first"
             : isEditing
@@ -748,17 +852,46 @@ export function PresetList({
           return (
             <Item key={preset.id} $editing={isEditing}>
               <Header $open={isOpen}>
-                <Toggle
-                  type="button"
-                  aria-expanded={isOpen}
-                  aria-controls={detailId}
-                  onClick={() => toggleOpen(preset.id)}
-                >
-                  <PresetName>{preset.preset_name}</PresetName>
+                <TitleLine>
+                  {isEditing && isNameEditing ? (
+                    <NameInput
+                      type="text"
+                      autoFocus
+                      value={draftName}
+                      aria-label="Preset name"
+                      onFocus={(e) => e.target.select()}
+                      onChange={(e) => setDraftName(e.target.value)}
+                      onBlur={() => finishNameEdit(preset)}
+                      onKeyDown={(e) => handleNameKey(e, preset)}
+                    />
+                  ) : (
+                    <NameGroup>
+                      <Toggle
+                        type="button"
+                        aria-expanded={isOpen}
+                        aria-controls={detailId}
+                        onClick={() => toggleOpen(preset.id)}
+                      >
+                        <PresetName>
+                          {isEditing ? draftName : preset.preset_name}
+                        </PresetName>
+                      </Toggle>
+                      {isEditing && (
+                        <NameEditButton
+                          type="button"
+                          onClick={startNameEdit}
+                          title="Rename preset"
+                          aria-label={`Rename preset ${preset.preset_name}`}
+                        >
+                          <Pencil size={16} aria-hidden="true" />
+                        </NameEditButton>
+                      )}
+                    </NameGroup>
+                  )}
                   <BoardNote>
                     {count} {count === 1 ? "exercise" : "exercises"}
                   </BoardNote>
-                </Toggle>
+                </TitleLine>
                 {onSelect && (
                   <SelectWrap title={selectDisabledReason}>
                     <Button
@@ -821,7 +954,9 @@ export function PresetList({
                           title={
                             !isDraftChanged(preset)
                               ? "No changes to save"
-                              : draft.length === 0
+                              : isNameTaken(preset)
+                                ? "Another preset already has this name"
+                                : draft.length === 0
                                 ? "A preset needs at least one exercise"
                                 : !isDraftValid()
                                 ? "Reps can't be below the easy minimum"
@@ -835,6 +970,7 @@ export function PresetList({
                             disabled={
                               isSaving ||
                               !isDraftChanged(preset) ||
+                              isNameTaken(preset) ||
                               draft.length === 0 ||
                               !isDraftValid()
                             }
