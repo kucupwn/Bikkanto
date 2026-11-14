@@ -11,6 +11,12 @@ class RepsDifficulty(str, Enum):
     HARD = "hard"
 
 
+class WorkoutOrigin(str, Enum):
+    RANDOM = "random"  # Create -> Random
+    CUSTOM = "custom"  # Create -> Preset, exercises picked by hand
+    PRESET = "preset"  # Started from a saved preset on the Select page
+
+
 class HistoryBase(BaseModel):
     date_complete: date
     reps_difficulty: RepsDifficulty
@@ -22,6 +28,9 @@ class HistoryCreate(HistoryBase):
     # Only used to look up the user's exercise at save time; the name, category
     # and difficulty are copied from it and the id itself is not stored.
     exercise_id: int = Field(gt=0)
+    origin: WorkoutOrigin = WorkoutOrigin.RANDOM
+    # Only used to copy the preset's name; the id itself is not stored.
+    preset_id: Optional[int] = None
 
 
 class HistoryRead(HistoryBase):
@@ -31,15 +40,11 @@ class HistoryRead(HistoryBase):
     category_name: str
     difficulty: Difficulty
     sum_repetitions: int
+    origin: Optional[WorkoutOrigin] = None
+    preset_name: Optional[str] = None
 
     class Config:
         from_attributes = True
-
-
-class WorkoutOrigin(str, Enum):
-    RANDOM = "random"  # Create -> Random
-    CUSTOM = "custom"  # Create -> Preset, exercises picked by hand
-    PRESET = "preset"  # Started from a saved preset on the Select page
 
 
 class DraftWorkoutBase(BaseModel):

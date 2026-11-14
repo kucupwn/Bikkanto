@@ -1,4 +1,8 @@
-import type { ExerciseDifficulty, RepsDifficulty } from "./exerciseTypes";
+import type {
+  ExerciseDifficulty,
+  RepsDifficulty,
+  WorkoutOrigin,
+} from "./exerciseTypes";
 
 // A saved history row: a snapshot of the exercise at save time, with no link
 // back to the exercise or category it came from.
@@ -13,6 +17,9 @@ export interface WorkoutHistory {
   cycles: number;
   reps: number;
   sum_repetitions: number;
+  // Null on rows saved before the source was recorded
+  origin: WorkoutOrigin | null;
+  preset_name: string | null;
 }
 
 // What the client sends when saving. The server copies name, category and
@@ -23,11 +30,22 @@ export interface WorkoutHistoryCreate {
   reps_difficulty: RepsDifficulty;
   cycles: number;
   reps: number;
+  origin: WorkoutOrigin;
+  preset_id: number | null;
+}
+
+// Display label for where a workout came from
+export function getWorkoutSource(entry: WorkoutHistory) {
+  if (entry.origin === "preset") return entry.preset_name ?? "Preset";
+  if (entry.origin === "custom") return "Custom";
+  if (entry.origin === "random") return "Random";
+  return "—";
 }
 
 export const HISTORY_COLUMN_ORDER = [
   "date_complete",
   "session",
+  "source",
   "exercise_name",
   "category_name",
   "difficulty",

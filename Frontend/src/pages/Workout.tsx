@@ -365,6 +365,9 @@ export function Workout() {
       reps_difficulty: entry.reps_difficulty,
       cycles: safeCycles,
       reps: entry.reps,
+      // Read from the accepted draft so it still holds after Resume
+      origin: entry.origin ?? "random",
+      preset_id: entry.preset_id ?? null,
     }));
   }
 

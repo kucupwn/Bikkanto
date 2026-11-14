@@ -73,6 +73,23 @@ async def create_history_batch(
     )
     current_session = (last_session or 0) + 1
 
+    # A save is one workout, so its origin is read from the first entry
+    origin = entries[0].origin
+    preset_name = None
+
+    if origin == WorkoutOrigin.PRESET:
+        preset = (
+            db.query(Presets)
+            .filter(
+                Presets.id == entries[0].preset_id,
+                Presets.user_id == user_id,
+            )
+            .first()
+        )
+        if not preset:
+            raise HTTPException(status_code=400, detail="Invalid preset id")
+        preset_name = preset.preset_name
+
     history_models = []
 
     for entry in entries:
@@ -97,6 +114,8 @@ async def create_history_batch(
                 cycles=entry.cycles,
                 reps=entry.reps,
                 sum_repetitions=entry.reps * entry.cycles,
+                origin=origin.value,
+                preset_name=preset_name,
                 user_id=user_id,
             )
         )

@@ -4,6 +4,7 @@ import { ChartColumn, Shuffle } from "lucide-react";
 import { api } from "../api/api";
 import {
   HISTORY_COLUMN_ORDER,
+  getWorkoutSource,
   type WorkoutHistory,
 } from "../types/historyTypes";
 import { capitalize } from "../utils";
@@ -33,7 +34,10 @@ export function History() {
       setIsLoading(true);
 
       const res = await api.get("/history");
-      const history = res.data;
+      const history = res.data.map((entry: WorkoutHistory) => ({
+        ...entry,
+        source: getWorkoutSource(entry),
+      }));
 
       setHistory(history);
 

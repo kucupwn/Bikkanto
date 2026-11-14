@@ -78,6 +78,12 @@ class History(Base):
     reps = Column(Integer, nullable=False)
     sum_repetitions = Column(Integer, nullable=False)
 
+    # Where the workout came from ("random" | "custom" | "preset"). The preset's
+    # name is copied, not linked, so renaming or deleting the preset later
+    # leaves the log alone. Both are null on rows saved before this existed.
+    origin = Column(String, nullable=True)
+    preset_name = Column(String, nullable=True)
+
     user_id = Column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
