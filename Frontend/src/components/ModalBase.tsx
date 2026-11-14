@@ -79,10 +79,18 @@ interface Props {
   onClose: () => void;
   title?: string;
   width?: string;
+  /** Focus the first field on open. Turn off for fields that open a popup on focus (e.g. date pickers). */
+  autoFocusField?: boolean;
   children: ReactNode;
 }
 
-export function ModalBase({ onClose, title, width = "440px", children }: Props) {
+export function ModalBase({
+  onClose,
+  title,
+  width = "440px",
+  autoFocusField = true,
+  children,
+}: Props) {
   const titleId = useId();
   const boxRef = useRef<HTMLDivElement | null>(null);
 
@@ -90,9 +98,9 @@ export function ModalBase({ onClose, title, width = "440px", children }: Props) 
     const previous = document.activeElement as HTMLElement | null;
 
     // Focus the first field, or the dialog itself.
-    const first = boxRef.current?.querySelector<HTMLElement>(
-      "input, select, textarea",
-    );
+    const first = autoFocusField
+      ? boxRef.current?.querySelector<HTMLElement>("input, select, textarea")
+      : null;
     (first ?? boxRef.current)?.focus();
 
     function handleKeydown(event: KeyboardEvent) {

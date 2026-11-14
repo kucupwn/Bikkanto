@@ -75,7 +75,12 @@ function StatsModalContent({ onClose }: Props) {
   }
 
   return (
-    <ModalBase onClose={onClose} title="Statistics" width="480px">
+    <ModalBase
+      onClose={onClose}
+      title="Statistics"
+      width="480px"
+      autoFocusField={false}
+    >
       <Form onSubmit={getHistoryInRange}>
         <Field as="div">
           <FieldLabel>Date range</FieldLabel>
