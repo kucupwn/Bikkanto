@@ -16,14 +16,14 @@ export interface WorkoutHistory {
   reps_difficulty: RepsDifficulty;
   cycles: number;
   reps: number;
-  sum_repetitions: number;
+  sum_reps: number;
   // Null on rows saved before the source was recorded
   origin: WorkoutOrigin | null;
   preset_name: string | null;
 }
 
 // What the client sends when saving. The server copies name, category and
-// difficulty from the exercise and computes sum_repetitions itself.
+// difficulty from the exercise and computes sum_reps itself.
 export interface WorkoutHistoryCreate {
   date_complete: string;
   exercise_id: number;
@@ -52,5 +52,5 @@ export const HISTORY_COLUMN_ORDER = [
   "reps_difficulty",
   "cycles",
   "reps",
-  "sum_repetitions",
+  "sum_reps",
 ] as const;

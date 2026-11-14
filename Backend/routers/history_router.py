@@ -113,7 +113,7 @@ async def create_history_batch(
                 reps_difficulty=entry.reps_difficulty.value,
                 cycles=entry.cycles,
                 reps=entry.reps,
-                sum_repetitions=entry.reps * entry.cycles,
+                sum_reps=entry.reps * entry.cycles,
                 origin=origin.value,
                 preset_name=preset_name,
                 user_id=user_id,

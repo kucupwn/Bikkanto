@@ -76,7 +76,7 @@ class History(Base):
     reps_difficulty = Column(String, nullable=False)
     cycles = Column(Integer, nullable=False)
     reps = Column(Integer, nullable=False)
-    sum_repetitions = Column(Integer, nullable=False)
+    sum_reps = Column(Integer, nullable=False)
 
     # Where the workout came from ("random" | "custom" | "preset"). The preset's
     # name is copied, not linked, so renaming or deleting the preset later

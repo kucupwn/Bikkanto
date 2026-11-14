@@ -39,7 +39,7 @@ class HistoryRead(HistoryBase):
     exercise_name: str
     category_name: str
     difficulty: Difficulty
-    sum_repetitions: int
+    sum_reps: int
     origin: Optional[WorkoutOrigin] = None
     preset_name: Optional[str] = None
 
