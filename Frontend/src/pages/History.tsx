@@ -44,6 +44,7 @@ export function History() {
       if (history.length > 0) {
         // Names are stored lowercase; capitalize them for display only.
         const textColumns = new Set([
+          "source",
           "exercise_name",
           "category_name",
           "difficulty",
