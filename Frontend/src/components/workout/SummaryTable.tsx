@@ -92,20 +92,26 @@ const Reroll = styled.button`
   svg {
     transition: transform 0.3s var(--ease-out);
   }
+
+  /* Matches the preset editor's remove button under the row number */
+  @media (max-width: 700px) {
+    width: 32px;
+    height: 32px;
+  }
 `;
 
-/* When reps are editable on a phone without a reroll button (editing an
-   accepted workout, or reviewing a preset), the stepper stands upright and
-   spans both lines, as in the preset editor. */
-const BoardRows = styled(Rows)<{ $uprightReps: boolean }>`
-  ${({ $uprightReps }) =>
+/* When reps are editable on a phone, the stepper stands upright and spans
+   both lines, as in the preset editor. A reroll button moves under the row
+   number, where the preset editor keeps its remove button. */
+const BoardRows = styled(Rows)<{ $uprightReps: boolean; $withReroll: boolean }>`
+  ${({ $uprightReps, $withReroll }) =>
     $uprightReps &&
     css`
       @media (max-width: 700px) {
         ${Row} {
-          grid-template-areas:
-            "no name reps"
-            "no tier reps";
+          grid-template-areas: ${$withReroll
+            ? `"no name reps" "reroll tier reps"`
+            : `"no name reps" "no tier reps"`};
         }
 
         ${Row} > :nth-child(4) {
@@ -113,7 +119,14 @@ const BoardRows = styled(Rows)<{ $uprightReps: boolean }>`
         }
 
         ${Row} > :nth-child(5) {
-          display: none;
+          ${$withReroll
+            ? css`
+                justify-self: center;
+                align-self: end;
+              `
+            : css`
+                display: none;
+              `}
         }
 
         ${RepsStepper} {
@@ -402,8 +415,6 @@ export function SummaryTable({
     draftOrigin === "custom";
   const canEditReps = !hasAcceptedWorkout || isEditingReps;
   const withReroll = !isPreset;
-  // A reroll button needs the row's second line, so rolls keep the flat stepper
-  const uprightReps = isEditingReps || (canEditReps && !withReroll);
   const repsAreValid =
     entries.length > 0 && entries.every((e) => e.reps >= getMinReps(e));
   const canFinish =
@@ -430,7 +441,10 @@ export function SummaryTable({
           <span>Reps</span>
           {withReroll && <span />}
         </Head>
-        <BoardRows $uprightReps={uprightReps}>
+        <BoardRows
+          $uprightReps={canEditReps}
+          $withReroll={withReroll && !hasAcceptedWorkout}
+        >
           {entries.map((entry, index) => (
             <Row
               key={`${index}-${entry.exercise_id}`}
