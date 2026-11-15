@@ -1,8 +1,15 @@
 import styled from "styled-components";
+import type { WorkoutOrigin } from "../../types/exerciseTypes";
 import type { WorkoutHistory } from "../../types/historyTypes";
 import { formatDate } from "../../utils";
 import { FlapText } from "../FlapText";
 import { Board, BoardHead, BoardNote, BoardTitle } from "../ui";
+
+const SOURCE_LABELS: [WorkoutOrigin, string][] = [
+  ["random", "Random"],
+  ["custom", "Custom"],
+  ["preset", "Preset"],
+];
 
 const Figures = styled.dl`
   display: grid;
@@ -32,6 +39,10 @@ const Figures = styled.dl`
   dd {
     margin: 0;
   }
+`;
+
+const Sources = styled(Figures)`
+  grid-template-columns: repeat(3, 1fr);
 `;
 
 const Top = styled.ol`
@@ -92,6 +103,26 @@ export function Statistics({ dateRange, historyEntries }: Props) {
     return Object.entries(counts).sort((a, b) => b[1] - a[1]);
   }
 
+  // Counts workouts, not rows: every row of a session shares one origin.
+  // Rows saved before the origin was recorded are left out.
+  function getSourceCounts() {
+    const sessions: Record<WorkoutOrigin, Set<number>> = {
+      random: new Set(),
+      custom: new Set(),
+      preset: new Set(),
+    };
+
+    historyEntries.forEach((entry) => {
+      if (entry.origin) sessions[entry.origin].add(entry.session);
+    });
+
+    return {
+      random: sessions.random.size,
+      custom: sessions.custom.size,
+      preset: sessions.preset.size,
+    };
+  }
+
   function getBasicStats() {
     if (!dateRange[0] || !dateRange[1]) return null;
 
@@ -109,6 +140,7 @@ export function Statistics({ dateRange, historyEntries }: Props) {
       statRange: Math.round(statRange),
       workoutDays: workoutDays.size,
       categoryCounts: getCategoryCounts(),
+      sourceCounts: getSourceCounts(),
     };
   }
 
@@ -141,6 +173,22 @@ export function Statistics({ dateRange, historyEntries }: Props) {
           </dd>
         </div>
       </Figures>
+      <SubHead>Workout sources</SubHead>
+      <Sources>
+        {SOURCE_LABELS.map(([origin, label], i) => (
+          <div key={origin}>
+            <dt>{label}</dt>
+            <dd>
+              <FlapText
+                text={stats?.sourceCounts[origin] ?? 0}
+                cells
+                animateOnMount
+                delay={240 + i * 120}
+              />
+            </dd>
+          </div>
+        ))}
+      </Sources>
       <SubHead>Top categories</SubHead>
       <Top>
         {Array.from({ length: 3 }).map((_, i) => {
