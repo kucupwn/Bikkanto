@@ -174,6 +174,8 @@ export function Exercises() {
         <PoolExerciseTable
           columns={columns}
           exercises={exercises}
+          categories={categories}
+          onFetchCategories={fetchCategories}
           isLoading={isLoading}
         />
       )}

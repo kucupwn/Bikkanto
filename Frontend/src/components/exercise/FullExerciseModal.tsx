@@ -26,6 +26,8 @@ interface Props {
   categories: Category[];
   mode: "add" | "edit" | "delete";
   onSuccess: () => Promise<void>;
+  // Add mode only: starting values, e.g. copied from a pool row.
+  initialExercise?: Exercise;
 }
 
 const titleLabels = {
@@ -51,11 +53,12 @@ function FullExerciseModalContent({
   categories,
   mode,
   onSuccess,
+  initialExercise,
 }: Props) {
   const [exercise, setExercise] = useState<Exercise>(
     mode === "edit" || mode === "delete"
       ? exercises[0]
-      : {
+      : initialExercise ?? {
           exercise_name: "",
           difficulty: "beginner",
           easy_min: 1,

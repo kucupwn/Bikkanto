@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import styled from "styled-components";
 import { ArrowDown, ArrowUp, ArrowUpDown, Search } from "lucide-react";
 import { Input, Select } from "./ui";
@@ -15,6 +15,11 @@ type SortDir = "asc" | "desc";
 interface Props {
   data: Record<string, any>[];
   columns: Column[];
+  // Field that uniquely identifies a row; defaults to `id`.
+  rowKey?: string;
+  // Optional per-row control, shown in its own column after the row number.
+  renderRowAction?: (row: Record<string, any>) => ReactNode;
+  rowActionLabel?: string;
 }
 
 const Controls = styled.div`
@@ -124,6 +129,54 @@ const Table = styled.table`
   thead .row-no {
     padding: 0.5rem 0.75rem;
   }
+
+  .row-action {
+    width: 1%;
+    padding-block: 0.25rem;
+  }
+`;
+
+const VisuallyHidden = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+`;
+
+/* Small square button for a row's action cell. */
+export const RowActionButton = styled.button`
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius);
+  background: var(--board-cell);
+  color: var(--board-ink-2);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--amber);
+    border-color: var(--amber);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--amber);
+    box-shadow: 0 0 0 1px var(--amber);
+  }
+
+  &:disabled {
+    background: transparent;
+    border-color: transparent;
+    color: var(--board-ink-2);
+    opacity: 0.6;
+    cursor: default;
+  }
 `;
 
 const SortButton = styled.button`
@@ -176,7 +229,13 @@ function compare(a: unknown, b: unknown) {
   return String(a).localeCompare(String(b), undefined, { numeric: true });
 }
 
-export function DataTable({ data, columns }: Props) {
+export function DataTable({
+  data,
+  columns,
+  rowKey = "id",
+  renderRowAction,
+  rowActionLabel = "Actions",
+}: Props) {
   const [query, setQuery] = useState("");
   const [searchKey, setSearchKey] = useState<string>("all");
   const [sort, setSort] = useState<{ key: string; dir: SortDir } | null>(null);
@@ -259,6 +318,11 @@ export function DataTable({ data, columns }: Props) {
               <th className="row-no" scope="col">
                 #
               </th>
+              {renderRowAction && (
+                <th className="row-action" scope="col">
+                  <VisuallyHidden>{rowActionLabel}</VisuallyHidden>
+                </th>
+              )}
               {columns.map((col) => {
                 const dir = sort?.key === col.key ? sort.dir : null;
                 const SortIcon =
@@ -286,8 +350,11 @@ export function DataTable({ data, columns }: Props) {
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={row.id ?? i}>
+              <tr key={row[rowKey] ?? i}>
                 <td className="row-no">{i + 1}</td>
+                {renderRowAction && (
+                  <td className="row-action">{renderRowAction(row)}</td>
+                )}
                 {columns.map((col) => (
                   <td key={col.key} className={col.capitalize ? "cap" : undefined}>
                     {row[col.key] ?? ""}
@@ -297,7 +364,7 @@ export function DataTable({ data, columns }: Props) {
             ))}
             {rows.length === 0 && (
               <tr>
-                <NoMatches colSpan={columns.length + 1}>
+                <NoMatches colSpan={columns.length + (renderRowAction ? 2 : 1)}>
                   <span>No rows match “{query.trim()}”.</span>
                 </NoMatches>
               </tr>
