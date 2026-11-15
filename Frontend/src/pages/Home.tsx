@@ -141,7 +141,7 @@ function FitName({ name }: { name: string }) {
 
   return (
     <NameBox ref={boxRef} aria-hidden="true">
-      <FlapText text={name} cells size="xl" animateOnMount delay={360} />
+      <FlapText text={name} cells size="xl" tone="amber" animateOnMount delay={360} />
     </NameBox>
   );
 }
