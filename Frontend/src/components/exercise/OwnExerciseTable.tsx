@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Pencil, Plus, Tags, Trash2 } from "lucide-react";
 import type { ModalType } from "../../pages/Exercises";
 import { Loader } from "../Loader";
-import { DataTable } from "../DataTable";
+import { DataTable, type Column } from "../DataTable";
 import { CategoryModal } from "./CategoryModal";
 import { FullExerciseModal } from "./FullExerciseModal";
 import type { Category, Exercise } from "../../types/exerciseTypes";
@@ -42,7 +42,7 @@ interface Props {
   categories: Category[];
   onFetchCategories: () => Promise<void>;
   onFetchExercises: () => Promise<void>;
-  columns: any[];
+  columns: Column[];
   isLoading: boolean;
 }
 

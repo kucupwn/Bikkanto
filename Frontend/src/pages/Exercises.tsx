@@ -16,6 +16,7 @@ import { capitalize } from "../utils";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { OwnExerciseTable } from "../components/exercise/OwnExerciseTable";
 import { PoolExerciseTable } from "../components/exercise/PoolExerciseTable";
+import type { Column } from "../components/DataTable";
 import {
   Button,
   Page,
@@ -46,7 +47,7 @@ export function Exercises() {
     navigate("/workout", { state });
   }
 
-  const columns = useMemo(() => {
+  const columns = useMemo<Column[]>(() => {
     const columnOrder =
       activeTable === "pool"
         ? POOL_EXERCISE_COLUMNS_ORDER
@@ -56,9 +57,9 @@ export function Exercises() {
     const textColumns = new Set(["exercise_name", "category_name", "difficulty"]);
 
     return columnOrder.map((key) => ({
-      data: key,
+      key,
       title: capitalize(key).replace("_", " "),
-      ...(textColumns.has(key) && { className: "htCenter bk-cap" }),
+      capitalize: textColumns.has(key),
     }));
   }, [activeTable]);
 

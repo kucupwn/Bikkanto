@@ -8,7 +8,7 @@ import {
   type WorkoutHistory,
 } from "../types/historyTypes";
 import { capitalize } from "../utils";
-import { DataTable } from "../components/DataTable";
+import { DataTable, type Column } from "../components/DataTable";
 import { useRibbon } from "../components/feedbackRibbon/RibbonProvider";
 import { Loader } from "../components/Loader";
 import { StatsModal } from "../components/stats/StatsModal";
@@ -24,7 +24,7 @@ import {
 
 export function History() {
   const [history, setHistory] = useState<WorkoutHistory[]>([]);
-  const [columns, setColumns] = useState<any[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isStatOpen, setIsStatOpen] = useState<boolean>(false);
   const { showRibbon } = useRibbon();
@@ -51,9 +51,9 @@ export function History() {
           "reps_difficulty",
         ]);
         const cols = HISTORY_COLUMN_ORDER.map((key) => ({
-          data: key,
+          key,
           title: capitalize(key).replace("_", " "),
-          ...(textColumns.has(key) && { className: "htCenter bk-cap" }),
+          capitalize: textColumns.has(key),
         }));
         setColumns(cols);
       }

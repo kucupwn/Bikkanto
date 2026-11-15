@@ -1,12 +1,12 @@
 import type { Exercise } from "../../types/exerciseTypes";
-import { DataTable } from "../DataTable";
+import { DataTable, type Column } from "../DataTable";
 import { FlapText } from "../FlapText";
 import { Loader } from "../Loader";
 import { EmptyState } from "./OwnExerciseTable";
 
 interface Props {
   exercises: Exercise[];
-  columns: any[];
+  columns: Column[];
   isLoading: boolean;
 }
 
