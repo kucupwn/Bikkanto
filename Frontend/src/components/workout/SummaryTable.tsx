@@ -94,8 +94,9 @@ const Reroll = styled.button`
   }
 `;
 
-/* While editing an accepted workout's reps on a phone, the stepper stands
-   upright and spans both lines, as in the preset editor. */
+/* When reps are editable on a phone without a reroll button (editing an
+   accepted workout, or reviewing a preset), the stepper stands upright and
+   spans both lines, as in the preset editor. */
 const BoardRows = styled(Rows)<{ $uprightReps: boolean }>`
   ${({ $uprightReps }) =>
     $uprightReps &&
@@ -401,6 +402,8 @@ export function SummaryTable({
     draftOrigin === "custom";
   const canEditReps = !hasAcceptedWorkout || isEditingReps;
   const withReroll = !isPreset;
+  // A reroll button needs the row's second line, so rolls keep the flat stepper
+  const uprightReps = isEditingReps || (canEditReps && !withReroll);
   const repsAreValid =
     entries.length > 0 && entries.every((e) => e.reps >= getMinReps(e));
   const canFinish =
@@ -427,7 +430,7 @@ export function SummaryTable({
           <span>Reps</span>
           {withReroll && <span />}
         </Head>
-        <BoardRows $uprightReps={isEditingReps}>
+        <BoardRows $uprightReps={uprightReps}>
           {entries.map((entry, index) => (
             <Row
               key={`${index}-${entry.exercise_id}`}
