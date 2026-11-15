@@ -13,6 +13,7 @@ from ..schemas.history_schema import (
     HistoryCreate,
     DraftWorkoutRead,
     DraftWorkoutCreate,
+    DraftRepsUpdate,
     WorkoutOrigin,
 )
 
@@ -167,6 +168,49 @@ async def delete_draft_workout(
         raise HTTPException(status_code=404, detail="Session id not found.")
 
     db.commit()
+
+
+@router.patch(
+    "/draft/{session_id}/reps",
+    response_model=List[DraftWorkoutRead],
+    status_code=status.HTTP_200_OK,
+)
+async def update_draft_reps(
+    user: user_dependency,
+    db: db_dependency,
+    session_id: str,
+    updates: List[DraftRepsUpdate],
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    draft_models = (
+        db.query(DraftWorkout)
+        .filter(
+            DraftWorkout.session_id == session_id,
+            DraftWorkout.user_id == user.get("id"),
+        )
+        .all()
+    )
+
+    if not draft_models:
+        raise HTTPException(status_code=404, detail="Session id not found.")
+
+    drafts_by_id = {draft.id: draft for draft in draft_models}
+
+    for update in updates:
+        draft = drafts_by_id.get(update.id)
+        if not draft:
+            raise HTTPException(status_code=400, detail="Invalid draft entry id")
+        draft.reps = update.reps
+        draft.reps_difficulty = update.reps_difficulty.value
+
+    db.commit()
+
+    for model in draft_models:
+        db.refresh(model)
+
+    return draft_models
 
 
 @router.post(

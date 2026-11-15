@@ -69,3 +69,9 @@ class DraftWorkoutRead(DraftWorkoutBase):
 
 class DraftWorkoutCreate(DraftWorkoutBase):
     pass
+
+
+class DraftRepsUpdate(BaseModel):
+    id: int = Field(gt=0)
+    reps: int = Field(gt=0)
+    reps_difficulty: RepsDifficulty
