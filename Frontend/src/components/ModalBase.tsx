@@ -93,6 +93,12 @@ export function ModalBase({
 }: Props) {
   const titleId = useId();
   const boxRef = useRef<HTMLDivElement | null>(null);
+  // Close only when the press and the release both land on the overlay
+  // itself. A drag between the modal and the overlay (e.g. selecting input
+  // text) fires its click on the overlay, so the click target alone isn't
+  // enough.
+  const pressedOnOverlay = useRef(false);
+  const releasedOnOverlay = useRef(false);
 
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -115,7 +121,19 @@ export function ModalBase({
   }, []);
 
   return (
-    <Overlay onClick={onClose}>
+    <Overlay
+      onPointerDown={(e) => {
+        pressedOnOverlay.current = e.target === e.currentTarget;
+      }}
+      onPointerUp={(e) => {
+        releasedOnOverlay.current = e.target === e.currentTarget;
+      }}
+      onClick={() => {
+        if (pressedOnOverlay.current && releasedOnOverlay.current) onClose();
+        pressedOnOverlay.current = false;
+        releasedOnOverlay.current = false;
+      }}
+    >
       <ModalBox
         ref={boxRef}
         role="dialog"
@@ -123,7 +141,6 @@ export function ModalBase({
         aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
         $width={width}
-        onClick={(e) => e.stopPropagation()}
       >
         {title && (
           <Head>
