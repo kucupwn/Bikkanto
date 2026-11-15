@@ -95,12 +95,12 @@ const steps = [
   {
     path: "/exercises",
     name: "Exercises",
-    desc: "Your categories and exercises, with easy, medium and hard rep ranges.",
+    desc: "Manage your exercises and presets, or browse other users' exercises.",
   },
   {
     path: "/workout",
     name: "Workout",
-    desc: "Roll a workout from your library, reroll any row, then log your cycles.",
+    desc: "Create a random or custom workout, or start from a preset.",
   },
   {
     path: "/history",
