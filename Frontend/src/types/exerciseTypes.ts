@@ -33,6 +33,8 @@ export type ExerciseDifficulty = (typeof exerciseDifficultyOptions)[number];
 export type WorkoutOrigin = "random" | "custom" | "preset";
 
 export interface WorkoutEntry {
+  // Draft row id, set once the workout is accepted
+  id?: number;
   session_id?: string;
   origin?: WorkoutOrigin;
   preset_id?: number | null;

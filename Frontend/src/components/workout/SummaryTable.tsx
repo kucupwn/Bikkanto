@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import type {
   Exercise,
   WorkoutEntry,
@@ -18,8 +18,10 @@ import {
   Shuffle,
   Bookmark,
   Minus,
+  Pencil,
   Plus,
   Trash2,
+  X,
 } from "lucide-react";
 import type { ViewModes, WorkoutCreationType } from "../../pages/Workout";
 import { type ProperySelection } from "./WorkoutSettings";
@@ -37,6 +39,7 @@ import {
   Row,
   Rows,
   Tier,
+  uprightStepper,
 } from "../BoardRows";
 import { getRepsDifficulty } from "../../utils";
 import {
@@ -89,6 +92,34 @@ const Reroll = styled.button`
   svg {
     transition: transform 0.3s var(--ease-out);
   }
+`;
+
+/* While editing an accepted workout's reps on a phone, the stepper stands
+   upright and spans both lines, as in the preset editor. */
+const BoardRows = styled(Rows)<{ $uprightReps: boolean }>`
+  ${({ $uprightReps }) =>
+    $uprightReps &&
+    css`
+      @media (max-width: 700px) {
+        ${Row} {
+          grid-template-areas:
+            "no name reps"
+            "no tier reps";
+        }
+
+        ${Row} > :nth-child(4) {
+          align-self: center;
+        }
+
+        ${Row} > :nth-child(5) {
+          display: none;
+        }
+
+        ${RepsStepper} {
+          ${uprightStepper}
+        }
+      }
+    `}
 `;
 
 const BoardFoot = styled.div`
@@ -184,6 +215,10 @@ export function SummaryTable({
 }: Props) {
   const { showRibbon } = useRibbon();
   const [isPresetModalOpen, setIsPresetModalOpen] = useState<boolean>(false);
+  // Snapshot of the accepted workout while its reps are being edited
+  const [repsBackup, setRepsBackup] = useState<WorkoutEntry[] | null>(null);
+  const isEditingReps = repsBackup !== null;
+  const [isSavingReps, setIsSavingReps] = useState<boolean>(false);
 
   function resetWorkout() {
     if (onStartOver) {
@@ -232,6 +267,38 @@ export function SummaryTable({
       setTitle("Workout in progress");
     } catch {
       showRibbon("error", "Could not accept the workout. Try again.");
+    }
+  }
+
+  function startEditingReps() {
+    if (!workout) return;
+    setRepsBackup(workout);
+  }
+
+  function cancelEditingReps() {
+    setWorkout(repsBackup);
+    setRepsBackup(null);
+  }
+
+  async function saveEditedReps() {
+    if (!workout?.length || !workout[0].session_id) return;
+
+    setIsSavingReps(true);
+    try {
+      await api.patch(
+        `/history/draft/${workout[0].session_id}/reps`,
+        workout.map((entry) => ({
+          id: entry.id,
+          reps: entry.reps,
+          reps_difficulty: entry.reps_difficulty,
+        })),
+      );
+      setRepsBackup(null);
+      showRibbon("success", "Reps updated.");
+    } catch {
+      showRibbon("error", "Could not save the reps. Try again.");
+    } finally {
+      setIsSavingReps(false);
     }
   }
 
@@ -332,11 +399,12 @@ export function SummaryTable({
     origin === "preset" ||
     draftOrigin === "preset" ||
     draftOrigin === "custom";
-  const canEditReps = !hasAcceptedWorkout;
+  const canEditReps = !hasAcceptedWorkout || isEditingReps;
   const withReroll = !isPreset;
-  const canAccept =
+  const repsAreValid =
     entries.length > 0 && entries.every((e) => e.reps >= getMinReps(e));
-  const canFinish = typeof cycles === "number" && cycles > 0 && !!workoutDate;
+  const canFinish =
+    typeof cycles === "number" && cycles > 0 && !!workoutDate && !isEditingReps;
 
   return (
     <Layout $withLog={hasAcceptedWorkout}>
@@ -345,7 +413,11 @@ export function SummaryTable({
           <BoardTitle id="board-title">Today's board</BoardTitle>
           <BoardNote>
             {entries.length} {entries.length === 1 ? "exercise" : "exercises"}
-            {hasAcceptedWorkout ? " · accepted" : " · not accepted"}
+            {!hasAcceptedWorkout
+              ? " · not accepted"
+              : isEditingReps
+                ? " · editing reps"
+                : " · accepted"}
           </BoardNote>
         </BoardHead>
         <Head aria-hidden="true" $withReroll={withReroll}>
@@ -355,7 +427,7 @@ export function SummaryTable({
           <span>Reps</span>
           {withReroll && <span />}
         </Head>
-        <Rows>
+        <BoardRows $uprightReps={isEditingReps}>
           {entries.map((entry, index) => (
             <Row
               key={`${index}-${entry.exercise_id}`}
@@ -429,7 +501,7 @@ export function SummaryTable({
               )}
             </Row>
           ))}
-        </Rows>
+        </BoardRows>
         {!hasAcceptedWorkout && (
           <BoardFoot>
             <BoardGhost onClick={resetWorkout}>
@@ -439,11 +511,36 @@ export function SummaryTable({
             <Button
               $variant="primary"
               onClick={acceptWorkout}
-              disabled={!canAccept}
+              disabled={!repsAreValid}
             >
               <Check size={18} aria-hidden="true" />
               Accept workout
             </Button>
+          </BoardFoot>
+        )}
+        {hasAcceptedWorkout && (
+          <BoardFoot>
+            {isEditingReps ? (
+              <>
+                <BoardGhost onClick={cancelEditingReps} disabled={isSavingReps}>
+                  <X size={18} aria-hidden="true" />
+                  Cancel
+                </BoardGhost>
+                <Button
+                  $variant="primary"
+                  onClick={saveEditedReps}
+                  disabled={!repsAreValid || isSavingReps}
+                >
+                  <Check size={18} aria-hidden="true" />
+                  Save reps
+                </Button>
+              </>
+            ) : (
+              <BoardGhost onClick={startEditingReps}>
+                <Pencil size={18} aria-hidden="true" />
+                Edit executed reps
+              </BoardGhost>
+            )}
           </BoardFoot>
         )}
       </Board>
@@ -474,16 +571,25 @@ export function SummaryTable({
                 setWorkoutDate={setWorkoutDate}
               />
             </Field>
-            <Button
-              $variant="primary"
-              $size="lg"
-              $block
-              onClick={onPostFinishedWorkout}
-              disabled={!canFinish}
+            <TooltipWrap
+              title={
+                isEditingReps ? "Save or cancel the reps edit first" : undefined
+              }
             >
-              <Flag size={18} aria-hidden="true" />
-              Finish and save
-            </Button>
+              <Button
+                $variant="primary"
+                $size="lg"
+                $block
+                onClick={onPostFinishedWorkout}
+                disabled={!canFinish}
+              >
+                <Flag size={18} aria-hidden="true" />
+                Finish and save
+              </Button>
+            </TooltipWrap>
+            {isEditingReps && (
+              <Hint>Save or cancel the reps edit to finish the workout.</Hint>
+            )}
             <TooltipWrap
               title={isAlreadyPreset ? "It is already a preset" : undefined}
             >

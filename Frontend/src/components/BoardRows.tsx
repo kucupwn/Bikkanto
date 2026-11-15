@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 /* Exercise rows on the dark board, shared by the workout summary and the
    preset list. */
@@ -57,8 +57,10 @@ export const Row = styled.li<{ $withReroll: boolean }>`
     gap: 0.25rem 0.75rem;
     padding: 1rem;
 
-    > :nth-child(1) { grid-area: no; align-self: start; }
-    > :nth-child(2) { grid-area: name; }
+    /* Baseline-aligned so the number sits on the name's line, however tall
+       the reps cell makes the first line. */
+    > :nth-child(1) { grid-area: no; align-self: baseline; }
+    > :nth-child(2) { grid-area: name; align-self: baseline; }
     > :nth-child(3) { grid-area: tier; }
     > :nth-child(4) { grid-area: reps; }
     > :nth-child(5) { grid-area: reroll; justify-self: end; }
@@ -173,5 +175,31 @@ export const RepsStepper = styled.div`
   input::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+  }
+`;
+
+/* Stands the stepper upright (+ / count / −), for phone rows where it spans
+   both lines to leave room for the name. Apply inside a RepsStepper rule. */
+export const uprightStepper = css`
+  grid-template-columns: 3rem;
+  grid-template-rows: 32px 44px 32px;
+  grid-template-areas:
+    "plus"
+    "count"
+    "minus";
+  height: auto;
+
+  > :nth-child(1) {
+    grid-area: minus;
+  }
+
+  > :nth-child(2) {
+    grid-area: count;
+    border-inline: 0;
+    border-block: 1px solid var(--board-line);
+  }
+
+  > :nth-child(3) {
+    grid-area: plus;
   }
 `;

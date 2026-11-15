@@ -26,6 +26,7 @@ import {
   Row,
   Rows,
   Tier,
+  uprightStepper,
 } from "../BoardRows";
 import { getRepsDifficulty } from "../../utils";
 import type { Preset, PresetExercise } from "../../types/presetTypes";
@@ -264,27 +265,7 @@ const Detail = styled.div<{ $editing: boolean }>`
         }
 
         ${RepsStepper} {
-          grid-template-columns: 3rem;
-          grid-template-rows: 32px 44px 32px;
-          grid-template-areas:
-            "plus"
-            "count"
-            "minus";
-          height: auto;
-
-          > :nth-child(1) {
-            grid-area: minus;
-          }
-
-          > :nth-child(2) {
-            grid-area: count;
-            border-inline: 0;
-            border-block: 1px solid var(--board-line);
-          }
-
-          > :nth-child(3) {
-            grid-area: plus;
-          }
+          ${uprightStepper}
         }
       }
     `}
